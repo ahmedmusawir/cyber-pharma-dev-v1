@@ -46,13 +46,13 @@ const DeleteUserButton = ({ userId, userName, userEmail }: DeleteUserButtonProps
         <Button
           variant="outline"
           size="sm"
-          className="border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 dark:border-red-500 dark:text-red-400"
+          className="border-2 border-destructive text-destructive hover:bg-destructive/10"
         >
           <Trash2 className="h-4 w-4 mr-1" />
           Delete
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+      <DialogContent className="bg-popover border border-border">
         <DialogHeader>
           <DialogTitle>Delete User</DialogTitle>
           <DialogDescription>
@@ -73,7 +73,7 @@ const DeleteUserButton = ({ userId, userName, userEmail }: DeleteUserButtonProps
             variant="destructive"
             onClick={handleDelete}
             disabled={loading}
-            className="border-2 border-red-700 dark:border-red-400"
+            className="border-2 border-destructive"
           >
             {loading ? (
               <>

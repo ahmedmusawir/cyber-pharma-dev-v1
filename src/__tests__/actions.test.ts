@@ -3,18 +3,22 @@ jest.mock('@/utils/supabase/server', () => ({
 }));
 
 jest.mock('@/utils/get-user-role', () => ({
+  getUserRole: jest.fn(),
+}));
+
+jest.mock('@/utils/app-role', () => ({
   AppRole: {
     SUPERADMIN: 'superadmin',
     ADMIN: 'admin',
     MEMBER: 'member',
   },
-  getUserRole: jest.fn(),
 }));
 
 import { redirect } from 'next/navigation';
 import { protectPage } from '@/utils/supabase/actions';
 import { createClient } from '@/utils/supabase/server';
-import { AppRole, getUserRole } from '@/utils/get-user-role';
+import { getUserRole } from '@/utils/get-user-role';
+import { AppRole } from '@/utils/app-role';
 
 const createClientMock = createClient as jest.MockedFunction<typeof createClient>;
 const getUserRoleMock = getUserRole as jest.MockedFunction<typeof getUserRole>;

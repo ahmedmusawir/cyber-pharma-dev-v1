@@ -71,18 +71,18 @@ const AddMemberForm = () => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+                <FormLabel className="uppercase text-xs font-bold text-muted-foreground">
                   Full Name
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white"
+                    className="p-6 bg-muted"
                     placeholder="Enter full name"
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>The member&apos;s display name</FormDescription>
-                <FormMessage className="text-red-500 dark:text-red-400" />
+                <FormMessage className="text-destructive" />
               </FormItem>
             )}
           />
@@ -92,19 +92,19 @@ const AddMemberForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+                <FormLabel className="uppercase text-xs font-bold text-muted-foreground">
                   Email
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white"
+                    className="p-6 bg-muted"
                     type="email"
                     placeholder="member@example.com"
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>The member&apos;s login email address</FormDescription>
-                <FormMessage className="text-red-500 dark:text-red-400" />
+                <FormMessage className="text-destructive" />
               </FormItem>
             )}
           />
@@ -114,19 +114,19 @@ const AddMemberForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+                <FormLabel className="uppercase text-xs font-bold text-muted-foreground">
                   Temporary Password
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white"
+                    className="p-6 bg-muted"
                     type="password"
                     placeholder="Minimum 8 characters"
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>Member can change this after first login</FormDescription>
-                <FormMessage className="text-red-500 dark:text-red-400" />
+                <FormMessage className="text-destructive" />
               </FormItem>
             )}
           />
@@ -136,18 +136,18 @@ const AddMemberForm = () => {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+                <FormLabel className="uppercase text-xs font-bold text-muted-foreground">
                   Confirm Password
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white"
+                    className="p-6 bg-muted"
                     type="password"
                     placeholder="Re-enter password"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="text-red-500 dark:text-red-400" />
+                <FormMessage className="text-destructive" />
               </FormItem>
             )}
           />
@@ -155,7 +155,7 @@ const AddMemberForm = () => {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-slate-700 text-white hover:bg-slate-900 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+            className="w-full"
           >
             {loading ? (
               <>

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyber Pharma v1 — Style Tile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* BRAND */
+    --primary:#f9704f; --primary-2:#ff8b6b; --primary-hover:#e8622c;
+    /* NEUTRALS (light base) */
+    --bg:#d7dae0; --surface:#ffffff; --panel:#f4f6f8;
+    --bd:#cdd3da; --bd-s:#b3bac3; --hdr:#2a3138;
+    --text:#1b2024; --muted:#5f6b78; --faint:#8a96a3;
+    /* SEMANTIC / FINANCIAL */
+    --success:#2f9e44; --destructive:#d6322c; --info:#2f7ce0; --warning:#e8a008;
+    /* KPI TILES */
+    --t-red:#d6322c; --t-blue:#2f7ce0; --t-green:#2f9e44; --t-maroon:#b0282b;
+    --fb:"Saira",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;border-radius:0!important}
+  body{font-family:var(--fb);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;padding:34px}
+  .num{font-variant-numeric:tabular-nums}.up{text-transform:uppercase;letter-spacing:.1em}
+  .sheet{max-width:1320px;margin:0 auto;background:var(--surface);border:1px solid var(--bd)}
+
+  /* header */
+  .head{display:flex;align-items:center;gap:18px;padding:30px 36px;border-bottom:3px solid var(--primary);background:var(--hdr);color:#fff}
+  .head .mk{width:46px;height:46px;background:var(--primary);display:grid;place-items:center}
+  .head h1{font-weight:800;font-size:26px}
+  .head .sub{color:#aeb6c2;font-size:12.5px;font-weight:600;margin-top:3px}
+  .head .meta{margin-left:auto;text-align:right;color:#aeb6c2;font-size:11.5px;font-weight:600;line-height:1.7}
+  .head .meta b{color:#fff}
+
+  .grid{padding:30px 36px;display:flex;flex-direction:column;gap:34px}
+  .sec h2{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+  .row{display:flex;flex-wrap:wrap;gap:16px}
+
+  /* swatches */
+  .sw{width:150px}
+  .sw .chip{height:74px;border:1px solid rgba(0,0,0,.08);display:flex;align-items:flex-end;padding:8px;color:#fff;font-size:11px;font-weight:700}
+  .sw .chip.lt{color:var(--text);border:1px solid var(--bd-s)}
+  .sw .nm{font-weight:700;font-size:12.5px;margin-top:8px}
+  .sw .role{color:var(--muted);font-size:11px;margin-top:2px;line-height:1.4}
+  .sw .hex{color:var(--faint);font-size:11px;font-family:var(--fb);margin-top:3px;letter-spacing:.04em}
+
+  /* mode chips */
+  .modes{display:flex;gap:14px;flex-wrap:wrap}
+  .mode{width:150px;border:1px solid var(--bd-s)}
+  .mode .prev{height:64px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .mode .cap{padding:8px 10px;font-size:11.5px;font-weight:600;color:var(--muted);border-top:1px solid var(--bd)}
+  .mode .cap b{color:var(--text)}
+
+  /* type */
+  .type div{margin-bottom:12px;line-height:1.1}
+  .t-d{font-weight:800;font-size:46px;letter-spacing:-1px}
+  .t-h1{font-weight:300;font-size:38px}
+  .t-h2{font-weight:700;font-size:24px}
+  .t-bd{font-weight:400;font-size:16px;color:var(--muted)}
+  .t-lb{font-weight:600;font-size:12.5px}
+  .t-cap{font-weight:600;font-size:11px;color:var(--faint)}
+  .type .tag{color:var(--faint);font-size:11px;font-weight:600;margin-left:14px;letter-spacing:.05em}
+
+  /* buttons */
+  .btn{border:none;padding:13px 22px;font-family:var(--fb);font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:9px}
+  .b-primary{background:var(--primary);color:#fff}
+  .b-outline{background:transparent;border:1px solid var(--primary);color:var(--primary)}
+  .b-ghost{background:var(--panel);border:1px solid var(--bd-s);color:var(--text)}
+  .b-dark{background:var(--hdr);color:#fff}
+
+  /* fields */
+  .fld{width:240px}
+  .fld label{display:block;font-weight:600;font-size:12px;color:var(--muted);margin-bottom:7px}
+  .ctrl{width:100%;background:var(--surface);border:1px solid var(--bd-s);padding:12px 13px;color:var(--text);font-family:var(--fb);font-size:14px;display:flex;align-items:center;justify-content:space-between}
+  .ctrl.ph{color:var(--faint)}
+  .ctrl.focus{border:2px solid var(--primary);padding:11px 12px}
+
+  /* KPI tiles */
+  .tile{width:230px;padding:18px;color:#fff;min-height:96px;display:flex;flex-direction:column;justify-content:space-between}
+  .tile .lab{font-size:11.5px;font-weight:600;opacity:.92}.tile .val{font-weight:700;font-size:24px}
+  .tile.red{background:var(--t-red)}.tile.blue{background:var(--t-blue)}.tile.green{background:var(--t-green)}.tile.maroon{background:var(--t-maroon)}
+
+  /* tabs */
+  .tabs{display:flex;gap:0;border-bottom:2px solid var(--bd)}
+  .tab{background:var(--panel);border:1px solid var(--bd);border-bottom:none;color:var(--muted);padding:11px 20px;font-weight:600;font-size:13px;margin-right:4px}
+  .tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+  /* table */
+  table{width:100%;border-collapse:collapse;border:1px solid var(--bd)}
+  thead th{text-align:right;color:#fff;background:var(--hdr);font-weight:600;font-size:11.5px;padding:12px 14px}
+  thead th:first-child,thead th:nth-child(2){text-align:left}
+  tbody td{padding:12px 14px;text-align:right;border-top:1px solid var(--bd);font-size:13.5px}
+  tbody td:first-child,tbody td:nth-child(2){text-align:left}
+  tbody tr:nth-child(even){background:var(--panel)}
+  .scr{font-weight:700} .pos{color:var(--success);font-weight:700} .neg{color:var(--destructive);font-weight:700}
+
+  /* status */
+  .badge{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;font-size:12px;font-weight:600;border:1px solid}
+  .bg-ok{color:var(--success);border-color:var(--success);background:rgba(47,158,68,.08)}
+  .bg-warn{color:var(--warning);border-color:var(--warning);background:rgba(232,160,8,.08)}
+  .bg-bad{color:var(--destructive);border-color:var(--destructive);background:rgba(214,50,44,.08)}
+  .bg-info{color:var(--info);border-color:var(--info);background:rgba(47,124,224,.08)}
+  .bg-mut{color:var(--muted);border-color:var(--bd-s);background:var(--panel)}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <!-- HEADER -->
+  <div class="head">
+    <span class="mk"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3c-3 3-6 4.5-6 9a6 6 0 0012 0c0-4.5-3-6-6-9z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+    <div><h1>Cyber Pharma</h1><div class="sub up">v1 Design System · Style Tile</div></div>
+    <div class="meta">DIRECTION <b>Metro Warm</b><br>TYPEFACE <b>Saira</b><br>CORNERS <b>0px · flat</b></div>
+  </div>
+
+  <div class="grid">
+    <!-- BRAND COLOR -->
+    <div class="sec">
+      <h2 class="up">Brand</h2>
+      <div class="row">
+        <div class="sw"><div class="chip" style="background:var(--primary)">Aa</div><div class="nm">Primary</div><div class="role">CTAs, active nav/tab, accent</div><div class="hex">#F9704F</div></div>
+        <div class="sw"><div class="chip" style="background:var(--primary-2)">Aa</div><div class="nm">Primary Light</div><div class="role">gradient end, hover lift</div><div class="hex">#FF8B6B</div></div>
+        <div class="sw"><div class="chip" style="background:var(--primary-hover)">Aa</div><div class="nm">Primary Deep</div><div class="role">pressed / hover state</div><div class="hex">#E8622C</div></div>
+      </div>
+    </div>
+
+    <!-- NEUTRALS -->
+    <div class="sec">
+      <h2 class="up">Neutrals — Light base</h2>
+      <div class="row">
+        <div class="sw"><div class="chip lt" style="background:#ffffff">Aa</div><div class="nm">Surface</div><div class="role">cards, table, inputs</div><div class="hex">#FFFFFF</div></div>
+        <div class="sw"><div class="chip lt" style="background:#f4f6f8">Aa</div><div class="nm">Panel</div><div class="role">sidebar, zebra, ghost btn</div><div class="hex">#F4F6F8</div></div>
+        <div class="sw"><div class="chip lt" style="background:#d7dae0">Aa</div><div class="nm">Background</div><div class="role">app backdrop</div><div class="hex">#D7DAE0</div></div>
+        <div class="sw"><div class="chip lt" style="background:#cdd3da">Aa</div><div class="nm">Border</div><div class="role">dividers, hairlines</div><div class="hex">#CDD3DA</div></div>
+        <div class="sw"><div class="chip" style="background:#5f6b78">Aa</div><div class="nm">Muted</div><div class="role">secondary text, labels</div><div class="hex">#5F6B78</div></div>
+        <div class="sw"><div class="chip" style="background:#1b2024">Aa</div><div class="nm">Ink</div><div class="role">primary text, headings</div><div class="hex">#1B2024</div></div>
+        <div class="sw"><div class="chip" style="background:#2a3138">Aa</div><div class="nm">Header</div><div class="role">table head, dark button</div><div class="hex">#2A3138</div></div>
+      </div>
+    </div>
+
+    <!-- THEME MODES -->
+    <div class="sec">
+      <h2 class="up">Theme Modes — one token swap each</h2>
+      <div class="modes">
+        <div class="mode"><div class="prev" style="background:#ffffff;color:#1b2024;border-bottom:1px solid #eee"><span style="color:var(--primary)">Aa</span></div><div class="cap up">Bright · <b>#FFFFFF</b></div></div>
+        <div class="mode"><div class="prev" style="background:#e2e5ea;color:#1b2024"><span style="color:var(--primary)">Aa</span></div><div class="cap up">Mist · <b>#E2E5EA</b></div></div>
+        <div class="mode"><div class="prev" style="background:#2e3440;color:#e0e4ec"><span style="color:var(--primary)">Aa</span></div><div class="cap up">Slate · <b>#2E3440</b></div></div>
+        <div class="mode"><div class="prev" style="background:#191c24;color:#e5e8f0"><span style="color:var(--primary)">Aa</span></div><div class="cap up">Dark · <b>#191C24</b></div></div>
+      </div>
+    </div>
+
+    <!-- SEMANTIC -->
+    <div class="sec">
+      <h2 class="up">Semantic — fixed meaning across all themes</h2>
+      <div class="row">
+        <div class="sw"><div class="chip" style="background:var(--success)">+</div><div class="nm">Success</div><div class="role">recovered / positive owed</div><div class="hex">#2F9E44</div></div>
+        <div class="sw"><div class="chip" style="background:var(--destructive)">–</div><div class="nm">Destructive</div><div class="role">underpaid / money lost</div><div class="hex">#D6322C</div></div>
+        <div class="sw"><div class="chip" style="background:var(--info)">i</div><div class="nm">Info</div><div class="role">neutral counts / scripts</div><div class="hex">#2F7CE0</div></div>
+        <div class="sw"><div class="chip" style="background:var(--warning)">!</div><div class="nm">Warning</div><div class="role">pending / attention</div><div class="hex">#E8A008</div></div>
+      </div>
+    </div>
+
+    <!-- TYPOGRAPHY -->
+    <div class="sec">
+      <h2 class="up">Typography — Saira</h2>
+      <div class="type">
+        <div class="t-d">Get back every dollar <span class="tag">DISPLAY · 800</span></div>
+        <div class="t-h1">OwedBook <span class="tag">H1 · 300 light</span></div>
+        <div class="t-h2">Underpayment by PBM <span class="tag">H2 · 700</span></div>
+        <div class="t-bd">Ledger-level clarity on what's still owed. <span class="tag">BODY · 400</span></div>
+        <div class="t-lb up">Commercial Underpaid <span class="tag" style="text-transform:none">LABEL · 600 · uppercase +tracking</span></div>
+        <div class="t-cap up">Limit 50 · Total 2631 <span class="tag" style="text-transform:none">CAPTION · 600</span></div>
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="sec">
+      <h2 class="up">Buttons</h2>
+      <div class="row" style="align-items:center">
+        <button class="btn b-primary up">Upload Data</button>
+        <button class="btn b-outline up">Apply</button>
+        <button class="btn b-ghost up">Clear</button>
+        <button class="btn b-dark up">Get Fresh Data</button>
+      </div>
+    </div>
+
+    <!-- FIELDS -->
+    <div class="sec">
+      <h2 class="up">Form Fields</h2>
+      <div class="row">
+        <div class="fld"><label class="up">From (Date)</label><div class="ctrl ph">dd/mm/yyyy</div></div>
+        <div class="fld"><label class="up">PBM</label><div class="ctrl">All <span style="color:var(--faint)">▾</span></div></div>
+        <div class="fld"><label class="up">Focused</label><div class="ctrl focus">All <span style="color:var(--faint)">▾</span></div></div>
+      </div>
+    </div>
+
+    <!-- KPI TILES -->
+    <div class="sec">
+      <h2 class="up">KPI Tiles</h2>
+      <div class="row">
+        <div class="tile red"><div class="lab up">Commercial Underpaid</div><div class="val num">$12,669.63</div></div>
+        <div class="tile blue"><div class="lab up">Commercial Scripts</div><div class="val num">2,631</div></div>
+        <div class="tile green"><div class="lab up">Updated Difference</div><div class="val num">$41.86</div></div>
+        <div class="tile maroon"><div class="lab up">Owed</div><div class="val num">$12,627.77</div></div>
+      </div>
+    </div>
+
+    <!-- TABS + TABLE -->
+    <div class="sec">
+      <h2 class="up">Tabs &amp; Table</h2>
+      <div class="tabs">
+        <div class="tab active">Commercial Dollars</div><div class="tab">Federal Dollars</div><div class="tab">Summary</div>
+      </div>
+      <table>
+        <thead><tr><th>Date</th><th>Script</th><th>Expected</th><th>Original Paid</th><th>Owed</th></tr></thead>
+        <tbody>
+          <tr><td>2025-07-26</td><td class="scr">751291-02</td><td class="num">13.32</td><td class="num">3.99</td><td class="num pos">9.33</td></tr>
+          <tr><td>2025-07-26</td><td class="scr">754399-09</td><td class="num">146.19</td><td class="num">207.80</td><td class="num neg">-61.61</td></tr>
+          <tr><td>2025-07-26</td><td class="scr">758747-01</td><td class="num">154.75</td><td class="num">149.06</td><td class="num pos">5.69</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- STATUS -->
+    <div class="sec">
+      <h2 class="up">Status &amp; Badges</h2>
+      <div class="row" style="align-items:center">
+        <span class="badge bg-ok up">Recovered</span>
+        <span class="badge bg-info up">Emailed PBM</span>
+        <span class="badge bg-warn up">Pending Review</span>
+        <span class="badge bg-bad up">Underpaid</span>
+        <span class="badge bg-mut up">New</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -2,7 +2,8 @@ jest.mock('@/utils/supabase/server', () => ({
   createClient: jest.fn(),
 }));
 
-import { AppRole, getUserRole } from '@/utils/get-user-role';
+import { getUserRole } from '@/utils/get-user-role';
+import { AppRole } from '@/utils/app-role';
 import { createClient } from '@/utils/supabase/server';
 
 const createClientMock = createClient as jest.MockedFunction<typeof createClient>;

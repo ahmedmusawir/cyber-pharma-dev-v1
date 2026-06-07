@@ -1,11 +1,5 @@
 import { createClient } from './supabase/server';
-
-// Define the possible application roles as an enum for strict type checking
-export enum AppRole {
-  SUPERADMIN = 'superadmin',
-  ADMIN = 'admin',
-  MEMBER = 'member'
-}
+import { AppRole } from './app-role';
 
 /**
  * Fetches the user's role from the user_roles table in the database.

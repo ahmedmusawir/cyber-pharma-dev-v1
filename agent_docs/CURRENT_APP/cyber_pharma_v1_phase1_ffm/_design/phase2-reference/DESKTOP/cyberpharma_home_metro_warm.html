@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyber Pharma — Home (Metro Warm)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#e4e7eb; --app:#ffffff; --ink:#1b2024; --muted:#5f6b78; --faint:#8a96a3;
+    --line:#cdd3da; --line-strong:#b3bac3;
+    --coral:#f9704f; --coral-2:#ff8b6b; --violet:#a78bfa; --green:#2f9e44;
+    --fb:"Saira",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;border-radius:0 !important}
+  body{font-family:var(--fb);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px}
+  .num{font-variant-numeric:tabular-nums}
+  .up{text-transform:uppercase;letter-spacing:.1em}
+  .app{max-width:1840px;margin:0 auto;background:var(--app);border:1px solid var(--line)}
+
+  /* NAV — metro flat, coral accent */
+  .nav{display:flex;align-items:center;gap:30px;height:84px;border-bottom:2px solid var(--line)}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:20px;padding:0 30px}
+  .logo .mk{width:34px;height:34px;background:var(--coral);display:grid;place-items:center}
+  .menu{margin-left:auto;display:flex;align-items:center;height:100%}
+  .menu a{display:flex;align-items:center;height:100%;padding:0 22px;color:var(--muted);text-decoration:none;font-size:12.5px;font-weight:600}
+  .menu a:hover{background:#fef5f2;color:var(--ink)}
+  .menu a.login{color:var(--ink)}
+  .menu .cta{background:var(--coral);color:#fff;font-weight:700;font-size:12.5px;padding:0 30px}
+
+  /* HERO */
+  .hero{display:grid;grid-template-columns:1fr 1.12fr;gap:56px;align-items:center;padding:70px 56px 80px}
+  .eyebrow{display:inline-flex;align-items:center;gap:11px;color:var(--coral);font-weight:700;font-size:12.5px;margin-bottom:26px}
+  .eyebrow .sq{width:12px;height:12px;background:var(--coral);display:block}
+  h1{font-weight:600;font-size:74px;line-height:1.0;letter-spacing:-1.5px}
+  h1 .c{color:var(--coral)}
+  .lead{color:var(--muted);font-size:18px;line-height:1.6;margin:28px 0 38px;max-width:500px}
+  .actions{display:flex;align-items:center;gap:24px;margin-bottom:46px}
+  .btn-solid{background:linear-gradient(135deg,var(--coral),var(--coral-2));color:#fff;font-weight:700;font-size:13px;
+    padding:17px 30px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 26px rgba(249,112,79,.30)}
+  .btn-demo{display:flex;align-items:center;gap:13px;color:var(--ink);font-weight:700;font-size:13px}
+  .btn-demo .pl{width:38px;height:38px;border:2px solid var(--line-strong) !important;display:grid;place-items:center}
+  .trust{display:flex;align-items:center;gap:20px;color:var(--faint);font-size:12px;font-weight:600}
+  .trust .pill{display:inline-flex;align-items:center;gap:8px;color:var(--ink);border:1px solid var(--line-strong);padding:9px 15px}
+  .trust .pill svg{color:var(--coral)}
+
+  /* VISUAL — soft treatment (overrides metro flat just for product area) */
+  .stage{position:relative;border-radius:28px !important;padding:46px;
+    background:radial-gradient(120% 110% at 75% 15%,#fff0eb 0%,#fbf7ff 55%,#f6f7fb 100%);overflow:hidden}
+  .blob{position:absolute;border-radius:50% !important;filter:blur(70px)}
+  .blob.a{width:340px;height:340px;background:var(--coral);top:-80px;right:-40px;opacity:.45}
+  .blob.b{width:280px;height:280px;background:var(--violet);bottom:-90px;left:-60px;opacity:.30}
+  .frame{position:relative;border-radius:14px !important;overflow:hidden;border:1px solid rgba(0,0,0,.06);
+    box-shadow:0 40px 80px rgba(30,32,50,.22);transform:perspective(1400px) rotateY(-8deg) rotateX(2deg);
+    transform-origin:left center}
+  .frame .bar{height:34px;background:#23262f;display:flex;align-items:center;gap:7px;padding:0 14px}
+  .frame .bar i{width:11px;height:11px;border-radius:50% !important;background:#454b59;display:block}
+  .frame img{display:block;width:100%}
+  .floatcard{position:absolute;right:14px;bottom:28px;background:#fff;border-radius:14px !important;padding:16px 20px;
+    box-shadow:0 20px 44px rgba(30,32,50,.18);display:flex;align-items:center;gap:14px}
+  .floatcard .ic{width:42px;height:42px;border-radius:11px !important;background:#eafaf0;color:#1f9d3f;display:grid;place-items:center}
+  .floatcard .v{font-weight:800;font-size:20px}
+  .floatcard .l{color:var(--muted);font-size:12.5px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="logo"><span class="mk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3c-3 3-6 4.5-6 9a6 6 0 0012 0c0-4.5-3-6-6-9z" stroke="#fff" stroke-width="1.9" stroke-linejoin="round"/></svg></span>Cyber Pharma</div>
+    <div class="menu">
+      <a class="up" href="#">Features</a><a class="up" href="#">How it works</a><a class="up" href="#">Pricing</a>
+      <a class="up login" href="#">Log in</a>
+      <a class="cta up" href="#">Start free trial</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="copy">
+      <span class="eyebrow up"><span class="sq"></span>Pharmacy revenue recovery</span>
+      <h1>Get back every dollar you're <span class="c">owed</span></h1>
+      <p class="lead">Cyber Pharma audits every claim against expected reimbursement and flags PBM underpayments to the cent — so independent pharmacies recover what they're owed.</p>
+      <div class="actions">
+        <span class="btn-solid up">Start free trial <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        <span class="btn-demo up"><span class="pl"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span>Book a demo</span>
+      </div>
+      <div class="trust">
+        <span class="pill up"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>HIPAA-ready</span>
+        <span class="up">Trusted by 200+ independent pharmacies</span>
+      </div>
+    </div>
+
+    <div class="visual">
+      <div class="stage">
+        <span class="blob a"></span><span class="blob b"></span>
+        <div class="frame">
+          <div class="bar"><i></i><i></i><i></i></div>
+          <img src="owedbook_command_center.png" alt="OwedBook dashboard">
+        </div>
+        <div class="floatcard">
+          <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <div><div class="v num">$12,627</div><div class="l">recovered this month</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import Navbar from "@/components/global/Navbar";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 import { protectPage } from "@/utils/supabase/actions";
-import { AppRole } from "@/utils/get-user-role";
+import { AppRole } from "@/utils/app-role";
 
 interface LayoutProps {
   children: ReactNode;

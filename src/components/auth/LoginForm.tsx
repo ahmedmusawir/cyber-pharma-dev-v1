@@ -90,19 +90,19 @@ const LoginForm = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text.white">
+                    <FormLabel className="uppercase text-xs font-bold text-muted-foreground">
                       Email
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white"
+                        className="p-6 bg-muted"
                         placeholder="Please Enter Email"
                         {...field}
                       />
                     </FormControl>
 
-                    <FormMessage className="dark:text-red-300" />
+                    <FormMessage className="text-destructive" />
                   </FormItem>
                 )}
               />
@@ -111,31 +111,31 @@ const LoginForm = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text.white">
+                    <FormLabel className="uppercase text-xs font-bold text-muted-foreground">
                       Password
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white"
+                        className="p-6 bg-muted"
                         placeholder="Please Enter password"
                         {...field}
                       />
                     </FormControl>
 
-                    <FormMessage className="dark:text-red-300" />
+                    <FormMessage className="text-destructive" />
                   </FormItem>
                 )}
               />
               {error && (
-                <div className="text-red-500 dark:text-red-300 text-sm mt-2">
+                <div className="text-destructive text-sm mt-2">
                   {error}
                 </div>
               )}
               {isLoading && <Spinner />}
               <Button
                 disabled={isLoading}
-                className="w-full bg-slate-700 text-white dark:bg-slate-600 dark:text-white hover:bg-gray-900 disabled:opacity-70"
+                className="w-full disabled:opacity-70"
               >
                 Login
               </Button>

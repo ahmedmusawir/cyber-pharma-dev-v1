@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.scss";
+import { Saira } from "next/font/google";
+import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "./providers/ThemeProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const saira = Saira({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-brand",
+});
 
 export const metadata: Metadata = {
-  title: "Moose Next Framework v3",
-  description: "This is just ui/ux framework with Shadcn",
+  title: "Cyber Pharma",
+  description: "Pharmacy revenue recovery — get back every dollar you're owed.",
 };
 
 export default function RootLayout({
@@ -17,11 +21,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="en" className={saira.variable} suppressHydrationWarning>
+      <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem={true}
           disableTransitionOnChange
         >

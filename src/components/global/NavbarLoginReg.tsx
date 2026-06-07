@@ -5,15 +5,14 @@ import ThemeToggler from "./ThemeToggler";
 const NavbarLoginReg = () => {
   return (
     <>
-      <div className="bg-slate-700 dark:bg-slate-700 py-2 px-5 flex justify-between">
-        <Link href={"/"}>
+      <div className="bg-secondary py-2 px-5 flex justify-between">
+        <Link href={"/"} aria-label="Cyber Pharma — Home">
           <Image
-            src={
-              "https://res.cloudinary.com/dyb0qa58h/image/upload/v1696245158/company-4-logo_syxli0.png"
-            }
-            alt="Stark SaaS Starter"
-            width={40}
-            height={40}
+            src="/brand/logo-lockup.svg"
+            alt="Cyber Pharma"
+            width={180}
+            height={34}
+            priority
           />
         </Link>
 

@@ -1,0 +1,113 @@
+/* ============================================================
+ * CYBER PHARMA v1 — globals.css
+ *
+ * Designer's locked token file (Tailwind 3.4 + shadcn).
+ * Format: CSS variables as HSL, no hsl() wrapper.
+ * Mapped in tailwind.config.ts.
+ *
+ * THIS IS THE EXECUTABLE DESIGN SYSTEM.
+ * Every screen reads these via semantic utilities (bg-primary,
+ * text-destructive, bg-card) — NEVER numbered colors (bg-slate-800).
+ *
+ * Hex in comments is human reference only; HSL triplet is truth.
+ * ============================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ── LIGHT · "Mist" (default) ───────────────────────────── */
+  :root {
+    --background: 217 16% 90%;          /* #e2e5ea */
+    --foreground: 219 16% 17%;          /* #252a33 */
+    --card: 0 0% 100%;                  /* #ffffff */
+    --card-foreground: 219 16% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 219 16% 17%;
+
+    --primary: 12 93% 64%;              /* #f9704f coral */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 19% 94%;           /* #eceef2 panel */
+    --secondary-foreground: 219 16% 17%;
+    --muted: 222 15% 87%;               /* #d9dce3 */
+    --muted-foreground: 218 12% 42%;    /* #5f6878 */
+    --accent: 12 93% 64%;               /* coral */
+    --accent-foreground: 0 0% 100%;
+
+    --border: 220 12% 75%;              /* #b8bdc7 */
+    --input: 220 12% 75%;
+    --ring: 12 93% 64%;                 /* coral focus */
+
+    /* semantic — FIXED MEANING across all themes */
+    --destructive: 2 67% 51%;           /* #d6322c underpaid/lost */
+    --destructive-foreground: 0 0% 100%;
+    --success: 131 54% 40%;             /* #2f9e44 recovered */
+    --success-foreground: 0 0% 100%;
+    --warning: 41 93% 47%;              /* #e8a008 pending */
+    --warning-foreground: 0 0% 100%;
+    --info: 214 74% 53%;                /* #2f7ce0 neutral counts */
+    --info-foreground: 0 0% 100%;
+
+    /* data-viz / KPI tiles */
+    --chart-1: 2 67% 51%;               /* red */
+    --chart-2: 214 74% 53%;             /* blue */
+    --chart-3: 131 54% 40%;             /* green */
+    --chart-4: 359 63% 42%;             /* maroon */
+    --chart-5: 12 93% 64%;              /* coral */
+
+    --radius: 0px;                      /* Metro flat */
+  }
+
+  /* ── DARK · "Slate" (default dark) ──────────────────────── */
+  /* v1.1 readability pass: background dropped below card so panels
+     elevate; muted-foreground lifted; borders firmed. */
+  .dark {
+    --background: 222 18% 14%;          /* #1d212a — page (now darker than card) */
+    --foreground: 222 26% 93%;          /* #e7eaf1 */
+    --card: 220 16% 22%;                /* #2e3440 — elevated surface */
+    --card-foreground: 222 26% 93%;
+    --popover: 220 16% 22%;
+    --popover-foreground: 222 26% 93%;
+
+    --primary: 12 93% 64%;              /* coral holds across modes */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 221 16% 27%;           /* #3a4150 */
+    --secondary-foreground: 222 26% 93%;
+    --muted: 220 16% 19%;               /* #282d37 */
+    --muted-foreground: 221 17% 71%;    /* #a9b1c2 — readable secondary text/placeholders */
+    --accent: 12 93% 64%;
+    --accent-foreground: 0 0% 100%;
+
+    --border: 218 13% 33%;              /* #49515f — firmer edges */
+    --input: 218 13% 33%;
+    --ring: 12 93% 64%;
+
+    /* semantic — brightened for dark surfaces, same meaning */
+    --destructive: 351 95% 71%;         /* #fb7185 */
+    --destructive-foreground: 222 20% 13%;
+    --success: 142 69% 58%;             /* #4ade80 */
+    --success-foreground: 222 20% 13%;
+    --warning: 41 93% 47%;              /* #e8a008 */
+    --warning-foreground: 222 20% 13%;
+    --info: 214 74% 53%;
+    --info-foreground: 0 0% 100%;
+
+    --chart-1: 351 95% 71%;
+    --chart-2: 214 74% 53%;
+    --chart-3: 142 69% 58%;
+    --chart-4: 359 63% 42%;
+    --chart-5: 12 93% 64%;
+  }
+
+  /* ── OPTIONAL ALTERNATES (Theme Library) ────────────────── */
+  /* Bright: pure-white light. Apply class on <html>: class="theme-bright" */
+  .theme-bright { --background: 0 0% 100%; --secondary: 220 19% 96%; --muted: 220 16% 94%; }
+  /* Dark-deep: near-black dark. Apply within dark: class="dark theme-deep" */
+  .dark.theme-deep { --background: 224 18% 12%; --card: 225 16% 16%; --popover: 225 16% 16%; }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground font-brand; }
+}

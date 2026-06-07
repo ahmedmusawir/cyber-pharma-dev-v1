@@ -1,0 +1,132 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OwedBook Mobile — mist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+    --bg:#cdd1d8;--app:#e2e5ea;--bar:#e8eaef;--card:#ffffff;--input:#eceef2;
+    --bd:#b8bdc7;--bd-s:#a6abb6;--hdr:#3a4150;
+    --text:#252a33;--muted:#5f6878;--faint:#8690a0;
+    --primary:#f9704f;--primary-fg:#fff;
+    --t-red:#d6322c;--t-blue:#2f7ce0;--t-green:#2f9e44;--t-maroon:#b0282b;
+    --success:#1f9d3f;--destructive:#d6322c;--zebra:#d9dce3;
+    --fb:"Saira",system-ui,sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;border-radius:0!important}
+body{font-family:var(--fb);background:var(--app);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px}
+.num{font-variant-numeric:tabular-nums}.up{text-transform:uppercase;letter-spacing:.07em}
+.bar{display:flex;align-items:center;gap:12px;height:56px;padding:0 16px;background:var(--bar);border-bottom:2px solid var(--bd);position:sticky;top:0;z-index:5}
+.bar .mn{color:var(--text);display:grid;place-items:center}
+.bar .lg{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px}
+.bar .lg .mk{width:26px;height:26px;background:var(--primary);display:grid;place-items:center}
+.bar .av{margin-left:auto;width:30px;height:30px;background:var(--primary);color:#fff;font-weight:700;display:grid;place-items:center;font-size:13px}
+.wrap{padding:18px 16px 28px}
+.eyebrow{color:var(--primary);font-size:11px;font-weight:700;margin-bottom:3px}
+h1{font-weight:300;font-size:30px;line-height:1}
+.sub{color:var(--muted);font-size:13.5px;margin:4px 0 16px}
+.fbtn{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--card);border:1px solid var(--primary);color:var(--primary);font-family:var(--fb);font-weight:700;font-size:13px;padding:14px 16px;margin-bottom:16px}
+.fbtn .l{display:flex;align-items:center;gap:10px}
+.fbtn .badge{background:var(--primary);color:#fff;font-size:11px;padding:2px 8px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.tile{padding:15px;color:#fff;min-height:84px;display:flex;flex-direction:column;justify-content:space-between}
+.tile .lab{font-size:10.5px;font-weight:600;opacity:.92}.tile .val{font-weight:700;font-size:21px}
+.tile.red{background:var(--t-red)}.tile.blue{background:var(--t-blue)}.tile.green{background:var(--t-green)}.tile.maroon{background:var(--t-maroon)}
+.pager{color:var(--muted);font-size:12px;margin-bottom:12px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:12px;margin-bottom:4px;-webkit-overflow-scrolling:touch}
+.tab{flex:none;background:var(--card);border:1px solid var(--bd);color:var(--muted);padding:10px 16px;font-weight:600;font-size:12.5px;white-space:nowrap}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.cards{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border:1px solid var(--bd);padding:15px}
+.c1{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px}
+.c1 .scr{font-weight:700;font-size:16px}
+.c1 .owed{font-weight:800;font-size:22px}
+.pos{color:var(--success)}.neg{color:var(--destructive)}
+.c2{color:var(--muted);font-size:12px;margin-bottom:12px}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:10px;border-top:1px solid var(--bd);padding-top:12px}
+.kv{display:flex;flex-direction:column;gap:2px}
+.kv .k{color:var(--faint);font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.kv .v{font-size:14px;font-weight:600}
+</style></head><body>
+<div class="bar">
+  <span class="mn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>
+  <span class="lg"><span class="mk"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 3c-3 3-6 4.5-6 9a6 6 0 0012 0c0-4.5-3-6-6-9z" stroke="#fff" stroke-width="1.9" stroke-linejoin="round"/></svg></span>Cyber Pharma</span>
+  <span class="av">F</span>
+</div>
+<div class="wrap">
+  <div class="eyebrow up">Dashboard</div>
+  <h1>OwedBook</h1>
+  <div class="sub">Ledger-level clarity on what's still owed</div>
+  <button class="fbtn up"><span class="l"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg>Filters</span><span class="badge">0 active</span></button>
+  <div class="kpis">
+    <div class="tile red"><div class="lab up">Commercial Underpaid</div><div class="val num">$12,669.63</div></div>
+    <div class="tile blue"><div class="lab up">Commercial Scripts</div><div class="val num">2,631</div></div>
+    <div class="tile green"><div class="lab up">Updated Difference</div><div class="val num">$41.86</div></div>
+    <div class="tile maroon"><div class="lab up">Owed</div><div class="val num">$12,627.77</div></div>
+  </div>
+  <div class="pager">Page 1 of 148 · Limit 50 · Total 2631</div>
+  <div class="tabs">
+    <span class="tab active">Commercial Dollars</span><span class="tab">Updated Commercial Payments</span><span class="tab">Federal Dollars</span><span class="tab">Summary</span>
+  </div>
+  <div class="cards">
+<div class="card">
+  <div class="c1"><span class="scr">751291-02</span><span class="owed pos num">9.33</span></div>
+  <div class="c2">2025-07-26 · AAC · Qty 90</div>
+  <div class="cg">
+    <div class="kv"><span class="k">Medicaid Rate</span><span class="v num">0.03</span></div>
+    <div class="kv"><span class="k">Expected</span><span class="v num">13.32</span></div>
+    <div class="kv"><span class="k">Original Paid</span><span class="v num">3.99</span></div>
+    <div class="kv"><span class="k">Status</span><span class="v">—</span></div>
+  </div>
+</div>
+<div class="card">
+  <div class="c1"><span class="scr">754399-09</span><span class="owed neg num">-61.61</span></div>
+  <div class="c2">2025-07-26 · AAC · Qty 30</div>
+  <div class="cg">
+    <div class="kv"><span class="k">Medicaid Rate</span><span class="v num">4.52</span></div>
+    <div class="kv"><span class="k">Expected</span><span class="v num">146.19</span></div>
+    <div class="kv"><span class="k">Original Paid</span><span class="v num">207.80</span></div>
+    <div class="kv"><span class="k">Status</span><span class="v">—</span></div>
+  </div>
+</div>
+<div class="card">
+  <div class="c1"><span class="scr">758747-01</span><span class="owed pos num">5.69</span></div>
+  <div class="c2">2025-07-26 · AAC · Qty 1</div>
+  <div class="cg">
+    <div class="kv"><span class="k">Medicaid Rate</span><span class="v num">144.11</span></div>
+    <div class="kv"><span class="k">Expected</span><span class="v num">154.75</span></div>
+    <div class="kv"><span class="k">Original Paid</span><span class="v num">149.06</span></div>
+    <div class="kv"><span class="k">Status</span><span class="v">—</span></div>
+  </div>
+</div>
+<div class="card">
+  <div class="c1"><span class="scr">759449-10</span><span class="owed pos num">6.10</span></div>
+  <div class="c2">2025-07-26 · AAC · Qty 30</div>
+  <div class="cg">
+    <div class="kv"><span class="k">Medicaid Rate</span><span class="v num">0.05</span></div>
+    <div class="kv"><span class="k">Expected</span><span class="v num">12.10</span></div>
+    <div class="kv"><span class="k">Original Paid</span><span class="v num">6.00</span></div>
+    <div class="kv"><span class="k">Status</span><span class="v">emailed PBM</span></div>
+  </div>
+</div>
+<div class="card">
+  <div class="c1"><span class="scr">759920-11</span><span class="owed pos num">2.30</span></div>
+  <div class="c2">2025-07-26 · AAC · Qty 1</div>
+  <div class="cg">
+    <div class="kv"><span class="k">Medicaid Rate</span><span class="v num">0.22</span></div>
+    <div class="kv"><span class="k">Expected</span><span class="v num">10.86</span></div>
+    <div class="kv"><span class="k">Original Paid</span><span class="v num">8.56</span></div>
+    <div class="kv"><span class="k">Status</span><span class="v">—</span></div>
+  </div>
+</div>
+<div class="card">
+  <div class="c1"><span class="scr">761066-00</span><span class="owed pos num">0.70</span></div>
+  <div class="c2">2025-07-26 · AAC · Qty 90</div>
+  <div class="cg">
+    <div class="kv"><span class="k">Medicaid Rate</span><span class="v num">0.04</span></div>
+    <div class="kv"><span class="k">Expected</span><span class="v num">14.41</span></div>
+    <div class="kv"><span class="k">Original Paid</span><span class="v num">13.71</span></div>
+    <div class="kv"><span class="k">Status</span><span class="v">emailed PBM</span></div>
+  </div>
+</div>
+  </div>
+</div>
+</body></html>

@@ -1,4 +1,4 @@
-"use Client";
+"use client";
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,9 +17,9 @@ const AuthTabs = () => {
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger
           value="login"
-          className={`p-2 text-center bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 ${
+          className={`p-2 text-center bg-muted hover:bg-muted/80 ${
             selectedTab === "login"
-              ? "border-2 border-slate-700 dark:border-gray-100"
+              ? "border-2 border-primary"
               : "border-2 border-transparent"
           } rounded-md`}
         >
@@ -27,9 +27,9 @@ const AuthTabs = () => {
         </TabsTrigger>
         <TabsTrigger
           value="register"
-          className={`p-2 text-center bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 ${
+          className={`p-2 text-center bg-muted hover:bg-muted/80 ${
             selectedTab === "register"
-              ? "border-2 border-slate-700 dark:border-gray-100"
+              ? "border-2 border-primary"
               : "border-2 border-transparent"
           } rounded-md`}
         >
@@ -38,13 +38,13 @@ const AuthTabs = () => {
       </TabsList>
       <TabsContent
         value="login"
-        className="p-4 border-t border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900"
+        className="p-4 border-t border-border bg-card"
       >
         <LoginForm />
       </TabsContent>
       <TabsContent
         value="register"
-        className="p-4 border-t border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900"
+        className="p-4 border-t border-border bg-card"
       >
         <RegisterForm />
       </TabsContent>

@@ -54,17 +54,17 @@ const ProfileForm = ({ user }: Props) => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label className="uppercase text-xs font-bold text-zinc-500 dark:text-white">Email</Label>
+            <Label className="uppercase text-xs font-bold text-muted-foreground">Email</Label>
             <Input
-              className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white mt-2 opacity-60 cursor-not-allowed"
+              className="p-6 bg-muted mt-2 opacity-60 cursor-not-allowed"
               value={user.email ?? "—"}
               disabled
             />
             <p className="text-sm text-muted-foreground mt-1">Email cannot be changed</p>
           </div>
           <div>
-            <Label className="uppercase text-xs font-bold text-zinc-500 dark:text-white">Role</Label>
-            <p className="text-base font-bold mt-2 text-red-600 dark:text-red-400">Admin</p>
+            <Label className="uppercase text-xs font-bold text-muted-foreground">Role</Label>
+            <p className="text-base font-bold mt-2 text-destructive">Admin</p>
           </div>
         </CardContent>
       </Card>
@@ -76,11 +76,11 @@ const ProfileForm = ({ user }: Props) => {
         <CardContent>
           <form onSubmit={handlePasswordUpdate} className="space-y-4">
             <div>
-              <Label className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+              <Label className="uppercase text-xs font-bold text-muted-foreground">
                 New Password
               </Label>
               <Input
-                className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white mt-2"
+                className="p-6 bg-muted mt-2"
                 type="password"
                 placeholder="Minimum 8 characters"
                 value={password}
@@ -88,24 +88,24 @@ const ProfileForm = ({ user }: Props) => {
               />
             </div>
             <div>
-              <Label className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+              <Label className="uppercase text-xs font-bold text-muted-foreground">
                 Confirm New Password
               </Label>
               <Input
-                className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white mt-2"
+                className="p-6 bg-muted mt-2"
                 type="password"
                 placeholder="Re-enter new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
               {validationError && (
-                <p className="text-sm text-red-500 dark:text-red-400 mt-1">{validationError}</p>
+                <p className="text-sm text-destructive mt-1">{validationError}</p>
               )}
             </div>
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-slate-700 text-white hover:bg-slate-900 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+              className="w-full"
             >
               {loading ? (
                 <>

@@ -8,7 +8,7 @@ const NotFoundPage = () => {
       <p className="mt-4">
         Sorry, the page you are looking for does not exist.
       </p>
-      <Link href="/" className="mt-6 text-blue-500 hover:underline">
+      <Link href="/" className="mt-6 text-primary hover:underline">
         Go back to Home
       </Link>
       <p>This is coming from /main</p>

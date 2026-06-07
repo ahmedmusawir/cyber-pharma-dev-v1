@@ -1,7 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getUserRole, type AppRole } from "../get-user-role";
+import { getUserRole } from "../get-user-role";
+import type { AppRole } from "../app-role";
 import { createClient } from "./server";
 
 export async function protectPage(allowedRoles: AppRole[]) {

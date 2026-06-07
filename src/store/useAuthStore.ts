@@ -1,10 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { AppRole } from "@/utils/get-user-role";
+import { AppRole } from "@/utils/app-role";
+import type { User as SupabaseUser } from "@supabase/auth-js";
 
 interface AuthState {
-  user: any | null;
+  user: SupabaseUser | null;
   role: AppRole | null;
+  isAdmin: boolean;
+  isMember: boolean;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<string>;
@@ -16,6 +19,8 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       role: null,
+      isAdmin: false,
+      isMember: false,
       isAuthenticated: false,
       isLoading: true,
       login: async (email, password) => {
@@ -30,20 +35,20 @@ export const useAuthStore = create<AuthState>()(
           throw new Error(result.error || "Login failed");
         }
 
-        const user = result.data.user;
-        const role = result.data.role;
+        const user: SupabaseUser = result.data.user;
+        const role: AppRole | null = result.data.role;
 
         set({
           user,
           role,
+          isAdmin: role === AppRole.ADMIN,
+          isMember: role === AppRole.MEMBER,
           isAuthenticated: true,
         });
 
-        // Return the redirect path so the calling component can handle navigation
-        if (role === "superadmin") return "/superadmin-portal";
-        if (role === "admin") return "/admin-portal";
-        if (role === "member") return "/members-portal";
-        return "/";
+        if (role === AppRole.ADMIN) return "/admin-portal";
+        if (role === AppRole.MEMBER) return "/members-portal";
+        return "/access-denied";
       },
       logout: async () => {
         const response = await fetch("/api/auth/logout", { method: "POST" });
@@ -55,6 +60,8 @@ export const useAuthStore = create<AuthState>()(
         set({
           user: null,
           role: null,
+          isAdmin: false,
+          isMember: false,
           isAuthenticated: false,
         });
       },

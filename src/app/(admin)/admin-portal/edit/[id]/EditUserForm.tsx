@@ -63,9 +63,8 @@ const EditUserForm = ({ user }: Props) => {
   };
 
   const roleColor: Record<string, string> = {
-    superadmin: "text-purple-600 dark:text-purple-400",
-    admin: "text-red-600 dark:text-red-400",
-    member: "text-green-600 dark:text-green-400",
+    admin: "text-destructive",
+    member: "text-success",
   };
 
   return (
@@ -81,28 +80,28 @@ const EditUserForm = ({ user }: Props) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+                  <FormLabel className="uppercase text-xs font-bold text-muted-foreground">
                     Full Name
                   </FormLabel>
                   <FormControl>
                     <Input
-                      className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white"
+                      className="p-6 bg-muted"
                       placeholder="Enter full name"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>The user&apos;s display name</FormDescription>
-                  <FormMessage className="text-red-500 dark:text-red-400" />
+                  <FormMessage className="text-destructive" />
                 </FormItem>
               )}
             />
 
             <div>
-              <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+              <FormLabel className="uppercase text-xs font-bold text-muted-foreground">
                 Email
               </FormLabel>
               <Input
-                className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white mt-2"
+                className="p-6 bg-muted mt-2"
                 value={user.email ?? "—"}
                 disabled
               />
@@ -112,10 +111,10 @@ const EditUserForm = ({ user }: Props) => {
             </div>
 
             <div>
-              <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+              <FormLabel className="uppercase text-xs font-bold text-muted-foreground">
                 Role
               </FormLabel>
-              <p className={`text-base font-bold mt-2 ${roleColor[user.role] ?? "text-slate-500"}`}>
+              <p className={`text-base font-bold mt-2 ${roleColor[user.role] ?? "text-muted-foreground"}`}>
                 {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
               </p>
               <p className="text-sm text-muted-foreground mt-2">
@@ -126,7 +125,7 @@ const EditUserForm = ({ user }: Props) => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-slate-700 text-white hover:bg-slate-900 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+              className="w-full"
             >
               {loading ? (
                 <>

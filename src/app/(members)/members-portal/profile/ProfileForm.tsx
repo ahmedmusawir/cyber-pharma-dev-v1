@@ -67,20 +67,20 @@ const ProfileForm = ({ user }: Props) => {
         <CardContent className="pt-6">
           <div className="flex items-center gap-6">
             {/* Placeholder avatar */}
-            <div className="flex-shrink-0 w-20 h-20 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center border-2 border-green-300 dark:border-green-700">
+            <div className="flex-shrink-0 w-20 h-20 rounded-full bg-success/10 flex items-center justify-center border-2 border-success/30">
               {initials ? (
-                <span className="text-2xl font-bold text-green-700 dark:text-green-300">
+                <span className="text-2xl font-bold text-success">
                   {initials}
                 </span>
               ) : (
-                <User className="w-8 h-8 text-green-600 dark:text-green-400" />
+                <User className="w-8 h-8 text-success" />
               )}
             </div>
 
             <div className="space-y-1">
               <p className="text-xl font-bold">{displayName}</p>
               <p className="text-sm text-muted-foreground">{user.email}</p>
-              <span className="inline-block text-xs font-bold px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">
+              <span className="inline-block text-xs font-bold px-2 py-0.5 rounded-full bg-success/10 text-success">
                 Member
               </span>
             </div>
@@ -95,21 +95,21 @@ const ProfileForm = ({ user }: Props) => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+            <Label className="uppercase text-xs font-bold text-muted-foreground">
               Full Name
             </Label>
             <Input
-              className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white mt-2 opacity-60 cursor-not-allowed"
+              className="p-6 bg-muted mt-2 opacity-60 cursor-not-allowed"
               value={displayName}
               disabled
             />
           </div>
           <div>
-            <Label className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+            <Label className="uppercase text-xs font-bold text-muted-foreground">
               Email
             </Label>
             <Input
-              className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white mt-2 opacity-60 cursor-not-allowed"
+              className="p-6 bg-muted mt-2 opacity-60 cursor-not-allowed"
               value={user.email ?? "—"}
               disabled
             />
@@ -128,11 +128,11 @@ const ProfileForm = ({ user }: Props) => {
         <CardContent>
           <form onSubmit={handlePasswordUpdate} className="space-y-4">
             <div>
-              <Label className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+              <Label className="uppercase text-xs font-bold text-muted-foreground">
                 New Password
               </Label>
               <Input
-                className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white mt-2"
+                className="p-6 bg-muted mt-2"
                 type="password"
                 placeholder="Minimum 8 characters"
                 value={password}
@@ -140,24 +140,24 @@ const ProfileForm = ({ user }: Props) => {
               />
             </div>
             <div>
-              <Label className="uppercase text-xs font-bold text-zinc-500 dark:text-white">
+              <Label className="uppercase text-xs font-bold text-muted-foreground">
                 Confirm New Password
               </Label>
               <Input
-                className="p-6 bg-slate-100 dark:bg-slate-500 dark:text-white mt-2"
+                className="p-6 bg-muted mt-2"
                 type="password"
                 placeholder="Re-enter new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
               {validationError && (
-                <p className="text-sm text-red-500 dark:text-red-400 mt-1">{validationError}</p>
+                <p className="text-sm text-destructive mt-1">{validationError}</p>
               )}
             </div>
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-slate-700 text-white hover:bg-slate-900 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+              className="w-full"
             >
               {loading ? (
                 <>

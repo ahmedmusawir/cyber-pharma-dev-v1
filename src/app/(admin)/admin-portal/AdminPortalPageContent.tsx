@@ -15,9 +15,8 @@ import DeleteUserButton from "./DeleteUserButton";
 const PAGE_SIZE = 6;
 
 const roleColor: Record<string, string> = {
-  superadmin: "text-purple-600 dark:text-purple-400",
-  admin: "text-red-600 dark:text-red-400",
-  member: "text-green-600 dark:text-green-400",
+  admin: "text-destructive",
+  member: "text-success",
 };
 
 interface Props {
@@ -57,12 +56,12 @@ const AdminPortalPageContent = async ({ page }: Props) => {
                   </p>
                 </CardHeader>
                 <CardContent className="pb-2">
-                  <p className={`text-base font-bold ${roleColor[user.role] ?? "text-slate-500"}`}>
+                  <p className={`text-base font-bold ${roleColor[user.role] ?? "text-muted-foreground"}`}>
                     Role: {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                   </p>
                 </CardContent>
                 <CardFooter className="flex gap-2 pt-2">
-                  <Button asChild variant="outline" size="sm" className="border-2 border-slate-400 dark:border-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700">
+                  <Button asChild variant="outline" size="sm" className="border-2 border-border hover:bg-accent">
                     <Link href={`/admin-portal/edit/${user.id}`}>
                       <Pencil className="mr-1 h-4 w-4" />
                       Edit
