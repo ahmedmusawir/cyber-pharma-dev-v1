@@ -1,8 +1,12 @@
 # Recovery State
 
-Last action: **SP4 (Components) COMPLETE — all 7 clusters closed.** C7 final triad clean (tsc 0 / jest 42/6 / build 0). 15-gate audit produced with ground-truth proof citations. G10 grep surfaced 5 hits in shadcn `ui/` primitives (dialog/dropdown-menu/toast) — migrated all 5 to semantic tokens (`bg-popover`, `border-border`, `text-popover-foreground`, `hover:bg-accent`, `text-destructive-foreground` opacity modifiers). Re-grep + re-triad clean. **14/15 hard gates green; G15 (RECOVERY + retrospective) pends SP6.**
+Last action: **SP6 RETROSPECTIVE DRAFTED. G15 CLOSED. PHASE 1 DONE.** `agent_docs/CURRENT_APP/cyber_pharma_v1_phase1_ffm/playbook/RETROSPECTIVES/RUN_001_LESSONS.md` authored — 34 lessons across 6 thematic sections (doc-vs-disk drift × 9, architectural × 3, design system × 5, UX & responsive × 6, process & verification × 7, kit improvement × 4). Honest 3-block framing (Expected / Reality / What we'd do differently) per lesson. Promotion tags applied: 15 🏛️ promote-to-doctrine, 11 📋 run-specific, 8 🔧 KIT_CLEANUP_HARVEST.
 
-Pending: **Sub-Phase 5 (Verification) approval.** Per playbook 00 §"Sub-Phase Summary", SP5 = "All 15 hard gates from APP_BRIEF pass" — operator-led verification walk. With G1-G14 already proven via the C7 audit + Tony's prior visual checks + C6 manual fire drill, SP5 may be lighter than originally scoped — likely a final walk-through to spot-check anything Tony wants to re-verify in dev, then formal sign-off.
+**All 15 Phase 1 hard gates green.** Phase 1 / Cyber Pharma v1 Foundation Skeleton COMPLETE.
+
+Prior action: SP5 walk surfaced one real bug (auth-state stranding on NavbarHome) → fix landed (UserMenu client island + MobileNav auth-state update) → Tony re-walked and verified clean.
+
+Pending: **Tony's read of `RUN_001_LESSONS.md` + KIT_CLEANUP_HARVEST proposal as next pass.** The retrospective is the SP6 deliverable; once Tony reads and signs off, Phase 1 is formally closed and the post-phase work begins (the 8 🔧-tagged kit cleanup items drive that cluster; 15 🏛️ promotions feed into kit handbook v3 + FFM v1.2 packaging updates).
 
 Files in flight: NONE. SP4 deliverables landed and triad-verified.
 
@@ -36,7 +40,7 @@ Test baseline: 42/6 LOCKED. Route table: 16.
 | G12 theme toggle works | ✅ | Tony visual checks (post-v1.1 dark + post-C5 polish) |
 | G13 landing page built | ✅ | Tony visual check approved across 4 widths × 2 themes |
 | G14 tests pass | ✅ | jest 42/42 across 6 suites |
-| **G15 RECOVERY + retrospective** | ⏳ | RECOVERY current; retrospective drafts in SP6 |
+| **G15 RECOVERY + retrospective** | ✅ | RECOVERY current; `RUN_001_LESSONS.md` drafted (34 lessons, 6 sections, honest 3-block format) |
 
 ## Sub-Phase 4 Cluster Summary
 
