@@ -5,11 +5,11 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import AddMemberForm from '@/app/(admin)/admin-portal/add-member/AddMemberForm';
+import AddMemberForm from '@/app/(admin)/admin-portal/users/add-member/AddMemberForm';
 import { useRouter } from 'next/navigation';
-import { addMember } from '@/app/(admin)/admin-portal/actions';
+import { addMember } from '@/app/(admin)/admin-portal/users/actions';
 
-jest.mock('@/app/(admin)/admin-portal/actions', () => ({
+jest.mock('@/app/(admin)/admin-portal/users/actions', () => ({
   addMember: jest.fn(),
 }));
 
@@ -129,7 +129,7 @@ describe('AddMemberForm', () => {
     fireEvent.click(screen.getByRole('button', { name: /create member/i }));
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith('/admin-portal');
+      expect(mockPush).toHaveBeenCalledWith('/admin-portal/users');
     });
   });
 

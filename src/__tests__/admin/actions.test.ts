@@ -6,7 +6,7 @@ jest.mock('next/cache', () => ({
   revalidatePath: jest.fn(),
 }));
 
-import { addMember, editUser } from '@/app/(admin)/admin-portal/actions';
+import { addMember, editUser } from '@/app/(admin)/admin-portal/users/actions';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { revalidatePath } from 'next/cache';
 
@@ -102,7 +102,7 @@ describe('Admin Portal Actions', () => {
         password: 'password123',
       });
 
-      expect(revalidatePathMock).toHaveBeenCalledWith('/admin-portal');
+      expect(revalidatePathMock).toHaveBeenCalledWith('/admin-portal/users');
     });
 
     it('returns a friendly error for duplicate email', async () => {
@@ -203,7 +203,7 @@ describe('Admin Portal Actions', () => {
 
       await editUser('user-123', { name: 'Test User' });
 
-      expect(revalidatePathMock).toHaveBeenCalledWith('/admin-portal');
+      expect(revalidatePathMock).toHaveBeenCalledWith('/admin-portal/users');
     });
 
     it('returns error if auth update fails', async () => {

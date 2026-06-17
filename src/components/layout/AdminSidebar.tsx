@@ -9,7 +9,7 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
-import { LayoutDashboard, User, UserPlus } from "lucide-react";
+import { LayoutDashboard, User, Users, UserPlus } from "lucide-react";
 import Link from "next/link";
 
 const AdminSidebar = () => {
@@ -24,8 +24,12 @@ const AdminSidebar = () => {
             <Link href="/admin-portal">Dashboard</Link>
           </CommandItem>
           <CommandItem>
+            <Users className="mr-2 h-4 w-4" />
+            <Link href="/admin-portal/users">Users</Link>
+          </CommandItem>
+          <CommandItem>
             <UserPlus className="mr-2 h-4 w-4" />
-            <Link href="/admin-portal/add-member">Add Member</Link>
+            <Link href="/admin-portal/users/add-member">Add Member</Link>
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />

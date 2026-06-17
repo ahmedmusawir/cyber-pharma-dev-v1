@@ -1,79 +1,66 @@
 # Recovery State
 
-Last action: **SP6 RETROSPECTIVE DRAFTED. G15 CLOSED. PHASE 1 DONE.** `agent_docs/CURRENT_APP/cyber_pharma_v1_phase1_ffm/playbook/RETROSPECTIVES/RUN_001_LESSONS.md` authored — 34 lessons across 6 thematic sections (doc-vs-disk drift × 9, architectural × 3, design system × 5, UX & responsive × 6, process & verification × 7, kit improvement × 4). Honest 3-block framing (Expected / Reality / What we'd do differently) per lesson. Promotion tags applied: 15 🏛️ promote-to-doctrine, 11 📋 run-specific, 8 🔧 KIT_CLEANUP_HARVEST.
+> **RECONCILED 2026-06-17** after an 8-day gap. State below reconstructed from the working tree (read-only inspection), NOT from a live build. Nothing has been committed since `57a3154 session update` (09 Jun) — all of C0/C1/C2-so-far lives ONLY in the working tree. See `agent_docs/SESSIONS/session_2026-06-17.md`.
 
-**All 15 Phase 1 hard gates green.** Phase 1 / Cyber Pharma v1 Foundation Skeleton COMPLETE.
+Last action: **Phase 2 Cluster 2 (OwedBook screen) IN PROGRESS — B-1 + B-2 done, B-3 NOT started.** On disk:
+  - **B-1 ✅** user CRUD relocated from `/admin-portal` → `/admin-portal/users/` (8 renamed files) — user mgmt now a sub-route, NOT replaced.
+  - Sidebar ✅ `AdminSidebar.tsx` adds "Users" link + repoints "Add Member" to `/users/add-member`.
+  - **B-2 ✅** `src/app/(admin)/admin-portal/page.tsx` placeholder ("replaced by OwedBook screen in B-3").
+  - Contract-first ✅ `src/types/OwedBook.ts` (full type set) + `src/services/owedbook.ts` (`OwedBookService` interface + C2 thin stub returning zero/empty per method, BACKEND_SWAP_NOTES inline).
+  - **B-3 ❌ the actual OwedBook screen is NOT built** — placeholder still in place.
 
-Prior action: SP5 walk surfaced one real bug (auth-state stranding on NavbarHome) → fix landed (UserMenu client island + MobileNav auth-state update) → Tony re-walked and verified clean.
+Prior actions: Cluster 1 (3 KIPs) COMPLETE, G4 ✅ — `DataTable.tsx` / `MultiSelect.tsx` / `EmptyState.tsx` + tests in `src/__tests__/common/` (prior baseline 62/9, NOT re-run this session). Cluster 0 (Orphan Cleanup) COMPLETE, G3 ✅. Checkbox + Popover MISSING from shadcn ui/ → fallback to raw `<input type="checkbox">` + document listeners (Tabs primitive PRESENT).
 
-Pending: **Tony's read of `RUN_001_LESSONS.md` + KIT_CLEANUP_HARVEST proposal as next pass.** The retrospective is the SP6 deliverable; once Tony reads and signs off, Phase 1 is formally closed and the post-phase work begins (the 8 🔧-tagged kit cleanup items drive that cluster; 15 🏛️ promotions feed into kit handbook v3 + FFM v1.2 packaging updates).
+Pending: **Cluster 2 / B-3 — build the OwedBook screen** against the existing `owedBookService` stub. C2 lock (honored on disk): OwedBook lives ALONGSIDE the admin user CRUD at `/admin-portal`, NOT replacing it; user CRUD relocated to the `/users` sub-route. RECOMMEND a checkpoint commit of C0/C1/C2-so-far before B-3 (8-day uncommitted gap).
 
-Files in flight: NONE. SP4 deliverables landed and triad-verified.
+Phase: **Cyber Pharma v1 Phase 2** (OwedBook visual fidelity on demo data via service layer).
+FFM: `agent_docs/CURRENT_APP/cyber_pharma_v1_phase2_ffm/` (v1.0, authored from `RECON_cyber-pharma-v1_phase2_2026-06-08.md`).
+Branch: `phase2`.
 
-Files created this cluster (C7):
-  - (none — only edits to existing files)
-Files modified this cluster (C7):
-  - `src/components/ui/dialog.tsx` (1 site → semantic tokens)
-  - `src/components/ui/dropdown-menu.tsx` (2 sites → semantic tokens)
-  - `src/components/ui/toast.tsx` (2 sites → semantic tokens)
+Phase 2 hard gates status:
+  - G1 build clean: ⏳ verify at C4
+  - G2 dev runs: ⏳
+  - G3 orphan cleanup done: ✅
+  - **G4 3 KIPs built FIRST + tested: ✅** (this cluster — DataTable + MultiSelect + EmptyState, 20 tests)
+  - G5 OwedBook 4 tabs with demo data: ⏳ Cluster 2 / B-3 (next step; service+types scaffolded, screen not built)
+  - G6 4 KPI tiles via `--chart-*`: ⏳ Cluster 2 / B-3
+  - G7 components import service, never mocks: ⏳ Cluster 3
+  - G8 no Frank-domain tables: ⏳ (locked by forbidden zones — verify at C4)
+  - G9 responsive (drawer + card-reflow): ⏳ Cluster 4
+  - G10 no numbered Tailwind colors: ⏳ ongoing discipline
+  - G11 theme toggle holds across OwedBook: ⏳ Cluster 4 visual
+  - G12 env var names verbatim: ✅ (Phase 1 instrumentation.ts already validates these)
+  - G13 tests pass: ⏳ ongoing
+  - G14 grep-at-close + seam-walk: ⏳ Cluster 4
+  - G15 RECOVERY current + RUN_002 retrospective: ⏳ post-Cluster 4
 
-Active FFM: `agent_docs/CURRENT_APP/cyber_pharma_v1_phase1_ffm/` (v2.0)
-Sub-phase pointer: SP1 ✅ → SP2 ✅ → SP3 ✅ → **SP4 ✅ (C1–C7 all closed)** → SP5 PENDING APPROVAL.
+Files in flight (UNCOMMITTED, working tree only — 8-day gap, recommend checkpoint commit):
+  - C2 new: `src/types/OwedBook.ts`, `src/services/owedbook.ts`, `src/app/(admin)/admin-portal/page.tsx` (placeholder).
+  - C2 renames: `admin-portal/{AdminPortalPageContent,DeleteUserButton,actions,page}.tsx` + `add-member/*` + `edit/[id]/*` → `admin-portal/users/...`.
+  - C2 modified: `src/components/layout/AdminSidebar.tsx`.
+  - C1 new (untracked): `src/components/common/{DataTable,MultiSelect,EmptyState}.tsx` + `src/__tests__/common/`.
+  - Docs: `agent_docs/RECON/`, `agent_docs/CURRENT_APP/cyber_pharma_v1_phase2_ffm/`.
+Files deleted (C0): `src/components/layout/SuperadminSidebar.tsx`, `src/components/dashboard/DashboardCard.tsx`.
+Dirs removed (C0): `src/components/admin/`, `src/components/members/`, `src/components/dashboard/`.
 
-Test baseline: 42/6 LOCKED. Route table: 16.
+Test baseline: **62/9** (Phase 1 baseline 42/6 + 20 new KIP tests across 3 new suites: DataTable 8, MultiSelect 9, EmptyState 3). Locked.
 
-## Phase 1 Hard Gates — Final Status
+Recon-locked facts (authoritative, do NOT contradict):
+  - Stack: Next 16.2.1 / React 19.2.4 / TS strict / Tailwind 3.4.1 (HSL+config) / **Jest**. `proxy.ts` not `middleware.ts`.
+  - Tokens: inherited from Phase 1 `src/app/globals.css` (v1.1 dark patch). Not reinstalled.
+  - Auth: `useAuthStore` (client) + `supabase.auth.getUser()` (server); `protectPage([AppRole.X])`. NO auth-service wrapper.
+  - AppRole: import from `src/utils/app-role.ts` (canonical).
+  - Env names (verbatim): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `NEXT_PUBLIC_SITE_URL`.
+  - DB: 2 kit tables (`user_roles`, `profiles`). 13 Frank tables do NOT exist (Phase 3).
 
-| Gate | Status | Proof |
-|---|---|---|
-| G1 build clean | ✅ | C7 triad |
-| G2 dev runs | ✅ | Multiple Tony visual checks |
-| G3 login works | ✅ | Tony post-C2; C4 B-2 updates re-verify in SP5 |
-| G4 role gates | ✅ | jest actions.test.ts 7 tests passing |
-| G5 env fail-closed | ✅ | C6 manual fire drill (both halves) |
-| G6 no user_metadata | ✅ | C7 grep zero |
-| G7 no superadmin-add-user | ✅ | C7 grep zero |
-| G8 no (superadmin) dir | ✅ | C7 find empty |
-| G9 error boundaries | ✅ | C7 ls confirms 4 files |
-| G10 no numbered Tailwind colors | ✅ | C7 grep zero (after 5 ui/ migrations) |
-| G11 v1 tokens installed | ✅ | C7 grep finds `--primary: 12 93% 64%` + v1.1 marker |
-| G12 theme toggle works | ✅ | Tony visual checks (post-v1.1 dark + post-C5 polish) |
-| G13 landing page built | ✅ | Tony visual check approved across 4 widths × 2 themes |
-| G14 tests pass | ✅ | jest 42/42 across 6 suites |
-| **G15 RECOVERY + retrospective** | ✅ | RECOVERY current; `RUN_001_LESSONS.md` drafted (34 lessons, 6 sections, honest 3-block format) |
+Forbidden zones (Phase 2 — top 3 most relevant):
+  1. NO Frank-domain table for "demo data" — fixtures in `src/mocks/owedbook.ts` via the service.
+  2. NO OwedBook screen before the 3 KIPs exist + pass tests (G4).
+  3. NO components importing `src/mocks/` directly — they call `owedBookService` only (G7).
 
-## Sub-Phase 4 Cluster Summary
-
-| Cluster | Focus | Outcome |
-|---|---|---|
-| C1 | Inspect-only | 3 dirs classified; orphans surfaced |
-| C2 | Foundation (tokens + Saira + theme default) | Mist default boots clean; v1.1 dark patch landed mid-cluster |
-| C3 | Deletion | 20 ops: demo cascade + kit cruft + superadmin sweep |
-| C4 | Kit hygiene | AppRole extraction; useAuthStore Option C typing + isAdmin/isMember + locked login redirect; color migration 20 product files; 4 orphan deletes |
-| C5 | New screens + brand | Marketing nav + portal nav refactor; members placeholder + access-denied; landing rewrite (3 iterations: original → responsive fix → mobile menu → polish); 4 error boundaries |
-| C6 | Safety (env fail-closed) | `instrumentation.ts` validates 4 vars at server start; Tony's manual fire drill proves G5 |
-| C7 | Final triad + 15-gate audit | G10 ui/ primitive migration; gate audit table produced |
-
-## Lessons Backlog
-
-**32 entries logged** in session log. Key meta-themes:
-- Kit handbook is aspirational doctrine (verify every claim against on-disk code)
-- APP_BRIEF env names can be stale (recon must read `.env.local.example` + grep code)
-- Tablet uses `lg:` breakpoint for complex hero transforms (not `md:`)
-- Marketing nav vs portal nav have different mobile-menu needs
-- Server shell + client island pattern for static surfaces with small interactive widgets
-- Phase 2 reference PNGs are fine as static marketing assets (the line is JSX, not file)
-- "Sample-check then trust" is brittle — audit all or accept incomplete deferral with clear handoff
-
-All 32 to be harvested into `playbook/RETROSPECTIVES/RUN_001_LESSONS.md` at SP6.
-
-## Open Work (After SP5/SP6)
-
-- **SP5**: Verification walk — operator-led sign-off on 14 already-proven gates + any final spot-checks Tony wants
-- **SP6**: Retrospective — author `RUN_001_LESSONS.md` from the 32-entry backlog → closes G15
-- **KIT_CLEANUP_HARVEST**: Post-Phase-1 cluster — harvest kit-improvement-candidate lessons into actionable kit doc updates and v1.2 packaging
+Lessons carried from Phase 1 (RUN_001): server shell + client island for nav; real-screen dark check; complex layouts at `lg:` not `md:`; grep-at-close on every verifiable gate; `rm -rf .next` before tsc smoke between deletion batches (applied this cluster); continuous seam-walk in every auth state; tests for deleted code die with the source.
 
 OPERATIONAL NOTES:
   - Launch Claude Code with CWD = `agent_docs/`.
-  - `.env.local` is in place — DO NOT read or commit.
-  - `agent_docs/branding_stuff/` is the operator's drop zone — read-only.
+  - `.env.local` at repo root — DO NOT read or commit.
+  - Kit-infra fixes (command.tsx `as any`, server.ts cookies cast, sass dep) are DEFERRED to v3 harvest — not touched in Phase 2.

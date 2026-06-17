@@ -1,0 +1,545 @@
+
+● 🔍 RECON REPORT — Cyber Pharma v1, post-Phase-1, pre-Phase-2
+
+  Repo: cyber-pharma-dev-v1 · Recon date: 2026-06-08 · Engineer: Claudy · For: Architect, authoring
+  cyber_pharma_v1_phase2_ffm
+
+  This is ground-truth from the actual filesystem + grep + build output. Where any doc still disagrees with disk,
+  the filesystem wins. Every drift flagged below.
+
+  ---
+  Section 0 — Day-1 Ground-Truth Sweep
+
+  S0.1 — Handbook-named files (verified)
+
+  Handbook claims the kit ships specific files. Reality:
+
+  ┌────────────────────────────────────────────────────────────────┬─────────┬─────────────────────────────────┐
+  │                          Claimed file                          │  Disk   │             Status              │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │ src/utils/app-role.ts                                          │ ✅      │ Phase 1 created it (handbook    │
+  │                                                                │ exists  │ bug L1 fixed on disk)           │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │ src/utils/get-user-role.ts                                     │ ✅      │ Imports AppRole from new        │
+  │                                                                │ exists  │ app-role.ts                     │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │ src/store/useAuthStore.ts                                      │ ✅      │ Now has isAdmin + isMember      │
+  │                                                                │ exists  │ derived flags (Phase 1 added)   │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │ src/utils/supabase/{client,server,middleware,admin,actions}.ts │ ✅ all  │                                 │
+  │                                                                │ exist   │                                 │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │                                                                │ ✅      │ Next 16 convention;             │
+  │ src/proxy.ts                                                   │ exists  │ src/middleware.ts MISSING ←     │
+  │                                                                │         │ correct                         │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │ src/lib/utils.ts                                               │ ✅      │ Standard shadcn cn() (clsx +    │
+  │                                                                │ exists  │ twMerge), unchanged             │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │                                                                │         │ Handbook lies. Actual file:     │
+  │ src/components/global/ThemeToggle.tsx                          │ MISSING │ ThemeToggler.tsx (note the r).  │
+  │                                                                │         │ Handbook bug L4 still present   │
+  │                                                                │         │ in docs.                        │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │                                                                │         │ Handbook §"Common Layout        │
+  │ src/components/common/AppShellPage.tsx                         │ MISSING │ Primitives" lists this as a kit │
+  │                                                                │         │  primitive. It does not exist.  │
+  │                                                                │         │ New handbook bug surfaced.      │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │ src/components/global/NavbarSuperadmin.tsx                     │ MISSING │ Correct (deleted Phase 1 C4)    │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │                                                                │         │ ⚠️  ORPHAN — superadmin route    │
+  │ src/components/layout/SuperadminSidebar.tsx                    │ EXISTS  │ group deleted but this layout   │
+  │                                                                │         │ component survived. Real bug.   │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │ src/components/layout/{Sidebar,AdminSidebar}.tsx               │ ✅ both │ Sidebar used in (members),      │
+  │                                                                │  exist  │ AdminSidebar in (admin)         │
+  ├────────────────────────────────────────────────────────────────┼─────────┼─────────────────────────────────┤
+  │ src/components/common/{Page,Row,Box,PaginationControls}.tsx    │ ✅ all  │                                 │
+  │                                                                │ exist   │                                 │
+  └────────────────────────────────────────────────────────────────┴─────────┴─────────────────────────────────┘
+
+  S0.2 — Handbook-claimed exports match disk
+
+  useAuthStore actual shape (from cat):
+  user: SupabaseUser | null    ← typed (Phase 1 fixed handbook L2 latent bug)
+  role: AppRole | null
+  isAdmin: boolean             ← derived flag, Phase 1 added (handbook L3 fixed)
+  isMember: boolean            ← derived flag, Phase 1 added
+  isAuthenticated: boolean     
+  isLoading: boolean
+  login(...): Promise<string>
+  logout(): Promise<void>
+  isSuperadmin is NOT exposed (Tony's locked ruling — superadmin is leaving this app entirely).
+
+  S0.3 — Forbidden-zone grep against current kit
+
+  ┌────────────────────────────┬───────────────────────────────────────────────────────────────────────────────┐
+  │           Check            │                                    Result                                     │
+  ├────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+  │                            │ 3 categories of hits: (1) src/components/ui/command.tsx:35 — {children as     │
+  │ : any / as any in src/     │ any} (shadcn kit primitive — same class as the C7 G10 catch); (2)             │
+  │                            │ src/utils/supabase/server.ts:6 — (await cookies()) as any (kit infra Next 16  │
+  │                            │ cast); (3) test files (acceptable for mocks)                                  │
+  ├────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+  │ dangerouslySetInnerHTML    │ 0 ✅                                                                          │
+  ├────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+  │ user_metadata.is_ |        │ 0 ✅ (role security smell clean; full_name reads exist but those are          │
+  │ user_metadata.role         │ display-name, not role)                                                       │
+  └────────────────────────────┴───────────────────────────────────────────────────────────────────────────────┘
+
+  S0.4 — Route paths verified by find
+
+  - (superadmin) route group: NOT FOUND ✅ (deleted Phase 1 C3)
+  - superadmin-add-user: NOT FOUND ✅ (deleted Phase 1 C3)
+
+  S0.5 — Test runner
+
+  "test": "jest" + "jest": "^30.0.5". Kit uses Jest. Handbook still says Vitest. Drift not fixed.
+
+  S0.6 — Env names: example vs code
+
+  ┌───────────────────────────────────────────────────────────────┬────────────────────────────────────────────┐
+  │                         Example file                          │   Code reads (4 unique process.env.* in    │
+  │                                                               │                   src/)                    │
+  ├───────────────────────────────────────────────────────────────┼────────────────────────────────────────────┤
+  │ .env copy.example (Tony's drop, MacOS-style "copy" in         │ NEXT_PUBLIC_SITE_URL                       │
+  │ filename)                                                     │                                            │
+  ├───────────────────────────────────────────────────────────────┼────────────────────────────────────────────┤
+  │                                                               │ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY       │
+  ├───────────────────────────────────────────────────────────────┼────────────────────────────────────────────┤
+  │                                                               │ NEXT_PUBLIC_SUPABASE_URL                   │
+  ├───────────────────────────────────────────────────────────────┼────────────────────────────────────────────┤
+  │                                                               │ SUPABASE_SECRET_KEY                        │
+  └───────────────────────────────────────────────────────────────┴────────────────────────────────────────────┘
+
+  Code uses Q4-2025 Supabase naming (PUBLISHABLE_KEY, SECRET_KEY). .env.local is present (1518 B). APP_BRIEF still 
+  names legacy (ANON_KEY, SERVICE_ROLE_KEY) — drift not fixed.
+
+  S0.7 — Route table from build (build exit 0, all 23 prerenders pass)
+
+  ○ /                              ƒ /admin-portal/add-member
+  ○ /_not-found                    ƒ /admin-portal/edit/[id]
+  ○ /access-denied                 ƒ /api/auth/{confirm,login,logout,signup}
+  ƒ /admin-portal                  ○ /auth
+  ○ /error                         ○ /icon.png
+  ƒ /members-portal                ƒ /members-portal/profile
+  ƒ /profile
+  16 routes (15 app + 1 icon.png). No /demo, no /template, no /api/ghl/, no (superadmin)/*. Clean.
+
+  ---
+  Section 1 — Stack Versions
+
+  ┌──────────────┬──────────────────────────────────────────────┬─────────────────────────────────────────────┐
+  │  Component   │         Version (from package.json)          │                 Implication                 │
+  ├──────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────┤
+  │              │                                              │ App Router only. Instrumentation hook       │
+  │ Next.js      │ ^16.2.1                                      │ stable. proxy.ts convention (not            │
+  │              │                                              │ middleware.ts).                             │
+  ├──────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────┤
+  │ React        │ ^19.2.4                                      │ Latest. useEffect/useState/server           │
+  │              │                                              │ components all standard.                    │
+  ├──────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────┤
+  │ TypeScript   │ ^5                                           │ Strict mode (per tsconfig.json: "strict":   │
+  │              │                                              │ true).                                      │
+  ├──────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────┤
+  │              │                                              │ HSL+config token mechanic                   │
+  │ Tailwind     │ ^3.4.1                                       │ (hsl(var(--token))). NOT @theme/OKLCH       │
+  │              │                                              │ (that's Tailwind 4).                        │
+  ├──────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────┤
+  │ Node         │ Not pinned (no .nvmrc, no engines.node)      │ Phase 2 may want to pin.                    │
+  ├──────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────┤
+  │ Test runner  │ Jest ^30.0.5 (NOT Vitest)                    │ npm test runs Jest. Don't pass Vitest       │
+  │              │                                              │ flags.                                      │
+  ├──────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────┤
+  │              │ @supabase/ssr@0.6.1, zustand@4.5.4,          │ Stripe is installed but unused in code —    │
+  │ Other        │ react-hook-form@7.51.5, zod@3.23.8,          │ Phase 2/7 prep. Sass dep present but        │
+  │ heavyweights │ next-themes@0.4.6, stripe@22.1.0,            │ globals.scss was removed Phase 1 C2; dep    │
+  │              │ sass@1.77.6                                  │ could be uninstalled.                       │
+  ├──────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────┤
+  │              │ @playwright/test@1.59.1,                     │                                             │
+  │ Test infra   │ @testing-library/react@16.3.2,               │ E2E framework installed (Playwright); no    │
+  │              │ jest-environment-jsdom@30.0.5,               │ test files yet.                             │
+  │              │ ts-jest@29.4.1                               │                                             │
+  └──────────────┴──────────────────────────────────────────────┴─────────────────────────────────────────────┘
+
+  ---
+  Section 2 — Kit Structure vs Handbook
+
+  ┌───────────────────────────────────────────┬─────────────────────────────────────────┬──────────────────────┐
+  │                   Claim                   │                 Reality                 │        Drift?        │
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┼──────────────────────┤
+  │ Handbook §8 separates app-role.ts from    │ ✅ Now separated (Phase 1 C4 fix)       │ None                 │
+  │ get-user-role.ts                          │                                         │                      │
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┼──────────────────────┤
+  │ Handbook §1 useAuthStore derived flags    │ ✅ Has isAdmin+isMember; isSuperadmin   │ Doctrinal: handbook  │
+  │ isAdmin/isMember/isSuperadmin             │ SKIPPED (Tony ruling)                   │ says all 3, store    │
+  │                                           │                                         │ has 2                │
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┼──────────────────────┤
+  │ Handbook §1 typed user                    │ ✅ SupabaseUser | null                  │ None                 │
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┼──────────────────────┤
+  │ Handbook calls it ThemeToggle             │ ❌ Actual file is ThemeToggler.tsx      │ Drift; handbook      │
+  │                                           │                                         │ needs rename         │
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┼──────────────────────┤
+  │ Handbook lists AppShellPage as a kit      │ ❌ Does not exist on disk               │ Drift; handbook bug  │
+  │ primitive                                 │                                         │ NEW this recon       │
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┼──────────────────────┤
+  │ src/services/ should be empty (per        │ ✅ Empty directory                      │ None                 │
+  │ option-b ruling)                          │                                         │                      │
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┼──────────────────────┤
+  │                                           │ Has AuthSnapshot.ts, UserRole.ts,       │                      │
+  │ src/types/ shapes                         │ User.ts, tailwind-merge.d.ts (Phase 1   │ None                 │
+  │                                           │ authored 3)                             │                      │
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┼──────────────────────┤
+  │ Route groups                              │ (public), (members), (admin), (auth) —  │ None                 │
+  │                                           │ (superadmin) deleted                    │                      │
+  ├───────────────────────────────────────────┼─────────────────────────────────────────┼──────────────────────┤
+  │ proxy.ts vs middleware.ts                 │ src/proxy.ts present (Next 16);         │ Correct              │
+  │                                           │ middleware.ts absent                    │                      │
+  └───────────────────────────────────────────┴─────────────────────────────────────────┴──────────────────────┘
+
+  Source-truth files for the Architect: src/utils/app-role.ts is the canonical AppRole enum. Import from there, not
+   from get-user-role.ts (which now imports it).
+
+  ---
+  Section 3 — Auth Pattern
+
+  - User read via: useAuthStore (client) + supabase.auth.getUser() (server actions, navbars, Profile pages). Both
+  patterns coexist; useAuthStore is the persistent client state, Supabase calls are the auth-source-of-truth.
+  - Role resolved via: getUserRole(userId) queries public.user_roles table; AppRole enum at src/utils/app-role.ts.
+  Layouts call protectPage([AppRole.X]) from src/utils/supabase/actions.ts.
+  - Existing auth service: NONE. No src/services/auth.ts or similar. src/services/ is empty. Option-(b) ruling
+  honored end-to-end. Don't author a service wrapper.
+  - user_metadata role smells: 0. All user_metadata reads in code are for full_name (display name), NOT role. Test
+  fixtures contain role: 'member' in user_metadata mock data — acceptable for unit tests.
+  - protectPage route gates: in (members)/layout.tsx ([AppRole.MEMBER]) and (admin)/layout.tsx ([AppRole.ADMIN]).
+  Tested by src/__tests__/actions.test.ts (7 cases including superadmin negative cases).
+
+  ---
+  Section 4 — Design Reality
+
+  ┌─────────────────────┬──────────────────────────────────────────────────────────────────────────────────────┐
+  │      Property       │                                        Value                                         │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ Token file          │ src/app/globals.css (4689 B; v1.1 readability pass applied; CSS-not-SCSS)            │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ Token mechanic      │ HSL-no-wrapper in :root + .dark; mapped via tailwind.config.ts: theme.extend.colors  │
+  │                     │ to hsl(var(--X))                                                                     │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ Numbered colors in  │ 0 ✅ (verified; the one globals.css:10 hit is just the comment text "NEVER numbered  │
+  │ src/components/ +   │ colors")                                                                             │
+  │ src/app/            │                                                                                      │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ darkMode            │ ["class"] — manual toggle, not OS-bound                                              │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ Font                │ Saira via next/font/google, weights 300/400/500/600/700/800, variable:               │
+  │                     │ "--font-brand"                                                                       │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ Theme toggle        │ ThemeToggler.tsx consumed by all 4 nav surfaces (Navbar, NavbarHome×2                │
+  │                     │ desktop+mobile, NavbarLoginReg) ✅                                                   │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ CSS extension match │ Both src/app/globals.css AND _design/tokens/globals.css are .css ✅ (Phase 1 C2      │
+  │                     │ conversion; both in sync per v1.1 patch)                                             │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ Designer            │ agent_docs/CURRENT_APP/cyber_pharma_v1_phase1_ffm/_design/tokens/globals.css (4616   │
+  │ source-of-truth     │ B; pristine designer file, has v1.1 dark block)                                      │
+  │ path                │                                                                                      │
+  └─────────────────────┴──────────────────────────────────────────────────────────────────────────────────────┘
+
+  ---
+  Section 5 — Database
+
+  ┌────────────────────┬────────────────────────────────────────────────────────────────────────────────────────┐
+  │        Item        │                                        Reality                                         │
+  ├────────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Migrations dir     │ supabase/migrations/ MISSING — kit ships single-file SQL at supabase/setup.sql instead │
+  ├────────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Setup SQL          │ supabase/setup.sql — run-once script, not migration-versioned                          │
+  ├────────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Tables shipped     │ public.user_roles, public.profiles                                                     │
+  ├────────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Enum               │ public.app_role ENUM ('superadmin', 'admin', 'member') (DB enum keeps superadmin value │
+  │                    │  — Tony noted this is fine, no UI references it)                                       │
+  ├────────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+  │                    │ public.handle_new_user() (SECURITY DEFINER) auto-inserts user_roles row + profiles row │
+  │ Triggers/functions │  from raw_user_meta_data on auth.users INSERT; trigger on_auth_user_created on         │
+  │                    │ auth.users                                                                             │
+  ├────────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+  │                    │ "Users can read their own role" (user_roles SELECT); "Users can read their own         │
+  │ RLS policies       │ profile" + "Users can update their own profile" (profiles); all use auth.uid()         │
+  │                    │ matcher. Service role bypasses RLS (admin client).                                     │
+  └────────────────────┴────────────────────────────────────────────────────────────────────────────────────────┘
+
+  For Phase 2: the 13 Frank-domain tables from MASTER_APP_BRIEF §5 (businesses, user_businesses, user_data, etc.)
+  do not exist. They land in Phase 3, not Phase 2.
+
+  ---
+  Section 6 — Skills / Security / Env
+
+  ┌────────────────────────┬───────────────────────────────────────────────────────────────────────────────────┐
+  │          Item          │                                      Reality                                      │
+  ├────────────────────────┼───────────────────────────────────────────────────────────────────────────────────┤
+  │                        │ agent_docs/.claude/skills/ — has 4 skills (stark-frontend-first as real dir,      │
+  │ Skills directory       │ frontend-design + skill-creator + webapp-testing as symlinks to                   │
+  │                        │ ~/.claude/plugins/cache/anthropic-agent-skills/)                                  │
+  ├────────────────────────┼───────────────────────────────────────────────────────────────────────────────────┤
+  │ Repo-root              │ MISSING — skills resolve from CWD. Must launch from agent_docs/. Documented in    │
+  │ .claude/skills/        │ RECOVERY.md.                                                                      │
+  ├────────────────────────┼───────────────────────────────────────────────────────────────────────────────────┤
+  │                        │ /home/moose/nextjs/cyber-pharma-dev-v1 (repo root) — but skills load from         │
+  │ Launch CWD verified    │ agent_docs/.claude/skills/ because session launched from agent_docs. This is the  │
+  │                        │ documented convention.                                                            │
+  ├────────────────────────┼───────────────────────────────────────────────────────────────────────────────────┤
+  │ npm audit              │ found 0 vulnerabilities ✅                                                        │
+  ├────────────────────────┼───────────────────────────────────────────────────────────────────────────────────┤
+  │ agent_docs/security/   │ MISSING — Tony ruled "audit IS commit 4588bf7"; no separate ledger directory.     │
+  ├────────────────────────┼───────────────────────────────────────────────────────────────────────────────────┤
+  │ Required env vars      │ NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,                   │
+  │ (code reads)           │ SUPABASE_SECRET_KEY, NEXT_PUBLIC_SITE_URL — Phase-1 instrumentation.ts validates  │
+  │                        │ all 4 at boot                                                                     │
+  ├────────────────────────┼───────────────────────────────────────────────────────────────────────────────────┤
+  │ Repo-root pointer      │ CLAUDE.md (13280 B — Stark v3.1 doctrine). No AGENTS.md, GEMINI.md, or            │
+  │ files                  │ PROJECT_POINTER.md.                                                               │
+  ├────────────────────────┼───────────────────────────────────────────────────────────────────────────────────┤
+  │ Fail-closed boot check │ src/instrumentation.ts — validates the 4 vars on server start, throws clean named │
+  │                        │  error if missing                                                                 │
+  └────────────────────────┴───────────────────────────────────────────────────────────────────────────────────┘
+
+  ---
+  Section 8 — Demo / Tutorial Scaffolding (post-Phase-1 sweep)
+
+  ┌────────────────────────────┬───────────────────────────────────────────────────────────────────────────────┐
+  │           Check            │                                    Result                                     │
+  ├────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+  │                            │ 3 false-positive matches — api/auth/login/route.ts (comment mentioning        │
+  │ Demo-feature names in src/ │ "demo"), (public)/HomePageContent.tsx ("Book a demo" CTA copy), Sidebar.tsx   │
+  │                            │ (legitimate code). No demo scaffolding code.                                  │
+  ├────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+  │ Third-party demo APIs      │                                                                               │
+  │ (jsonplaceholder,          │ 0 ✅                                                                          │
+  │ dummyjson, etc.)           │                                                                               │
+  ├────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+  │ Inherited cross-project    │                                                                               │
+  │ residue                    │ 0 ✅ (api/ghl/ deleted Phase 1)                                               │
+  │ (GHL/hooktest/etc.)        │                                                                               │
+  ├────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+  │ API routes inventory       │ Only src/app/api/auth/{confirm,login,logout,signup}/ — all legitimate auth.   │
+  │                            │ Nothing else.                                                                 │
+  ├────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+  │ 'DO NOT' references in     │ All are doctrinal ("DO NOT AUTHOR authService.ts" etc.) — not legacy code     │
+  │ agent_docs                 │ flags                                                                         │
+  └────────────────────────────┴───────────────────────────────────────────────────────────────────────────────┘
+
+  Clean. Phase 1 deletion cluster removed the inherited 11-file cascade. No new scaffolding has crept in.
+
+  ---
+  Section 9 — FFM Packaging & Compile Scope
+
+  ┌──────────────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+  │            Check             │                                   Result                                    │
+  ├──────────────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+  │ tsconfig.json exclude        │ ["node_modules", "agent_docs/**"] ✅ — Phase 1 C2 fix landed                │
+  ├──────────────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+  │ Jest config (jest.config.js  │ testPathIgnorePatterns: ['/node_modules/', '/.next/',                       │
+  │ exists)                      │ '<rootDir>/src/__tests__/jest.setup.ts'] — doesn't explicitly exclude       │
+  │                              │ agent_docs/ but tsconfig handles compile-side                               │
+  ├──────────────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+  │ .ts/.tsx files under         │ 7 files: 3 in agent_docs/.claude/skills/stark-frontend-first/templates/     │
+  │ agent_docs/                  │ (kit-symlink target), 1 _design/tokens/tailwind.config.snippet.ts, 3 in     │
+  │ (would-compile-if-included)  │ cyber_pharma_v1_phase1_ffm/skills/stark-frontend-first/templates/ (FFM      │
+  │                              │ internal). All currently excluded by tsconfig. Safe.                        │
+  └──────────────────────────────┴─────────────────────────────────────────────────────────────────────────────┘
+
+  No re-occurrence risk of the L13 tsc-trips-on-templates issue.
+
+  ---
+  Section 10 — Surprises (highest-value section)
+
+  Real orphans found
+
+  File: src/components/layout/SuperadminSidebar.tsx
+  Status: ORPHAN — its consumer was (superadmin)/layout.tsx (deleted C3). Zero non-self references.
+  Recommendation: DELETE in Phase 2 KIT_CLEANUP_HARVEST (or earlier — it's dead code)
+  ────────────────────────────────────────
+  File: src/components/dashboard/DashboardCard.tsx
+  Status: ORPHAN — zero non-self references in src/. Was migrated to semantic tokens in C4 but no consumer
+  surfaced.
+    Either never consumed, or its consumer was deleted with the demo cascade.
+  Recommendation: DELETE in KIT_CLEANUP_HARVEST OR keep if Phase 2 dashboard wants it as a starter pattern (Tony's
+    call)
+  ────────────────────────────────────────
+  File: src/components/admin/
+  Status: EMPTY DIR (AdminBookingList.tsx was deleted C4)
+  Recommendation: rmdir candidate or keep for Phase 2 admin components
+  ────────────────────────────────────────
+  File: src/components/members/
+  Status: EMPTY DIR (MemberEventList.tsx was deleted C4)
+  Recommendation: Same
+  ────────────────────────────────────────
+  File: src/services/
+  Status: EMPTY DIR (per option-b ruling)
+  Recommendation: Keep — Phase 3 Frank-domain services land here
+
+  Forbidden-zone latent risk in kit primitives
+
+  src/components/ui/command.tsx:35 — {children as any}. Same class as the C7 G10 catch but for type-safety, not
+  colors. Shadcn primitive imported nowhere in current src/ (verified by grep — only its own definition uses
+  Command). So command.tsx is itself an orphan primitive (never imported by app code). Could be deleted in
+  KIT_CLEANUP_HARVEST.
+
+  Kit infra residual
+
+  src/utils/supabase/server.ts:6 — (await cookies()) as any. Next 16's cookies() API may have a type issue with
+  @supabase/ssr@0.6.1's createServerClient. Cast is a workaround. Real bug surface; affects Phase 2 if it touches 
+  cookies/SSR.
+
+  Stale doc
+
+  ┌───────────────────┬────────────────────────────────────────────────────────────────────────────────────────┐
+  │        Doc        │                                         Drift                                          │
+  ├───────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+  │ APP_BRIEF §3      │ Names NEXT_PUBLIC_SUPABASE_ANON_KEY + SUPABASE_SERVICE_ROLE_KEY. Code + env use        │
+  │ (Phase 1)         │ PUBLISHABLE_KEY + SECRET_KEY. Phase-2 APP_BRIEF should use real names from .env        │
+  │                   │ copy.example and code.                                                                 │
+  ├───────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Starter Kit       │ Still says Vitest; kit uses Jest. Still says ThemeToggle; actual ThemeToggler. Still   │
+  │ Handbook v1.0     │ lists AppShellPage as kit primitive; doesn't exist. Handbook v3 reconciliation         │
+  │                   │ overdue.                                                                               │
+  ├───────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+  │ .env copy.example │ MacOS "copy" artifact — likely meant to be .env.local.example. Minor cosmetic.         │
+  │  filename         │                                                                                        │
+  └───────────────────┴────────────────────────────────────────────────────────────────────────────────────────┘
+
+  cn() helper
+
+  Standard shadcn (clsx + twMerge). Used by 16 files. No drift.
+
+  ---
+  Section 11 — Nav & Auth-State (post-fix verification)
+
+  ┌─────────────────────┬──────────────────────────────────────────────────────────────────────────────────────┐
+  │      Question       │                                        Answer                                        │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ Nav variants        │ 4: Navbar (portal), NavbarHome (marketing), NavbarLoginReg (auth pages), plus client │
+  │ present             │  islands MobileNav + UserMenu                                                        │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ ThemeToggler on     │ ✅ confirmed grep: imports in Navbar.tsx, NavbarHome.tsx (desktop + mobile slots),   │
+  │ every navbar        │ NavbarLoginReg.tsx                                                                   │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ Auth-state region   │ ✅ UserMenu.tsx (client island) reads useAuthStore.role + supabase.auth.getUser().   │
+  │ on marketing nav    │ Renders Avatar dropdown when logged in, Log in + CTA when logged out, null while     │
+  │                     │ loading. Phase-1 SP5 fix landed.                                                     │
+  ├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+  │ Split-hero          │ ✅ (public)/HomePageContent.tsx:9 uses lg:grid-cols-[1fr_1.12fr] (not md:). Lesson   │
+  │ breakpoint          │ #25 honored.                                                                         │
+  └─────────────────────┴──────────────────────────────────────────────────────────────────────────────────────┘
+
+  ---
+  Section 12 — Verification Predicates Current State
+
+  ┌────────────────────────────────────┬──────────────────────────────┬────────────────────────────────────────┐
+  │             Predicate              │         Current grep         │                 Status                 │
+  ├────────────────────────────────────┼──────────────────────────────┼────────────────────────────────────────┤
+  │ Numbered colors in src/components/ │ 0                            │ ✅ G10 honored                         │
+  │  + src/app/                        │                              │                                        │
+  ├────────────────────────────────────┼──────────────────────────────┼────────────────────────────────────────┤
+  │ : any / as any in src/store/ +     │ 1 only (server.ts:6          │ ⚠️  Latent forbidden-zone violation     │
+  │ src/utils/                         │ cookies() as any — kit       │ persists in kit infra. Real concern.   │
+  │                                    │ infra)                       │                                        │
+  ├────────────────────────────────────┼──────────────────────────────┼────────────────────────────────────────┤
+  │ user_metadata role smells          │ 0                            │ ✅                                     │
+  ├────────────────────────────────────┼──────────────────────────────┼────────────────────────────────────────┤
+  │ Forbidden directives               │ 0                            │ ✅                                     │
+  │ (dangerouslySetInnerHTML)          │                              │                                        │
+  └────────────────────────────────────┴──────────────────────────────┴────────────────────────────────────────┘
+
+  ---
+  Section 13 — src/ tree (2 levels)
+
+  src/
+  ├── __tests__/{admin,member}/
+  ├── app/
+  │   ├── (admin)/
+  │   ├── (auth)/
+  │   ├── (members)/
+  │   ├── (public)/
+  │   ├── api/
+  │   ├── error/
+  │   └── providers/
+  ├── components/
+  │   ├── admin/        ← EMPTY (orphan dir)
+  │   ├── auth/
+  │   ├── common/
+  │   ├── dashboard/    ← only orphaned DashboardCard.tsx
+  │   ├── global/
+  │   ├── layout/       ← contains orphaned SuperadminSidebar.tsx
+  │   ├── members/      ← EMPTY (orphan dir)
+  │   └── ui/           ← shadcn primitives, `command.tsx` is unimported orphan
+  ├── lib/              ← cn() only
+  ├── mocks/            ← auth.ts only (3 AuthSnapshot fixtures)
+  ├── services/         ← EMPTY (correct, option-b)
+  ├── store/            ← useAuthStore.ts only
+  ├── types/            ← User.ts, UserRole.ts, AuthSnapshot.ts, tailwind-merge.d.ts
+  └── utils/
+      ├── app-role.ts
+      ├── get-user-role.ts
+      └── supabase/{client,server,middleware,admin,actions}.ts
+
+  ---
+  Recommendation to Architect
+
+  Verified facts the Phase 2 FFM can write against without re-verification
+
+  1. Stack: Next 16.2.1 / React 19.2.4 / TS strict / Tailwind 3.4.1 (HSL+config mechanic) / Jest. Don't write
+  "Vitest" anywhere.
+  2. Token system: locked. src/app/globals.css is canonical with v1.1 dark patch. _design/tokens/globals.css is the
+   in-FFM source-of-truth (in sync). Phase 2 inherits, does not re-install.
+  3. Brand: Saira via next/font/google, --font-brand CSS variable, Metro flat (--radius: 0). Theme toggle on all 4
+  navbars. Mist default, Slate alt, .theme-bright + .dark.theme-deep token slots reserved.
+  4. Auth pattern: useAuthStore (client) + supabase.auth.getUser() (server). Role via getUserRole() from user_roles
+   table. Layouts use protectPage([AppRole.X]). No service-layer auth wrappers — and Phase 2 should not add one.
+  Stripe service / Frank-domain services land in src/services/ starting Phase 3, NOT Phase 2.
+  5. Database: 2 kit tables (user_roles, profiles) + handle_new_user trigger + RLS policies. 13 Frank-domain tables
+   don't exist; they're Phase 3, not Phase 2 (per APP_BRIEF / MASTER_APP_BRIEF — unless re-scoped).
+  6. Routes: 16 surfaces. Route groups: (public), (auth), (members), (admin). No (superadmin). proxy.ts (not
+  middleware.ts).
+  7. Env vars: 4 required, validated at boot via src/instrumentation.ts. Use these names verbatim —
+  NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, SUPABASE_SECRET_KEY, NEXT_PUBLIC_SITE_URL. NOT 
+  the legacy ANON_KEY / SERVICE_ROLE_KEY names from APP_BRIEF.
+  8. Test runner: Jest. Baseline locked at 42/42 across 6 suites. Phase 2 tests add on top.
+
+  Drift to surface in Phase 2 doctrine (still wrong-on-disk)
+
+  1. Kit handbook v1.0 is still aspirational — needs reconciliation pass. Confirmed bugs: ThemeToggle naming,
+  AppShellPage doesn't exist, Vitest claim, app-role.ts claim (now true post-Phase-1 but handbook should be updated
+   to acknowledge the fix).
+  2. APP_BRIEF (Phase 1) still names legacy Supabase env vars. Phase 2 APP_BRIEF must use real names.
+
+  Tasks Phase 2 should pick up (orphan cleanup candidates)
+
+  1. SuperadminSidebar.tsx — orphan, delete.
+  2. DashboardCard.tsx — orphan; keep as starter pattern for Phase 2 dashboard OR delete.
+  3. src/components/admin/ and src/components/members/ — empty dirs; either delete or keep as scaffolding hooks.
+  4. src/components/ui/command.tsx — unimported shadcn primitive with {children as any}. Either remove or fix the
+  cast.
+  5. src/utils/supabase/server.ts:6 — cookies() as any — kit-infra forbidden-zone residual. If Phase 2 touches
+  SSR/cookies, this needs typing. May require a @supabase/ssr version bump.
+  6. Sass dep in package.json — Phase 1 removed all .scss; dep can be uninstalled.
+  7. Stripe dep + price IDs in .env copy.example — installed but unused; Phase 2 may or may not start wiring. If
+  not, leave; if so, validate the Stripe env vars in instrumentation.ts.
+
+  Open question for Tony before Phase 2 authoring
+
+  Phase 2 scope per the FFM convention = "Visual fidelity with demo data — OwedBook screens land here." That
+  requires the 3 Phase 2 KIPs identified in _design/COMPONENT_MANIFEST.md §4:
+  - KIP-1 DataTable (sortable, sticky header, mobile card-reflow)
+  - KIP-2 MultiSelect (PBM filter — searchable, multi-check, "All" handling)
+  - KIP-3 EmptyState (icon + headline + sub-copy + action)
+
+  These don't exist in the kit. Phase 2 builds them first, before any OwedBook screen. The Architect should confirm
+   this sequence in the Phase 2 FFM.
+
+  ---
+  🛑 Recon complete. Report ready for hand-off to the Architect. No file changes made. No git operations. Pure
+  inspection.
+
