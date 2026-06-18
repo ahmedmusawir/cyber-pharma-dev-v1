@@ -83,7 +83,7 @@ const RegisterForm = () => {
 
     if (response.ok) {
       router.refresh();
-      router.push("/members-portal");
+      router.push("/owedbook");
     } else {
       const result = await response.json();
       setError(result.error);

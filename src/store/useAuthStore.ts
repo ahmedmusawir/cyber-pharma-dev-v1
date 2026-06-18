@@ -46,8 +46,9 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
         });
 
-        if (role === AppRole.ADMIN) return "/admin-portal";
-        if (role === AppRole.MEMBER) return "/members-portal";
+        // Two-surface split (UI_SPEC v1.3 §A/§E): both roles land on /owedbook.
+        // Admins reach the Admin Portal via the navbar switcher.
+        if (role === AppRole.ADMIN || role === AppRole.MEMBER) return "/owedbook";
         return "/access-denied";
       },
       logout: async () => {

@@ -1,6 +1,17 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
 import HomePageContent from "./HomePageContent";
 
-const Home = () => {
+// Auth-only redirect (UI_SPEC v1.3 §A): authenticated users hitting / are sent
+// to their post-login landing; guests keep the public marketing page untouched.
+const Home = async () => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) redirect("/owedbook");
+
   return <HomePageContent />;
 };
 

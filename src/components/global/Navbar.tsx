@@ -12,15 +12,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { usePathname } from "next/navigation";
 import ThemeToggler from "./ThemeToggler";
 import Logout from "../auth/Logout";
 import { User as SupabaseUser } from "@supabase/auth-js";
 import { createClient } from "@/utils/supabase/client";
+import { useAuthStore } from "@/store/useAuthStore";
+import { AppRole } from "@/utils/app-role";
+
+const SURFACES = [
+  { label: "OwedBook", href: "/owedbook" },
+  { label: "Admin Portal", href: "/admin-portal" },
+];
 
 const Navbar = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const supabase = createClient();
+
+  // Two-surface switcher (UI_SPEC v1.3 §B/§E). Role is server-sourced via
+  // user_roles (never user_metadata); ADMIN sees both links, MEMBER sees none.
+  // Active surface is route-derived — no new global state.
+  const role = useAuthStore((s) => s.role);
+  const pathname = usePathname() ?? "";
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -52,6 +66,28 @@ const Navbar = () => {
           height={36}
         />
       </Link>
+
+      {user && role === AppRole.ADMIN && (
+        <nav aria-label="Surface switcher" className="flex items-center gap-1">
+          {SURFACES.map((s) => {
+            const active = pathname.startsWith(s.href);
+            return (
+              <Link
+                key={s.href}
+                href={s.href}
+                aria-current={active ? "page" : undefined}
+                className={`px-3 py-1 text-sm font-medium transition-colors ${
+                  active
+                    ? "text-foreground border-b-2 border-primary"
+                    : "text-secondary-foreground hover:text-foreground"
+                }`}
+              >
+                {s.label}
+              </Link>
+            );
+          })}
+        </nav>
+      )}
 
       <div className="flex items-center">
         <ThemeToggler />

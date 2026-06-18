@@ -1,4 +1,6 @@
-export interface OwedBookRow {
+// `type` (not interface) so the generic DataTable's `Record<string, unknown>`
+// constraint is satisfied — shape is identical to the DATA_CONTRACT.
+export type OwedBookRow = {
   id: string;
   date: string;
   script: string;
@@ -10,7 +12,7 @@ export interface OwedBookRow {
   owed: number;
   status: OwedStatus | null;
   pbm: string;
-}
+};
 
 export type OwedStatus =
   | "recovered"
@@ -47,8 +49,9 @@ export interface OwedBookPage {
   total: number;
 }
 
-export interface OwedBookSummaryRow {
+// `type` (not interface) for the DataTable generic constraint — see OwedBookRow.
+export type OwedBookSummaryRow = {
   pbm: string;
   commercial_dollars: number;
   federal_dollars: number;
-}
+};

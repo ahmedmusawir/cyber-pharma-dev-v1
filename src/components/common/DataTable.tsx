@@ -14,6 +14,12 @@ export interface ColumnDef<TRow extends Record<string, unknown>> {
   hero?: boolean;
   semanticColor?: (row: TRow, value: unknown) => SemanticColor;
   format?: (value: unknown, row: TRow) => string;
+  /**
+   * Custom cell renderer for non-text cells (e.g. the status chip). Takes
+   * precedence over `format`/`semanticColor`. The returned node owns its own
+   * styling — use for badges/chips that a formatted string can't express.
+   */
+  render?: (row: TRow) => ReactNode;
 }
 
 export interface DataTableProps<TRow extends Record<string, unknown>> {
@@ -87,10 +93,12 @@ export function DataTable<TRow extends Record<string, unknown>>({
               <tr key={getRowKey?.(row, idx) ?? idx} className="even:bg-card">
                 {columns.map((col) => {
                   const value = row[col.key];
-                  const formattedValue = col.format
-                    ? col.format(value, row)
-                    : String(value ?? "—");
                   const color = col.semanticColor?.(row, value);
+                  const content = col.render
+                    ? col.render(row)
+                    : col.format
+                      ? col.format(value, row)
+                      : String(value ?? "—");
                   return (
                     <td
                       key={col.key}
@@ -98,7 +106,7 @@ export function DataTable<TRow extends Record<string, unknown>>({
                         col.align === "right" ? "text-right" : "text-left"
                       } ${col.numeric ? "tabular-nums" : ""} ${colorClass(color)}`}
                     >
-                      {formattedValue}
+                      {content}
                     </td>
                   );
                 })}
@@ -132,10 +140,12 @@ export function DataTable<TRow extends Record<string, unknown>>({
               <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
                 {restColumns.map((col) => {
                   const value = row[col.key];
-                  const formattedValue = col.format
-                    ? col.format(value, row)
-                    : String(value ?? "—");
                   const color = col.semanticColor?.(row, value);
+                  const content = col.render
+                    ? col.render(row)
+                    : col.format
+                      ? col.format(value, row)
+                      : String(value ?? "—");
                   return (
                     <div key={col.key} className="contents">
                       <div className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -144,7 +154,7 @@ export function DataTable<TRow extends Record<string, unknown>>({
                       <div
                         className={`${col.numeric ? "tabular-nums" : ""} ${colorClass(color)}`}
                       >
-                        {formattedValue}
+                        {content}
                       </div>
                     </div>
                   );

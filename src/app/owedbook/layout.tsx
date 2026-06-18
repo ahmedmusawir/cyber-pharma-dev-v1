@@ -8,10 +8,11 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-export default async function AdminLayout({ children }: LayoutProps) {
-  // Admin-only surface. A MEMBER who types the URL is bounced to /owedbook
-  // (their landing), not the login page (UI_SPEC v1.3 §E).
-  await protectPage([AppRole.ADMIN], { unauthorizedRedirect: "/owedbook" });
+// OwedBook surface (UI_SPEC v1.3 §A): post-login landing for ANY authenticated
+// user (ADMIN + MEMBER). Same shell as the Admin surface — Navbar + the single
+// surface-aware AdminSidebar (renders the Dashboard-only item-set on /owedbook*).
+export default async function OwedBookLayout({ children }: LayoutProps) {
+  await protectPage([AppRole.ADMIN, AppRole.MEMBER]);
 
   return (
     <div className="flex flex-col min-h-screen">
