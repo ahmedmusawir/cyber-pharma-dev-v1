@@ -2,7 +2,9 @@
 
 > **B-3 COMPLETE 2026-06-17** — verified by full triad (tsc 0 / jest 73·15 / build 0). Two-surface split + role nav/guard + universal /profile + OwedBook screen built per UI_SPEC v1.3 (Amendment §A–§F). Base committed+pushed at `aee6e68` (origin/phase2); the B-3 work itself is UNCOMMITTED on top, held for operator review before Cluster 3. See `agent_docs/SESSIONS/session_2026-06-17.md`.
 
-Last action: **Phase 2 Cluster 2 / B-3 (two-surface split + OwedBook screen) COMPLETE — awaiting review.**
+Last action: **B-3 sidebar correction (UI_SPEC v1.4) — FilterRail INSIDE the shared sidebar container.** Corrected the prior over-fix: `/owedbook` now uses the SAME sidebar box as `/admin-portal` (identical `w-[25rem] border-4` + `Command`/`CommandInput`). `AdminSidebar` owns both surfaces — content below the command input differs only (admin nav items | `<FilterRail/>`). New `OwedBookContext` + `OwedBookProvider` (in `/owedbook` layout) bridges filter state from the sidebar's rail to `OwedBookScreen` (main pane = label/title/KPIs/pager/tabs/table only). `/admin-portal` output unchanged. Spec already v1.4 (no doc change this round). Triad re-green: tsc 0 / jest 73·15 / build 0. **Screenshots NOT captured — both surfaces auth-gated; need a test admin login.**
+
+Prior in this cluster: **Phase 2 Cluster 2 / B-3 (two-surface split + OwedBook screen) COMPLETE — awaiting review.**
   - **Two-surface shell ✅** new `/owedbook` route (layout guards `[ADMIN, MEMBER]`, server page → client `OwedBookScreen` island). `/admin-portal` redirects to `/admin-portal/users`. Surface-aware `AdminSidebar` (Dashboard-only on /owedbook*, Users/Add-Member/Profile on /admin-portal*). Navbar switcher (ADMIN-only, route-derived active).
   - **Role guard ✅** `protectPage` gained additive `{ unauthorizedRedirect }`; `(admin)` layout bounces MEMBER → `/owedbook`. Post-login + register → `/owedbook`. `/` auth-only redirect (guests keep marketing).
   - **§F universal profile ✅** `git mv (admin)/profile → /profile` (top-level, `[ADMIN, MEMBER]`, Navbar-only shell). Navbar dropdown already had Profile link.
@@ -14,7 +16,7 @@ Prior actions: Cluster 1 (3 KIPs) COMPLETE, G4 ✅. Cluster 0 (Orphan Cleanup) C
 Pending: **Operator review of B-3 (empty-but-working screen), then Cluster 3** — flesh `owedBookService` mock body + `src/mocks/owedbook.ts` fixtures; resolve the New Paid / Updated Difference contract gap; live multi-role seam-walk (not yet run — needs real login).
 
 Phase: **Cyber Pharma v1 Phase 2** (OwedBook visual fidelity on demo data via service layer).
-FFM: `agent_docs/CURRENT_APP/cyber_pharma_v1_phase2_ffm/`. Spec authority: **UI_SPEC v1.3** (§A–§F).
+FFM: `agent_docs/CURRENT_APP/cyber_pharma_v1_phase2_ffm/`. Spec authority: **UI_SPEC v1.4** (§A–§F; §A.1 + §5.1 = sidebar-is-filter-rail).
 Branch: `phase2`. Base commit: `aee6e68` (pushed).
 
 Phase 2 hard gates status:

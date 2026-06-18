@@ -22,24 +22,26 @@ import AdminSidebar from "@/components/layout/AdminSidebar";
 // next/navigation is globally mocked in jest.setup; override usePathname per test.
 const mockUsePathname = usePathname as jest.Mock;
 
-// Intent: ONE surface-aware component (UI_SPEC §C) — the route decides the
-// item-set. Wrong items on a surface = a navigation leak between surfaces.
+// Intent: ONE surface-aware component, ONE container (UI_SPEC v1.4 §A.1/§C) —
+// only the content below the command input differs. Admin shows nav items;
+// OwedBook shows the FilterRail. Wrong content on a surface = a leak.
 describe("AdminSidebar surface-awareness", () => {
-  it("on /owedbook shows only Dashboard", () => {
+  it("on /owedbook renders the filter rail, not nav items", () => {
     mockUsePathname.mockReturnValue("/owedbook");
     render(<AdminSidebar />);
-    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(screen.getByText("Upload Data")).toBeInTheDocument();
+    expect(screen.getByText("Apply")).toBeInTheDocument();
+    expect(screen.getByText("Get Fresh Data")).toBeInTheDocument();
     expect(screen.queryByText("Users")).not.toBeInTheDocument();
-    expect(screen.queryByText("Add Member")).not.toBeInTheDocument();
-    expect(screen.queryByText("Profile")).not.toBeInTheDocument();
+    expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
   });
 
-  it("on /admin-portal shows Users / Add Member / Profile, not Dashboard", () => {
+  it("on /admin-portal renders nav items, not the filter rail", () => {
     mockUsePathname.mockReturnValue("/admin-portal/users");
     render(<AdminSidebar />);
     expect(screen.getByText("Users")).toBeInTheDocument();
     expect(screen.getByText("Add Member")).toBeInTheDocument();
     expect(screen.getByText("Profile")).toBeInTheDocument();
-    expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
+    expect(screen.queryByText("Upload Data")).not.toBeInTheDocument();
   });
 });

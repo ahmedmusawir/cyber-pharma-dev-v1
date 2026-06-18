@@ -1,11 +1,11 @@
-# UI_SPEC v1.2 — Cyber Pharma v1 / Phase 2
+# UI_SPEC v1.4 — Cyber Pharma v1 / Phase 2
 
-> **Reader:** Claudy. **Scope:** the 3 KIPs + the OwedBook screen + the two-surface shell split (see Amendment v1.2 below). **Tokens inherited from Phase 1** (`globals.css` v1.1) — do NOT reinstall or re-theme. Semantic utilities only, never numbered colors. Mist default, Slate via toggle. Saira / `--radius:0`.
+> **Reader:** Claudy. **Scope:** the 3 KIPs + the OwedBook screen + the two-surface shell split (see Amendment v1.4 below). **Tokens inherited from Phase 1** (`globals.css` v1.1) — do NOT reinstall or re-theme. Semantic utilities only, never numbered colors. Mist default, Slate via toggle. Saira / `--radius:0`.
 > **Visual ground truth:** the OwedBook artifacts in `_design/phase2-reference/` (Mist, Slate, Federal-tab, mobile Mist, mobile Slate) — these are now BUILD TARGETS, not "do not build" reference. Match them.
 
 ---
 
-## ⚠ AMENDMENT v1.2 — Two-Surface Split (READ FIRST — supersedes single-surface routing in §5)
+## ⚠ AMENDMENT v1.4 — Two-Surface Split (READ FIRST — supersedes single-surface routing in §5)
 
 **Context.** Phase 1's single admin surface is being split into **two distinct top-level surfaces**, toggled by a new top-navbar switcher. Same shell, same theme, same user menu — only the **left sidebar** and the **main route** differ. This is part of **Cluster 2** (it amends the screen's routing/shell). It supersedes the single-surface `/admin-portal` model previously implied in §5. The Admin Portal content is NOT redesigned here — it later inherits the MissionControl (Super Admin) design once that's settled.
 
@@ -14,8 +14,8 @@
 **1. OwedBook — route `/owedbook`**
 
 - **Post-login landing.** `/` redirects here.
-- **Left sidebar: ONLY "Dashboard"** (shown active). No Users / Add Member / Profile.
-- **Main pane:** the OwedBook screen (§5–§8). For now this is still the placeholder; B-3 paints the real screen here.
+- **Left sidebar IS the filter rail** (v1.4): the command/search input stays at the top of the sidebar; the filter rail sits directly below it (Upload Data, From/To, Filter, PBM, Clear/Apply, "N filters active", Get Fresh Data). **No "Dashboard" nav item** on this surface — the sidebar is the filter controls, not navigation.
+- **Main pane:** the OwedBook screen only — DASHBOARD label + "OwedBook" title + subtitle, the 4 KPI tiles, pager, tabs, and the table. No filter rail in the main column.
 - Guard: `protectPage([AppRole.ADMIN])`.
 
 **2. Admin Portal — route `/admin-portal`**
@@ -148,7 +148,7 @@ KIPs FIRST, then the screen that consumes them. Hard gate G4.
 
 ## 5. The OwedBook Screen (`/owedbook`)
 
-Replaces the Phase-1 "Coming in Phase 2" placeholder, which **moves from `/admin-portal` to `/owedbook`** per Amendment v1.2 above. Lives behind `protectPage([AppRole.ADMIN])`. Matches `_design/phase2-reference/owedbook-metro-warm-mist.png` (and Slate / Federal / mobile variants).
+Replaces the Phase-1 "Coming in Phase 2" placeholder, which **moves from `/admin-portal` to `/owedbook`** per Amendment v1.4 above. Lives behind `protectPage([AppRole.ADMIN])`. Matches `_design/phase2-reference/owedbook-metro-warm-mist.png` (and Slate / Federal / mobile variants).
 
 ### 5.1 Layout (desktop ≥ `lg`)
 
@@ -156,21 +156,22 @@ Replaces the Phase-1 "Coming in Phase 2" placeholder, which **moves from `/admin
 ┌──────────────────────────────────────────────────────────┐
 │ Header (Navbar — inherited; switcher links, theme, user)  │
 ├───────────────┬──────────────────────────────────────────┤
-│ FILTER RAIL   │  DASHBOARD label + "OwedBook" title       │
-│ (left, ~280)  │  subtitle: "Ledger-level clarity..."      │
-│               │                                           │
-│ Upload Data   │  ┌────┐ ┌────┐ ┌────┐ ┌────┐  (KPI tiles)│
-│ From (date)   │  │red │ │blue│ │grn │ │mrn │             │
-│ To (date)     │  └────┘ └────┘ └────┘ └────┘             │
-│ Filter ▼      │                                           │
-│ PBM (Multi)   │  Page N of M · Prev · Next · Limit/Total  │
-│ Clear  Apply  │  ┌──────────────────────────────────────┐ │
-│ ─────────     │  │ [tabs: Commercial · Updated ·        │ │
+│ LEFT SIDEBAR  │  MAIN PANE                                │
+│ 🔍 search/cmd │  DASHBOARD label + "OwedBook" title       │
+│ ───────────── │  subtitle: "Ledger-level clarity..."      │
+│ Upload Data   │                                           │
+│ From (date)   │  ┌────┐ ┌────┐ ┌────┐ ┌────┐  (KPI tiles)│
+│ To (date)     │  │red │ │blue│ │grn │ │mrn │             │
+│ Filter ▼      │  └────┘ └────┘ └────┘ └────┘             │
+│ PBM (Multi)   │                                           │
+│ Clear  Apply  │  Page N of M · Prev · Next · Limit/Total  │
+│ N filters     │  ┌──────────────────────────────────────┐ │
+│ ───────────── │  │ [tabs: Commercial · Updated ·        │ │
 │ Get Fresh Data│  │  Federal · Summary]                  │ │
 │               │  │ ┌──────────────────────────────────┐ │ │
-│               │  │ │ DataTable (KIP-1)                 │ │ │
-│               │  │ └──────────────────────────────────┘ │ │
-│               │  └──────────────────────────────────────┘ │
+│ (sidebar IS   │  │ │ DataTable (KIP-1)                 │ │ │
+│  the filter   │  │ └──────────────────────────────────┘ │ │
+│  rail)        │  └──────────────────────────────────────┘ │
 └───────────────┴──────────────────────────────────────────┘
 ```
 
@@ -235,8 +236,8 @@ If UI behavior isn't covered: check the `_design` artifact → check `DATA_CONTR
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.4     | 2026-06-18 | OwedBook sidebar = filter rail (Amendment §A.1 + §5.1). On /owedbook the left sidebar IS the filter rail — command/search input stays at the top, the filter rail (Upload Data, From/To, Filter, PBM, Clear/Apply, "N filters active", Get Fresh Data) sits directly below it. The "Dashboard" nav item is removed from that surface. Filter rail moves OUT of the main content column INTO the sidebar slot; main pane = DASHBOARD label + title + subtitle + 4 KPI tiles + pager + tabs + table only. /admin-portal surface unchanged. |
 | 1.3     | 2026-06-17 | Universal Profile access (Amendment §F). /profile moves OUT of the (admin) group to a top-level route guarded protectPage([ADMIN, MEMBER]); Profile link added to the top-right UserMenu dropdown, visible to all roles on both surfaces (mirrors the original demo's F-icon → Profile). Existing self-scoped My Profile page (own email/role + change own password) reused as-is. Closes the member-can't-change-password showstopper flagged in the B-3 plan's risk list. |
-
 | 1.2 | 2026-06-17 | Role-based nav + route guard (Amendment §E). ADMIN sees both switcher links; MEMBER sees no switcher links (bare navbar) and lands on /owedbook. /admin-portal and /admin-portal/\* guarded by protectPage([AppRole.ADMIN]) — members hitting the URL directly are redirected to /owedbook. Visibility AND route both enforced; role from server-controlled source, never user_metadata. |
 | 1.1 | 2026-06-17 | **Two-surface split (Amendment v1.1, read-first block above §1).** OwedBook screen relocates `/admin-portal` → `/owedbook` (post-login landing; `/` redirects there). `/admin-portal` becomes the Admin Portal surface (Users / Add Member / Profile; `/admin-portal` redirects to `/admin-portal/users`). New top-navbar switcher (OwedBook ⇄ Admin Portal); single surface-aware sidebar driven by `usePathname`. No new global state. Admin Portal content unchanged — inherits MissionControl design later. Part of Cluster 2. §5 heading route updated; §9 out-of-scope adds "redesign of Admin Portal content." |
 | 1.0 | 2026-06-09 | Initial Phase 2 UI_SPEC. 3 KIPs (DataTable + card-reflow, MultiSelect, EmptyState) build-first; OwedBook screen (4 KPI tiles via `--chart-*`, 4 tabs, filter rail, pager, status chips); responsive transforms (rail→drawer, KPI→2×2, tabs→scroll, table→cards); tokens inherited from Phase 1, not reinstalled. |

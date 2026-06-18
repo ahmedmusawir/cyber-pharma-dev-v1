@@ -7,7 +7,6 @@ import DataTable from "@/components/common/DataTable";
 import EmptyState from "@/components/common/EmptyState";
 import { owedBookService } from "@/services/owedbook";
 import type {
-  OwedBookFilters,
   OwedBookKpis,
   OwedBookPage,
   OwedBookRow,
@@ -15,7 +14,7 @@ import type {
   OwedTab,
 } from "@/types/OwedBook";
 import KpiTiles from "./KpiTiles";
-import FilterRail from "./FilterRail";
+import { useOwedBook } from "./OwedBookContext";
 import {
   COMMERCIAL_COLUMNS,
   FEDERAL_COLUMNS,
@@ -52,31 +51,26 @@ const SkeletonRows = () => (
   </div>
 );
 
+// Main pane only (UI_SPEC v1.4 §A.1/§5.1). The filter rail lives in the left
+// sidebar (AdminSidebar); this consumes the shared filter state via context.
 const OwedBookScreen = () => {
+  const { filters, clearFilters } = useOwedBook();
   const [activeTab, setActiveTab] = useState<OwedTab>("commercial_dollars");
-  const [filters, setFilters] = useState<OwedBookFilters>({ pbms: [] });
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<{ key: string; direction: "asc" | "desc" }>();
   const [kpis, setKpis] = useState<OwedBookKpis>(ZERO_KPIS);
   const [pageData, setPageData] = useState<OwedBookPage | null>(null);
   const [summaryRows, setSummaryRows] = useState<OwedBookSummaryRow[]>([]);
-  const [pbmOptions, setPbmOptions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const isSummary = activeTab === "summary";
 
-  // Distinct PBM names for the filter — load once.
+  // A new filter set resets to the first page.
   useEffect(() => {
-    let cancelled = false;
-    owedBookService
-      .getPbmOptions()
-      .then((o) => !cancelled && setPbmOptions(o))
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    setPage(1);
+  }, [filters]);
 
   // KPI tiles react to the filter set.
   useEffect(() => {
@@ -116,17 +110,7 @@ const OwedBookScreen = () => {
     return () => {
       cancelled = true;
     };
-  }, [activeTab, filters, page]);
-
-  const handleApply = useCallback((f: OwedBookFilters) => {
-    setFilters(f);
-    setPage(1);
-  }, []);
-
-  const handleClear = useCallback(() => {
-    setFilters({ pbms: [] });
-    setPage(1);
-  }, []);
+  }, [activeTab, filters, page, reloadKey]);
 
   const handleSort = useCallback((key: string) => {
     setSort((prev) =>
@@ -158,100 +142,96 @@ const OwedBookScreen = () => {
       icon={<Inbox className="w-10 h-10 text-muted-foreground" />}
       headline="No results"
       subcopy="No rows match the current filters. Adjust or clear them to see data."
-      action={{ label: "Clear filters", onClick: handleClear }}
+      action={{ label: "Clear filters", onClick: clearFilters }}
     />
   );
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 p-6">
-      <FilterRail pbmOptions={pbmOptions} onApply={handleApply} onClear={handleClear} />
+    <div className="flex flex-col gap-6 min-w-0 p-6">
+      <header>
+        <p className="text-xs uppercase tracking-wide text-muted-foreground">Dashboard</p>
+        <h1 className="text-3xl font-bold mt-1">OwedBook</h1>
+        <p className="text-muted-foreground mt-1">
+          Ledger-level clarity on every dollar you&apos;re owed.
+        </p>
+      </header>
 
-      <div className="flex flex-col gap-6 min-w-0">
-        <header>
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">Dashboard</p>
-          <h1 className="text-3xl font-bold mt-1">OwedBook</h1>
-          <p className="text-muted-foreground mt-1">
-            Ledger-level clarity on every dollar you&apos;re owed.
-          </p>
-        </header>
+      <KpiTiles kpis={kpis} />
 
-        <KpiTiles kpis={kpis} />
-
-        {!isSummary && pageData && (
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <span>
-              Page {pageData.page} of {Math.max(pageData.pageCount, 1)}
-            </span>
-            <button
-              type="button"
-              disabled={pageData.page <= 1}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="disabled:opacity-40 hover:text-foreground"
-            >
-              Prev
-            </button>
-            <button
-              type="button"
-              disabled={pageData.page >= pageData.pageCount}
-              onClick={() => setPage((p) => p + 1)}
-              className="disabled:opacity-40 hover:text-foreground"
-            >
-              Next
-            </button>
-            <span>
-              Limit {pageData.limit} · Total {pageData.total}
-            </span>
-          </div>
-        )}
-
-        <Tabs
-          value={activeTab}
-          onValueChange={(v) => {
-            setActiveTab(v as OwedTab);
-            setPage(1);
-          }}
-        >
-          <TabsList>
-            {TABS.map((t) => (
-              <TabsTrigger key={t.value} value={t.value}>
-                {t.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-
-        <div>
-          {error ? (
-            <div className="flex items-center gap-3 text-sm text-destructive">
-              <span>{error}</span>
-              <button
-                type="button"
-                onClick={() => setFilters((f) => ({ ...f }))}
-                className="underline"
-              >
-                Retry
-              </button>
-            </div>
-          ) : loading ? (
-            <SkeletonRows />
-          ) : isSummary ? (
-            <DataTable<OwedBookSummaryRow>
-              columns={SUMMARY_COLUMNS}
-              rows={summaryRows}
-              emptyState={emptyState}
-              getRowKey={(r) => r.pbm}
-            />
-          ) : (
-            <DataTable<OwedBookRow>
-              columns={columnsForTab(activeTab)}
-              rows={sortedRows}
-              sort={sort}
-              onSort={handleSort}
-              emptyState={emptyState}
-              getRowKey={(r) => r.id}
-            />
-          )}
+      {!isSummary && pageData && (
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <span>
+            Page {pageData.page} of {Math.max(pageData.pageCount, 1)}
+          </span>
+          <button
+            type="button"
+            disabled={pageData.page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="disabled:opacity-40 hover:text-foreground"
+          >
+            Prev
+          </button>
+          <button
+            type="button"
+            disabled={pageData.page >= pageData.pageCount}
+            onClick={() => setPage((p) => p + 1)}
+            className="disabled:opacity-40 hover:text-foreground"
+          >
+            Next
+          </button>
+          <span>
+            Limit {pageData.limit} · Total {pageData.total}
+          </span>
         </div>
+      )}
+
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) => {
+          setActiveTab(v as OwedTab);
+          setPage(1);
+        }}
+      >
+        <TabsList>
+          {TABS.map((t) => (
+            <TabsTrigger key={t.value} value={t.value}>
+              {t.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
+
+      <div>
+        {error ? (
+          <div className="flex items-center gap-3 text-sm text-destructive">
+            <span>{error}</span>
+            <button
+              type="button"
+              onClick={() => setReloadKey((k) => k + 1)}
+              className="underline"
+            >
+              Retry
+            </button>
+          </div>
+        ) : loading ? (
+          <SkeletonRows />
+        ) : isSummary ? (
+          <DataTable<OwedBookSummaryRow>
+            columns={SUMMARY_COLUMNS}
+            rows={summaryRows}
+            emptyState={emptyState}
+            getRowKey={(r) => r.pbm}
+          />
+        ) : (
+          <DataTable<OwedBookRow>
+            columns={columnsForTab(activeTab)}
+            rows={sortedRows}
+            sort={sort}
+            onSort={handleSort}
+            emptyState={emptyState}
+            getRowKey={(r) => r.id}
+          />
+        )}
       </div>
     </div>
   );
