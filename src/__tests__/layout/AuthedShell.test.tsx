@@ -81,4 +81,24 @@ describe("AuthedShell mobile sidebar drawer", () => {
     );
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+
+  // Intent: /owedbook's wide filter rail collapses below xl (1280); the narrow
+  // admin nav rail still collapses below lg (1024).
+  it("collapses /owedbook below xl but /admin-portal below lg", () => {
+    mockUsePathname.mockReturnValue("/owedbook");
+    const { rerender } = render(
+      <AuthedShell>
+        <p>main</p>
+      </AuthedShell>
+    );
+    expect(screen.getByTestId("desktop-sidebar")).toHaveClass("hidden", "xl:block");
+
+    mockUsePathname.mockReturnValue("/admin-portal/users");
+    rerender(
+      <AuthedShell>
+        <p>main</p>
+      </AuthedShell>
+    );
+    expect(screen.getByTestId("desktop-sidebar")).toHaveClass("hidden", "lg:block");
+  });
 });

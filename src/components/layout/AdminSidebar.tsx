@@ -6,7 +6,6 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
@@ -37,7 +36,6 @@ const AdminSidebar = () => {
 
   return (
     <Command className="bg-secondary">
-      <CommandInput placeholder="Type a command or search..." />
       {onAdmin ? (
         <CommandList className="px-8">
           <CommandEmpty>No results found.</CommandEmpty>

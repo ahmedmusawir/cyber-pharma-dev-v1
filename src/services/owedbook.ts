@@ -35,6 +35,21 @@ export interface OwedBookService {
    * SELECT DISTINCT pbm FROM user_data (RLS-scoped).
    */
   getPbmOptions(): Promise<string[]>;
+
+  /**
+   * Upload a claims file. UI-FUNCTIONAL MOCK (Phase 2): fakes success after a
+   * short delay — it does NOT read, parse, send, or store the file. Explicit
+   * boundary: real CSV/XLSX ingest is Phase 5. BACKEND_SWAP_NOTES (Phase 5):
+   * stream `file` to the ingest endpoint here; the signature does not change.
+   */
+  uploadData(file: File): Promise<void>;
+
+  /**
+   * Re-pull the latest claims/reference data. UI-FUNCTIONAL MOCK (Phase 2):
+   * fakes success after a short delay — no real fetch/ingest. BACKEND_SWAP_NOTES
+   * (Phase 5): pull fresh data here; the signature does not change.
+   */
+  refreshData(): Promise<void>;
 }
 
 const DEFAULT_LIMIT = 25;
@@ -115,5 +130,15 @@ export const owedBookService: OwedBookService = {
     return Array.from(
       new Set(owedBookFixtures.map((r) => r.pbm).filter((p): p is string => Boolean(p)))
     ).sort();
+  },
+
+  // UI-functional mock — the file is intentionally NEVER read/parsed/sent/stored.
+  async uploadData(_file: File): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+  },
+
+  // UI-functional mock — no real re-pull happens.
+  async refreshData(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, 600));
   },
 };

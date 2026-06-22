@@ -76,8 +76,8 @@
     --primary-foreground: 0 0% 100%;
     --secondary: 221 16% 27%;           /* #3a4150 */
     --secondary-foreground: 222 26% 93%;
-    --navbar: 221 16% 27%;              /* navbar bg (dark) — unchanged from secondary; dark mode was already fine */
-    --navbar-foreground: 222 26% 93%;
+    --navbar: 12 83% 47%;               /* STATIC: same darker coral as light — brand header persists across both modes (2026-06-22) */
+    --navbar-foreground: 0 0% 100%;
     --muted: 220 16% 19%;               /* #282d37 */
     --muted-foreground: 221 17% 71%;    /* #a9b1c2 — readable secondary text/placeholders */
     --accent: 12 93% 64%;

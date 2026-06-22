@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
 import MultiSelect from "@/components/common/MultiSelect";
 import {
   Select,
@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { owedBookService } from "@/services/owedbook";
 import type { OwedBookFilters } from "@/types/OwedBook";
 
 interface FilterRailProps {
@@ -28,10 +29,14 @@ const FILTER_OPTIONS = [
   { value: "new", label: "New" },
 ];
 
-// Filter rail (UI_SPEC v1.3 §5.4). UI-only: Apply re-queries the service;
-// Upload Data / Get Fresh Data are present but inert (Phase 5 wires them).
+// Filter rail (UI_SPEC §5.4). UI-only: Apply re-queries the service. Upload Data
+// is a UI-FUNCTIONAL MOCK — opens a real picker and fakes success via the
+// service, but does NOT read/parse/send the file (real ingest = Phase 5).
 const FilterRail = ({ pbmOptions, onApply, onClear }: FilterRailProps) => {
   const [draft, setDraft] = useState<OwedBookFilters>(EMPTY);
+  const [upload, setUpload] = useState<{ name: string; status: "uploading" | "done" } | null>(null);
+  const [refresh, setRefresh] = useState<"idle" | "refreshing" | "done">("idle");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const activeCount =
     (draft.from ? 1 : 0) +
@@ -44,14 +49,45 @@ const FilterRail = ({ pbmOptions, onApply, onClear }: FilterRailProps) => {
     onClear();
   };
 
+  const handleFile = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUpload({ name: file.name, status: "uploading" });
+    await owedBookService.uploadData(file); // mock: file is NOT read/parsed/sent
+    setUpload({ name: file.name, status: "done" });
+    e.target.value = ""; // allow re-selecting the same file
+  };
+
+  const handleRefresh = async () => {
+    setRefresh("refreshing");
+    await owedBookService.refreshData(); // mock: no real fetch
+    setRefresh("done");
+  };
+
   return (
     <aside className="flex flex-col gap-4 p-4 bg-card border border-border">
-      <button
-        type="button"
-        className="w-full bg-chart-5 text-white py-2 text-sm font-semibold"
-      >
-        Upload Data
-      </button>
+      <div className="flex flex-col gap-1">
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="w-full bg-chart-5 text-white py-2 text-sm font-semibold"
+        >
+          Upload Data
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".csv,.xlsx,.xls"
+          onChange={handleFile}
+          className="hidden"
+          aria-label="Upload claims file"
+        />
+        {upload && (
+          <p className="text-xs text-muted-foreground truncate" role="status">
+            {upload.name} — {upload.status === "uploading" ? "Uploading…" : "Upload complete"}
+          </p>
+        )}
+      </div>
 
       <label className="flex flex-col gap-1 text-sm">
         <span className="text-xs uppercase tracking-wide text-muted-foreground">From</span>
@@ -122,12 +158,21 @@ const FilterRail = ({ pbmOptions, onApply, onClear }: FilterRailProps) => {
         </button>
       </div>
 
-      <button
-        type="button"
-        className="w-full bg-secondary text-secondary-foreground py-2 text-sm font-semibold mt-2"
-      >
-        Get Fresh Data
-      </button>
+      <div className="flex flex-col gap-1 mt-2">
+        <button
+          type="button"
+          onClick={handleRefresh}
+          disabled={refresh === "refreshing"}
+          className="w-full bg-secondary text-secondary-foreground py-2 text-sm font-semibold disabled:opacity-60"
+        >
+          Get Fresh Data
+        </button>
+        {refresh !== "idle" && (
+          <p className="text-xs text-muted-foreground" role="status">
+            {refresh === "refreshing" ? "Refreshing…" : "Done"}
+          </p>
+        )}
+      </div>
     </aside>
   );
 };

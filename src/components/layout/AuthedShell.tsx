@@ -13,7 +13,13 @@ import AdminSidebar from "@/components/layout/AdminSidebar";
 const AuthedShell = ({ children }: { children: ReactNode }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname() ?? "";
-  const triggerLabel = pathname.startsWith("/owedbook") ? "Filters" : "Menu";
+  // /owedbook's filter rail is wide (KPI row + wide table) → it stays
+  // two-column only at xl+ and collapses to the drawer below xl. /admin-portal's
+  // narrow nav rail collapses at lg. (Full literal classes so Tailwind keeps them.)
+  const onOwedbook = pathname.startsWith("/owedbook");
+  const triggerLabel = onOwedbook ? "Filters" : "Menu";
+  const sidebarVisible = onOwedbook ? "hidden xl:block" : "hidden lg:block";
+  const collapsedBelow = onOwedbook ? "xl:hidden" : "lg:hidden";
 
   // Close the drawer on any navigation. The sidebar's links (AdminSidebar)
   // don't know they're inside the drawer, so without this the route changes
@@ -41,7 +47,7 @@ const AuthedShell = ({ children }: { children: ReactNode }) => {
       <Navbar />
 
       {/* Mobile sidebar trigger (< lg) */}
-      <div className="lg:hidden border-b border-border px-4 py-2">
+      <div className={`${collapsedBelow} border-b border-border px-4 py-2`}>
         <button
           type="button"
           onClick={() => setDrawerOpen(true)}
@@ -56,7 +62,10 @@ const AuthedShell = ({ children }: { children: ReactNode }) => {
 
       <section className="flex flex-1">
         {/* Desktop fixed sidebar (lg+) — same box as before */}
-        <div className="hidden lg:block h-auto flex-shrink-0 border-4 w-[25rem]">
+        <div
+          data-testid="desktop-sidebar"
+          className={`${sidebarVisible} h-auto flex-shrink-0 border-4 w-[25rem]`}
+        >
           <AdminSidebar />
         </div>
         {/* min-w-0: let the main column shrink to the viewport so wide content
@@ -67,7 +76,7 @@ const AuthedShell = ({ children }: { children: ReactNode }) => {
 
       {/* Mobile slide-over drawer (< lg) */}
       {drawerOpen && (
-        <div className="lg:hidden fixed inset-0 z-50" role="dialog" aria-modal="true">
+        <div className={`${collapsedBelow} fixed inset-0 z-50`} role="dialog" aria-modal="true">
           <div
             className="absolute inset-0 bg-black/50"
             onClick={() => setDrawerOpen(false)}
