@@ -200,9 +200,10 @@ If you cannot answer all four, do not author the file. Surface to the operator.
 ### Stage 2 Anti-Patterns
 
 - ❌ Authoring raw flex layouts when AppShellPage / Page / Row / Box primitives exist
-- ❌ Fixed-width sidebars (`w-64`) without responsive collapse to slide-over below 768px
+- ❌ Fixed-width / persistent sidebars (`w-64`, `hidden md:block`) without responsive collapse to a slide-over **below the rail's fit breakpoint** — `lg` for wide app rails (≥ ~20rem), `md` for narrow nav. A sidebar hidden below its breakpoint with NO hamburger/trigger = the rail vanishes on mobile = automatic failure (this is **Gate M** — see FFM_PLAYBOOK §13.1 / root CLAUDE.md forbidden zone).
 - ❌ `*PageContent.tsx` files placed in `src/components/` instead of co-located with `page.tsx`
 - ❌ Skipping the 375px sketch in the plan
+- ❌ Deferring the mobile shell to a "later/responsive cluster" — the named deferred-violation pattern; build it in the SAME phase as the shell.
 
 ### Activities
 

@@ -192,9 +192,9 @@ const OwedBookScreen = () => {
           setPage(1);
         }}
       >
-        <TabsList>
+        <TabsList className="max-w-full justify-start overflow-x-auto">
           {TABS.map((t) => (
-            <TabsTrigger key={t.value} value={t.value}>
+            <TabsTrigger key={t.value} value={t.value} className="shrink-0">
               {t.label}
             </TabsTrigger>
           ))}

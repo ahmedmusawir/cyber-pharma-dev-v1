@@ -46,7 +46,7 @@ const DeleteUserButton = ({ userId, userName, userEmail }: DeleteUserButtonProps
         <Button
           variant="outline"
           size="sm"
-          className="border-2 border-destructive text-destructive hover:bg-destructive/10"
+          className="w-full justify-center border-2 border-destructive text-destructive hover:bg-destructive/10"
         >
           <Trash2 className="h-4 w-4 mr-1" />
           Delete

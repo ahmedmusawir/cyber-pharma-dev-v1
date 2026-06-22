@@ -30,6 +30,8 @@
     --primary-foreground: 0 0% 100%;
     --secondary: 220 19% 94%;           /* #eceef2 panel */
     --secondary-foreground: 219 16% 17%;
+    --navbar: 12 83% 47%;               /* darker coral — authed navbar bg (light). Operator override of no-re-theme zone (2026-06-18). */
+    --navbar-foreground: 0 0% 100%;
     --muted: 222 15% 87%;               /* #d9dce3 */
     --muted-foreground: 218 12% 42%;    /* #5f6878 */
     --accent: 12 93% 64%;               /* coral */
@@ -74,6 +76,8 @@
     --primary-foreground: 0 0% 100%;
     --secondary: 221 16% 27%;           /* #3a4150 */
     --secondary-foreground: 222 26% 93%;
+    --navbar: 221 16% 27%;              /* navbar bg (dark) — unchanged from secondary; dark mode was already fine */
+    --navbar-foreground: 222 26% 93%;
     --muted: 220 16% 19%;               /* #282d37 */
     --muted-foreground: 221 17% 71%;    /* #a9b1c2 — readable secondary text/placeholders */
     --accent: 12 93% 64%;

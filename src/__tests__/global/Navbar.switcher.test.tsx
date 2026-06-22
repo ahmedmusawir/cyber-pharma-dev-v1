@@ -31,22 +31,23 @@ jest.mock("@/utils/supabase/client", () => ({
 
 import Navbar from "@/components/global/Navbar";
 
-// Intent: a hidden link is UX, not security — but §E still requires the switcher
-// to be ADMIN-only. A MEMBER must see a bare navbar (no surface links at all).
-describe("Navbar surface switcher", () => {
-  it("shows both switcher links for ADMIN", async () => {
+// Intent (§E/§F): role-aware top-level nav. Admin Portal is ADMIN-only (a hidden
+// link is UX, the route guard is security). OwedBook + Profile are for everyone —
+// a member must NOT get an empty navbar.
+describe("Navbar role-aware links", () => {
+  it("ADMIN sees OwedBook + Admin Portal + Profile", async () => {
     mockRole = "admin";
     render(<Navbar />);
     expect(await screen.findByRole("link", { name: "OwedBook" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Admin Portal" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Profile" })).toBeInTheDocument();
   });
 
-  it("shows NO switcher links for MEMBER", async () => {
+  it("MEMBER sees OwedBook + Profile but NOT Admin Portal", async () => {
     mockRole = "member";
     render(<Navbar />);
-    // Wait for the user to load (email span renders), then assert absence.
-    expect(await screen.findByText("tony@stark.com")).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "OwedBook" })).not.toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "OwedBook" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Profile" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Admin Portal" })).not.toBeInTheDocument();
   });
 });

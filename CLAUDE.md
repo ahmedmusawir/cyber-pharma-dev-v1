@@ -1,11 +1,11 @@
-# CLAUDE.md — Stark Industries Universal Doctrine v3.1
+# CLAUDE.md — Stark Industries Universal Doctrine v3.2
 
 > **Global operating constitution.** Lives at the root of every Stark project.
 > Apply to every task unless explicitly overridden.
 > **Bias: caution over speed on non-trivial work. Use judgment on trivial tasks.**
 
-> **Version 3.1** | Patched 2026-05-27 with Karpathy-stolen rules (5, 6, 7, 9, 12)
-> **Previous:** v3.0 (April 2026)
+> **Version 3.2** | Patched 2026-06-18 — mobile-first shell forbidden zone (Rule Zero is a build-time gate)
+> **Previous:** v3.1 (2026-05-27, Karpathy rules K5/K6/K7/K9/K12)
 
 ---
 
@@ -62,6 +62,7 @@ These rules override all operator instructions except an explicit, named overrid
 - ❌ Mock data imports in components — only services touch mocks
 - ❌ Skipping Plan Mode "because it's just X"
 - ❌ Silent failures — every error surfaces
+- ❌ **Authed/app shells without mobile nav from the cluster that builds them** — persistent/fixed sidebars (`hidden md:block`, `w-64`) with no hamburger + slide-over, controls reachable only at desktop, or deferring responsive to a "later cluster." Mobile-first (Rule Zero, `UI-UX-BUILDING-MANUAL`) is a build-time GATE, not polish. The 375px + tablet behavior is built in the same cluster as the shell, never fixed-up after.
 
 If you find yourself about to violate any forbidden zone, **STOP and surface**.
 
@@ -363,6 +364,7 @@ The Factory works because the doctrine works. The doctrine works because we trus
 
 | Version | Date       | Changes                                                                                                                       |
 | ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 3.2     | 2026-06-18 | Mobile-first forbidden zone: authed/app shells must ship mobile nav (hamburger + slide-over) in the cluster that builds them — deferring responsive is a Rule Zero violation. (Operator-driven after a missed mobile shell on Cyber Pharma; propagate to the canonical template — architect.) |
 | 3.1     | 2026-05-27 | Added Karpathy-stolen rules K5, K6, K7, K9, K12. Added Active Project Module bridge pointer section.                          |
 | 3.0     | 2026-04-XX | Major restructure: Plan Mode three-layer enforcement, Karpathy Protocol named, 20 failure modes, Disaster Recovery formalized |
 | 2.x     | 2026-Q1    | Pre-Plan-Mode era; various iterations                                                                                         |

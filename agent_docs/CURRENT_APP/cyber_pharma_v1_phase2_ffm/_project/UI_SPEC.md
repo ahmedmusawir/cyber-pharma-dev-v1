@@ -1,11 +1,11 @@
-# UI_SPEC v1.4 — Cyber Pharma v1 / Phase 2
+# UI_SPEC v1.6 — Cyber Pharma v1 / Phase 2
 
-> **Reader:** Claudy. **Scope:** the 3 KIPs + the OwedBook screen + the two-surface shell split (see Amendment v1.4 below). **Tokens inherited from Phase 1** (`globals.css` v1.1) — do NOT reinstall or re-theme. Semantic utilities only, never numbered colors. Mist default, Slate via toggle. Saira / `--radius:0`.
+> **Reader:** Claudy. **Scope:** the 3 KIPs + the OwedBook screen + the two-surface shell split (see Amendment v1.6 below). **Tokens inherited from Phase 1** (`globals.css` v1.1) — do NOT reinstall or re-theme. Semantic utilities only, never numbered colors. Mist default, Slate via toggle. Saira / `--radius:0`.
 > **Visual ground truth:** the OwedBook artifacts in `_design/phase2-reference/` (Mist, Slate, Federal-tab, mobile Mist, mobile Slate) — these are now BUILD TARGETS, not "do not build" reference. Match them.
 
 ---
 
-## ⚠ AMENDMENT v1.4 — Two-Surface Split (READ FIRST — supersedes single-surface routing in §5)
+## ⚠ AMENDMENT v1.6 — Two-Surface Split + Mobile Shell (READ FIRST — supersedes single-surface routing in §5)
 
 **Context.** Phase 1's single admin surface is being split into **two distinct top-level surfaces**, toggled by a new top-navbar switcher. Same shell, same theme, same user menu — only the **left sidebar** and the **main route** differ. This is part of **Cluster 2** (it amends the screen's routing/shell). It supersedes the single-surface `/admin-portal` model previously implied in §5. The Admin Portal content is NOT redesigned here — it later inherits the MissionControl (Super Admin) design once that's settled.
 
@@ -46,11 +46,14 @@ This amendment = a routing/shell + nav change **plus** painting the OwedBook scr
 The two-surface switcher and the Admin Portal are ADMIN-only. Enforce on
 BOTH layers — visibility AND route:
 
-- **Top-nav switcher visibility (role-driven):**
-  - **ADMIN** → navbar shows both switcher links (OwedBook ⇄ Admin Portal).
-  - **MEMBER** → navbar shows NO switcher links at all (bare navbar: logo +
-    theme toggle + user menu only). A member lands on `/owedbook` and stays
-    there; they never see an Admin Portal link.
+- **Top-nav links (role-driven visibility) — v1.6:**
+  - **ADMIN** → navbar shows **OwedBook · Admin Portal · Profile**.
+  - **MEMBER** → navbar shows **OwedBook · Profile** (NOT an empty navbar; no
+    Admin Portal link). A member lands on `/owedbook`.
+  - Only **Admin Portal** is ADMIN-gated. **OwedBook** and **Profile** are
+    visible to every authenticated user. Active link via `usePathname`
+    (Profile active on `/profile`). The mobile hamburger panel lists the same
+    role-aware links.
   - Role comes from the server-controlled role (same source as
     `protectPage` / the Profile role display) — never from `user_metadata`.
 
@@ -68,11 +71,12 @@ Every authenticated user — ADMIN and MEMBER — must be able to reach their
 own profile to view account info and change their password. A member who
 cannot change their password is a broken account; this is required for v1.
 
-- **Access point — top-right user menu (UserMenu dropdown):** clicking the
-  avatar/email cluster opens a dropdown containing a "Profile" link (plus
-  existing items / sign-out). Visible to ALL roles on BOTH surfaces. This
-  mirrors the original demo's F-icon → Profile pattern and is the canonical,
-  universal access point.
+- **Access point — top-level navbar link (role-aware), v1.6:** Profile is a
+  **primary nav link** in the top navbar (and the mobile hamburger panel),
+  visible to ALL roles — matching its top-level cross-surface route. It also
+  remains in the top-right avatar dropdown alongside sign-out (redundant is
+  fine). _(Supersedes v1.3's "dropdown-only" access — Profile is promoted to
+  the navbar to match its top-level status. Log out stays in the dropdown.)_
 - **Route:** `/profile` is a TOP-LEVEL route guarded
   `protectPage([AppRole.ADMIN, AppRole.MEMBER])` — moved OUT of the (admin)
   route group so members are not blocked by the admin-only guard. (Same
@@ -148,7 +152,7 @@ KIPs FIRST, then the screen that consumes them. Hard gate G4.
 
 ## 5. The OwedBook Screen (`/owedbook`)
 
-Replaces the Phase-1 "Coming in Phase 2" placeholder, which **moves from `/admin-portal` to `/owedbook`** per Amendment v1.4 above. Lives behind `protectPage([AppRole.ADMIN])`. Matches `_design/phase2-reference/owedbook-metro-warm-mist.png` (and Slate / Federal / mobile variants).
+Replaces the Phase-1 "Coming in Phase 2" placeholder, which **moves from `/admin-portal` to `/owedbook`** per Amendment v1.6 above. Lives behind `protectPage([AppRole.ADMIN])`. Matches `_design/phase2-reference/owedbook-metro-warm-mist.png` (and Slate / Federal / mobile variants).
 
 ### 5.1 Layout (desktop ≥ `lg`)
 
@@ -200,7 +204,10 @@ From/To date inputs, Filter dropdown (kit `Select`), PBM MultiSelect (KIP-2), Cl
 
 ## 6. Responsive Transforms (Rule Zero — built mobile-correct, not fixed-up)
 
-- **Filter rail → drawer below `lg`:** a "Filters" trigger with an active-count badge opens a slide-in drawer holding the whole rail.
+> **Built in the SAME cluster as the shell/screen — Gate M, never a "later cluster."** (v1.5)
+
+- **Authed shell below `lg`:** the navbar collapses to a hamburger (surface switcher + theme + account); the sidebar — nav items on `/admin-portal`, the filter rail on `/owedbook` — becomes a left **slide-over** opened by a trigger (`Menu`/`Filters`). The fixed `w-[25rem]` column shows only at `lg+`. NEVER `hidden md:block` with no trigger.
+- **Filter rail → slide-over below `lg`:** the rail rides inside that sidebar slide-over (it IS the sidebar content on `/owedbook`).
 - **KPI row → 2×2** below `md`.
 - **Tabs → horizontal scroll strip** on mobile.
 - **DataTable → card reflow** below `md` (KIP-1 owns this).
@@ -236,6 +243,8 @@ If UI behavior isn't covered: check the `_design` artifact → check `DATA_CONTR
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.6     | 2026-06-18 | Profile promoted to a top-level, role-aware navbar link (§E/§F). ADMIN navbar = OwedBook · Admin Portal · Profile; MEMBER navbar = OwedBook · Profile (no longer an empty navbar). Active via `usePathname`; same links in the mobile panel. Log out stays in the avatar dropdown (Profile also remains there, redundant-OK). Supersedes v1.3 "dropdown-only" profile access and v1.2/v1.5 "MEMBER sees no nav links." |
+| 1.5     | 2026-06-18 | Mobile shell (Rule Zero / Gate M). Authed shell collapses below `lg`: navbar → hamburger + panel (switcher/theme/account); sidebar → left slide-over (nav on /admin-portal, filter rail on /owedbook) opened by a trigger; fixed `w-[25rem]` column only at `lg+`. New `--navbar`/`--navbar-foreground` tokens (darker coral in light, dark unchanged) — operator override of the no-re-theme zone. §6 reframed: responsive is built in the same cluster, not deferred. Doctrine swept: root CLAUDE.md forbidden zone + UI-UX manual breakpoint reconcile (wide rails slide-over below lg) + PHASE_GATES Gate M. |
 | 1.4     | 2026-06-18 | OwedBook sidebar = filter rail (Amendment §A.1 + §5.1). On /owedbook the left sidebar IS the filter rail — command/search input stays at the top, the filter rail (Upload Data, From/To, Filter, PBM, Clear/Apply, "N filters active", Get Fresh Data) sits directly below it. The "Dashboard" nav item is removed from that surface. Filter rail moves OUT of the main content column INTO the sidebar slot; main pane = DASHBOARD label + title + subtitle + 4 KPI tiles + pager + tabs + table only. /admin-portal surface unchanged. |
 | 1.3     | 2026-06-17 | Universal Profile access (Amendment §F). /profile moves OUT of the (admin) group to a top-level route guarded protectPage([ADMIN, MEMBER]); Profile link added to the top-right UserMenu dropdown, visible to all roles on both surfaces (mirrors the original demo's F-icon → Profile). Existing self-scoped My Profile page (own email/role + change own password) reused as-is. Closes the member-can't-change-password showstopper flagged in the B-3 plan's risk list. |
 | 1.2 | 2026-06-17 | Role-based nav + route guard (Amendment §E). ADMIN sees both switcher links; MEMBER sees no switcher links (bare navbar) and lands on /owedbook. /admin-portal and /admin-portal/\* guarded by protectPage([AppRole.ADMIN]) — members hitting the URL directly are redirected to /owedbook. Visibility AND route both enforced; role from server-controlled source, never user_metadata. |

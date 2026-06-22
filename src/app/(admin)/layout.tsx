@@ -1,8 +1,7 @@
 import { ReactNode } from "react";
-import Navbar from "@/components/global/Navbar";
-import AdminSidebar from "@/components/layout/AdminSidebar";
 import { protectPage } from "@/utils/supabase/actions";
 import { AppRole } from "@/utils/app-role";
+import AuthedShell from "@/components/layout/AuthedShell";
 
 interface LayoutProps {
   children: ReactNode;
@@ -13,15 +12,5 @@ export default async function AdminLayout({ children }: LayoutProps) {
   // (their landing), not the login page (UI_SPEC v1.3 §E).
   await protectPage([AppRole.ADMIN], { unauthorizedRedirect: "/owedbook" });
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <section className="flex flex-1">
-        <div className="hidden md:block h-auto flex-shrink-0 border-4 w-[25rem]">
-          <AdminSidebar />
-        </div>
-        <div className="flex-grow">{children}</div>
-      </section>
-    </div>
-  );
+  return <AuthedShell>{children}</AuthedShell>;
 }

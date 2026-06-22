@@ -26,8 +26,8 @@
 | Breakpoint | Width | Behavior |
 |---|---|---|
 | **Mobile** | 375px | Default; everything works here first |
-| **Tablet** | 768px (`md:`) | Sidebars become persistent; layouts may split |
-| **Desktop** | 1024px+ (`lg:`) | Full multi-column layouts permitted |
+| **Tablet** | 768px (`md:`) | Layouts may split. Narrow nav rails may persist; **wide app rails (≥ ~20rem) stay a slide-over** (they don't fit yet) |
+| **Desktop** | 1024px+ (`lg:`) | Full multi-column layouts permitted; wide app rails become persistent here |
 
 Every UI screen MUST be verified at all three breakpoints before phase completion.
 
@@ -40,7 +40,7 @@ This is not a suggestion. This is the operating standard. It applies at every ga
 ### Implementation Discipline
 
 - **Touch targets:** 44 pixels minimum on any interactive element
-- **Sidebars:** Slide-overs below 768px; never persistent at mobile widths
+- **Sidebars:** Slide-over below the breakpoint where the rail actually fits — `lg` (1024) for wide app rails (≥ ~20rem), `md` (768) for narrow nav. Never persistent at a width the rail can't fit, and never *absent* below it: a hamburger/trigger to open the slide-over is mandatory. A fixed sidebar with `hidden md:block` and no trigger = the rail vanishes on mobile = automatic failure.
 - **Type sizes:** Readable at 375px without zoom (no smaller than 14px body text)
 - **Spacing:** Tap-friendly padding, not pixel-economy
 - **No horizontal scroll** at any width below desktop

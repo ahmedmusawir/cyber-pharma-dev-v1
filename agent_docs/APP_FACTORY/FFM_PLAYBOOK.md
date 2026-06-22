@@ -2,7 +2,7 @@
 
 > **Audience:** Future Architects (human or agent) authoring a Frontend-First Module (FFM) for any project's any phase.
 > **Purpose:** A self-contained, end-to-end guide so the reader can produce a complete, working FFM without hunting through old repos or scattered docs.
-> **Version:** v1.0 (June 2026)
+> **Version:** v1.1 (2026-06-18) — added mandatory **Gate M (mobile shell)** to §13.1 + authoring checklist (Rule Zero as an enforced gate, not just spec advice; after RUN_002 missed shipping a mobile shell). Prev: v1.0 (June 2026).
 > **Owner:** Stark Industries — AI App Factory
 > **Pairs with:** `HANDOFF_PACKAGE_PLAYBOOK.md`, `APP_FACTORY_SKILLS_PLAYBOOK.md`, `SOFTWARE_FACTORY_PLAYBOOK.md`, `ARCHITECT_PLAYBOOK.md`, `ENGINEER_PLAYBOOK.md`
 
@@ -1352,6 +1352,17 @@ Plus a final section:
 
 - **Master Sign-Off** — all gates green, operator gut-check, both apps deployed
 
+**MANDATORY cross-cutting gate — Gate M, Mobile Shell (every FFM, every UI-bearing sub-phase):**
+
+Rule Zero is a build-time GATE, not spec-authoring advice. Every `PHASE_GATES.md` MUST carry a **Gate M**, verified in the SAME sub-phase that builds any shell/screen — NOT a late "responsive" cluster:
+
+- Authed/app shell has mobile nav: navbar → hamburger; the sidebar / app-rail is reachable via a hamburger + slide-over below its fit breakpoint (`lg` for wide rails ≥ ~20rem) — never `hidden md:block` (or fixed-width) with no trigger.
+- No control is desktop-only; no horizontal overflow at 375px; touch targets ≥ 44px.
+- Verified at 375 / tablet / desktop, both themes.
+- **Failure mode — refuse to advance:** "we'll fix mobile in a later cluster" (the named deferred-violation pattern).
+
+Source of truth: root `CLAUDE.md` forbidden zone + `UI-UX-BUILDING-MANUAL` Rule Zero. (Added after a missed mobile shell shipped past the gates — RUN_002. Rule Zero existed as authoring advice but wasn't an enforced gate; this closes that.)
+
 **Length:** 200-400 lines.
 
 ### 13.2 — `verification/BUILD_CHECKLIST.md`
@@ -1851,8 +1862,8 @@ Use this checklist when authoring a new FFM. Walk it top to bottom. Don't skip s
 
 ### `verification/`
 
-- [ ] `PHASE_GATES.md` (Gate 0 through Gate 6, master sign-off)
-- [ ] `BUILD_CHECKLIST.md` (pre-build checks, per-sub-phase checks, hard gates pass, gut check, sign-off)
+- [ ] `PHASE_GATES.md` (Gate 0 through Gate 6, **Gate M — mobile shell**, master sign-off)
+- [ ] `BUILD_CHECKLIST.md` (pre-build checks, per-sub-phase checks, hard gates pass, **mobile shell at 375/tablet**, gut check, sign-off)
 
 ### Self-Check
 

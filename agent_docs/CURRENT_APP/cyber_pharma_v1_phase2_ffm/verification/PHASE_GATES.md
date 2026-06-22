@@ -183,11 +183,29 @@
 
 ---
 
+## Gate M — Mobile Shell (Rule Zero — applies to EVERY cluster that ships UI)
+
+Enforces the universal doctrine (`UI-UX-BUILDING-MANUAL` Rule Zero; root `CLAUDE.md` forbidden zone). Mobile-first is a build-time gate, **not** a late "responsive" cluster.
+
+**Criteria (verified in the SAME cluster that builds the shell/screen):**
+- [ ] Authed shell has mobile nav: navbar collapses to a hamburger; the sidebar/app-rail is reachable via a hamburger + slide-over below its fit breakpoint (`lg` for wide rails) — never `hidden md:block` with no trigger.
+- [ ] No control is desktop-only: every action (filters, nav, account) reachable at 375px.
+- [ ] No horizontal overflow at 375px; touch targets ≥ 44px.
+- [ ] Verified at 375 / tablet / desktop, both themes.
+- [ ] The plan's 375px sketch existed BEFORE the component was authored.
+
+**Failure mode:** "we'll fix mobile in a later cluster." This is the named deferred-violation pattern — **refuse to advance.**
+
+**Operator approval required.**
+
+---
+
 ## Master Sign-Off
 
 Phase 1 FFM is complete when:
 
 ✅ All six gates above passed
+✅ Gate M (mobile shell) passed for every UI-bearing cluster
 ✅ Operator's gut check: "yes, ready for Phase 2"
 ✅ Local build + dev clean
 ✅ Theme toggle works

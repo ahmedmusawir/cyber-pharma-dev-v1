@@ -119,6 +119,13 @@ Operator runs this checklist locally:
 - [ ] Open `_design/style-tile.html` in browser (if shipped) or compare PNG against the running app
 - [ ] All tokens visible match the running app's colors
 
+#### Mobile shell — Rule Zero (Gate M, every UI-bearing cluster)
+- [ ] At 375px AND tablet: navbar collapses to a hamburger; surface switcher + account/theme all reachable
+- [ ] The sidebar / app-rail (filter rail on /owedbook, nav on /admin-portal) is reachable via a hamburger + slide-over — NOT `hidden md:block` with no trigger
+- [ ] No horizontal overflow at 375px; touch targets ≥ 44px
+- [ ] Both themes (Mist/Slate) hold at mobile + tablet
+- [ ] FAIL if any control is desktop-only or responsive was "deferred to a later cluster"
+
 ### Step 7 — Env Var Fail-Closed Verification
 
 Critical security test. Operator does this:

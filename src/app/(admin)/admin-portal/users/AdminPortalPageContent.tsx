@@ -60,8 +60,8 @@ const AdminPortalPageContent = async ({ page }: Props) => {
                     Role: {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                   </p>
                 </CardContent>
-                <CardFooter className="flex gap-2 pt-2">
-                  <Button asChild variant="outline" size="sm" className="border-2 border-border hover:bg-accent">
+                <CardFooter className="flex flex-col items-stretch gap-2 pt-2">
+                  <Button asChild variant="outline" size="sm" className="w-full justify-center border-2 border-border hover:bg-accent">
                     <Link href={`/admin-portal/users/edit/${user.id}`}>
                       <Pencil className="mr-1 h-4 w-4" />
                       Edit
