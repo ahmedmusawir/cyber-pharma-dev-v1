@@ -1,29 +1,29 @@
-import type { ColumnDef } from "@/components/common/DataTable";
+import type { ColumnDef, SemanticColor } from "@/components/common/DataTable";
 import type { OwedBookRow, OwedBookSummaryRow } from "@/types/OwedBook";
 import StatusChip from "./StatusChip";
 import { usd } from "./format";
 
 const money = (v: unknown) => usd(Number(v ?? 0));
 
-// Inert Report affordance — real export wires in Phase 5/6 (UI_SPEC §5.4 pattern).
+const posNeg = (n: number | null): SemanticColor =>
+  n == null || n === 0 ? "foreground" : n > 0 ? "success" : "destructive";
+
+// Report affordance — shows when a report exists; real view/download is Phase 5/6.
 const reportColumn: ColumnDef<OwedBookRow> = {
-  key: "id",
+  key: "report_file",
   label: "Report",
-  render: () => (
-    <button
-      type="button"
-      className="text-primary text-sm underline-offset-2 hover:underline"
-    >
-      Report
-    </button>
-  ),
+  render: (row) =>
+    row.report_file ? (
+      <button type="button" className="text-primary text-sm underline-offset-2 hover:underline">
+        Report
+      </button>
+    ) : (
+      <span className="text-muted-foreground">—</span>
+    ),
 };
 
-const owedSemantic = (row: OwedBookRow) =>
-  row.owed > 0 ? "success" : row.owed < 0 ? "destructive" : "foreground";
-
 // Commercial Dollars (§5.3): Date · Script · Qty · Medicaid Rate · Method ·
-// Expected · Original Paid · Owed · Report · Status.
+// Expected · Original Paid · Owed · Report · Status. (commercial = demo spread.)
 export const COMMERCIAL_COLUMNS: ColumnDef<OwedBookRow>[] = [
   { key: "date", label: "Date" },
   { key: "script", label: "Script" },
@@ -32,32 +32,31 @@ export const COMMERCIAL_COLUMNS: ColumnDef<OwedBookRow>[] = [
   { key: "method", label: "Method" },
   { key: "expected", label: "Expected", align: "right", numeric: true, format: money },
   { key: "original_paid", label: "Original Paid", align: "right", numeric: true, format: money },
-  { key: "owed", label: "Owed", align: "right", numeric: true, hero: true, format: money, semanticColor: owedSemantic },
+  { key: "owed", label: "Owed", align: "right", numeric: true, hero: true, format: money, semanticColor: (row) => posNeg(row.owed) },
   reportColumn,
   { key: "status", label: "Status", render: (row) => <StatusChip status={row.status} /> },
 ];
 
-// Federal Dollars (§5.3): Date · Script · Qty · AAC · Expected · Original Paid · Diff · Report.
-// Per DATA_CONTRACT: AAC = medicaid_rate; Diff = owed.
-export const FEDERAL_COLUMNS: ColumnDef<OwedBookRow>[] = [
-  { key: "date", label: "Date" },
-  { key: "script", label: "Script" },
-  { key: "qty", label: "Qty", align: "right", numeric: true },
-  { key: "medicaid_rate", label: "AAC", align: "right", numeric: true, format: money },
-  { key: "expected", label: "Expected", align: "right", numeric: true, format: money },
-  { key: "original_paid", label: "Original Paid", align: "right", numeric: true, format: money },
-  { key: "owed", label: "Diff", align: "right", numeric: true, hero: true, format: money, semanticColor: owedSemantic },
-  reportColumn,
-];
-
 // Updated Commercial Payments (§5.3): Date · Script · Original Paid · New Paid · Updated Difference.
-// SURFACED GAP (DATA_CONTRACT §8): OwedBookRow has no `new_paid` / per-row
-// `updated_difference` field. Not invented here — extending the contract is an
-// operator decision (Cluster 3). Built with the columns the contract supports.
 export const UPDATED_COLUMNS: ColumnDef<OwedBookRow>[] = [
   { key: "date", label: "Date" },
   { key: "script", label: "Script", hero: true },
   { key: "original_paid", label: "Original Paid", align: "right", numeric: true, format: money },
+  { key: "new_paid", label: "New Paid", align: "right", numeric: true, format: money },
+  { key: "updated_difference", label: "Updated Difference", align: "right", numeric: true, format: money, semanticColor: (row) => posNeg(row.updated_difference) },
+];
+
+// Federal Dollars (§5.3): Date · Script · Qty · AAC · Expected · Original Paid · Diff · Report.
+// Uses the REAL federal fields (aac / federal_expected / federal_diff).
+export const FEDERAL_COLUMNS: ColumnDef<OwedBookRow>[] = [
+  { key: "date", label: "Date" },
+  { key: "script", label: "Script" },
+  { key: "qty", label: "Qty", align: "right", numeric: true },
+  { key: "aac", label: "AAC", align: "right", numeric: true, format: money },
+  { key: "federal_expected", label: "Expected", align: "right", numeric: true, format: money },
+  { key: "original_paid", label: "Original Paid", align: "right", numeric: true, format: money },
+  { key: "federal_diff", label: "Diff", align: "right", numeric: true, hero: true, format: money, semanticColor: (row) => posNeg(row.federal_diff) },
+  reportColumn,
 ];
 
 // Summary (§5.3): PBM Name · Commercial Dollars · Federal Dollars (getSummary).

@@ -30,18 +30,32 @@ All in `src/types/`. Wire format mirrors what Phase-3 Supabase will return (snak
 // src/types/OwedBook.ts
 
 // One ledger row (one script's reconciliation line)
+// Cluster-3 extension (2026-06-22, operator-approved): added the updated-payment
+// pair, the REAL federal fields, report_file, and made pbm nullable — backs all
+// 4 tabs honestly per UI_SPEC §5.3. The Federal AAC/Diff are NOW DISTINCT fields
+// (aac / federal_diff), NOT aliases of medicaid_rate / owed (the demo proved them
+// separate). Resolves the §7 "medicaid_rate vs AAC" open question.
 export interface OwedBookRow {
   id: string;
   date: string;              // ISO 'YYYY-MM-DD'
   script: string;            // e.g. "751291-02"
   qty: number;
-  medicaid_rate: number;     // a.k.a. AAC on the Federal tab
-  method: string;            // e.g. "AAC"
-  expected: number;
-  original_paid: number;
-  owed: number;              // positive = recovered/owed-to-pharmacy; negative = overpaid
+  pbm: string | null;        // null shows as "—" (was non-null)
   status: OwedStatus | null; // null shows as "—"
-  pbm: string;               // PBM name, for filtering
+  report_file: string | null; // Report column; null shows as "—"
+  // commercial
+  original_paid: number;
+  medicaid_rate: number;     // demo
+  method: string;            // e.g. "AAC"
+  expected: number;          // commercial expected (demo)
+  owed: number;              // commercial; positive = owed-to-pharmacy; negative = overpaid
+  // updated commercial payments (Updated tab)
+  new_paid: number | null;
+  updated_difference: number | null; // new_paid − original_paid
+  // federal — REAL (distinct from the commercial/demo values above)
+  aac: number | null;
+  federal_expected: number | null;   // aac × qty
+  federal_diff: number | null;       // federal_expected − original_paid
 }
 
 export type OwedStatus =
@@ -139,7 +153,7 @@ export interface OwedBookService {
 ## 7. Future Phase Decision Points (NOT decided now)
 
 - Real `user_data` column names + the exact join to reference tables → Phase 3 (resolved from Frank API extracts).
-- Whether `medicaid_rate` and the Federal-tab `AAC` are the same column or two → Phase 3 schema work.
+- ~~Whether `medicaid_rate` and the Federal-tab `AAC` are the same column or two~~ → **RESOLVED Cluster 3: two distinct fields** (`medicaid_rate` demo, `aac` real).
 - Pagination strategy (offset vs cursor) for real data volumes → Phase 3.
 - Whether Summary aggregates server-side or client-side at real scale → Phase 3.
 
@@ -151,4 +165,5 @@ If a component needs a shape not in this contract: STOP and surface — don't in
 
 | Version | Date | Changes |
 |---|---|---|
+| 1.1 | 2026-06-22 | **Cluster-3 `OwedBookRow` extension (operator-approved).** Added in ONE entry: `new_paid`, `updated_difference` (Updated tab); `aac`, `federal_expected`, `federal_diff` (Federal tab — REAL, now distinct from the demo `medicaid_rate`/`owed` aliases); `report_file` (Report column); and `pbm` made nullable (`string \| null`). Backs all 4 tabs honestly per UI_SPEC §5.3. Resolves the §7 "medicaid_rate vs AAC" open question (they're two fields). `owedBookService` wired to `src/mocks/owedbook.ts` (150 scrubbed rows from Frank's demo DB); filters (date/PBM/status) + pagination live in the service, not components. Still mock-backed; service remains the Phase-3 swap point. |
 | 1.0 | 2026-06-09 | Initial Phase 2 data contract. OwedBook row/KPI/filter/page/summary types; `OwedBookService` (first real domain service, mock-backed, swap-stable to Phase-3 Supabase); demo-data-only, zero Frank tables; auth stays direct (no wrapper). |
