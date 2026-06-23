@@ -64,8 +64,8 @@ describe("FilterRail upload", () => {
     expect(screen.getByText("2 filters active")).toBeInTheDocument();
   });
 
-  it("shows the accepted file-type helper", () => {
+  it("shows the upload purpose + type helper", () => {
     render(<FilterRail filters={{ pbms: [] }} pbmOptions={[]} onApply={() => {}} onClear={() => {}} />);
-    expect(screen.getByText("Accepted: CSV, Excel (.csv, .xlsx, .xls)")).toBeInTheDocument();
+    expect(screen.getByText("Upload your dispensing report (.csv, .xlsx)")).toBeInTheDocument();
   });
 });

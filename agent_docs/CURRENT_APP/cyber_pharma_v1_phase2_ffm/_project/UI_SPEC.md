@@ -1,11 +1,11 @@
-# UI_SPEC v1.9 — Cyber Pharma v1 / Phase 2
+# UI_SPEC v1.10 — Cyber Pharma v1 / Phase 2
 
-> **Reader:** Claudy. **Scope:** the 3 KIPs + the OwedBook screen + the two-surface shell split (see Amendment v1.9 below). **Tokens inherited from Phase 1** (`globals.css` v1.1) — do NOT reinstall or re-theme. Semantic utilities only, never numbered colors. Mist default, Slate via toggle. Saira / `--radius:0`.
+> **Reader:** Claudy. **Scope:** the 3 KIPs + the OwedBook screen + the two-surface shell split (see Amendment v1.10 below). **Tokens inherited from Phase 1** (`globals.css` v1.1) — do NOT reinstall or re-theme. Semantic utilities only, never numbered colors. Mist default, Slate via toggle. Saira / `--radius:0`.
 > **Visual ground truth:** the OwedBook artifacts in `_design/phase2-reference/` (Mist, Slate, Federal-tab, mobile Mist, mobile Slate) — these are now BUILD TARGETS, not "do not build" reference. Match them.
 
 ---
 
-## ⚠ AMENDMENT v1.9 — Two-Surface Split + Mobile Shell (READ FIRST — supersedes single-surface routing in §5)
+## ⚠ AMENDMENT v1.10 — Two-Surface Split + Mobile Shell (READ FIRST — supersedes single-surface routing in §5)
 
 **Context.** Phase 1's single admin surface is being split into **two distinct top-level surfaces**, toggled by a new top-navbar switcher. Same shell, same theme, same user menu — only the **left sidebar** and the **main route** differ. This is part of **Cluster 2** (it amends the screen's routing/shell). It supersedes the single-surface `/admin-portal` model previously implied in §5. The Admin Portal content is NOT redesigned here — it later inherits the MissionControl (Super Admin) design once that's settled.
 
@@ -152,7 +152,7 @@ KIPs FIRST, then the screen that consumes them. Hard gate G4.
 
 ## 5. The OwedBook Screen (`/owedbook`)
 
-Replaces the Phase-1 "Coming in Phase 2" placeholder, which **moves from `/admin-portal` to `/owedbook`** per Amendment v1.9 above. Lives behind `protectPage([AppRole.ADMIN])`. Matches `_design/phase2-reference/owedbook-metro-warm-mist.png` (and Slate / Federal / mobile variants).
+Replaces the Phase-1 "Coming in Phase 2" placeholder, which **moves from `/admin-portal` to `/owedbook`** per Amendment v1.10 above. Lives behind `protectPage([AppRole.ADMIN])`. Matches `_design/phase2-reference/owedbook-metro-warm-mist.png` (and Slate / Federal / mobile variants).
 
 ### 5.1 Layout (desktop ≥ `lg`)
 
@@ -202,7 +202,7 @@ From/To date inputs, Filter dropdown (kit `Select`, status), PBM MultiSelect (KI
 - **Upload Data** opens a real file picker (`accept=".csv,.xlsx,.xls"`); on select it shows the filename + "Uploading… → Upload complete".
 - **Get Fresh Data** shows "Refreshing… → Done".
 - Both route through the service (`owedBookService.uploadData(file)` / `refreshData()`) and **fake success after a short delay**. They do **NOTHING** with the file or data: **no read, no parse, no FileReader, no fetch, no store.** Real CSV/XLSX ingest + data refresh is **Phase 5** — swap the service body, no UI change. The service is the sole swap point.
-- **Upload helper text (v1.9):** a line under Upload Data states the accepted types — "Accepted: CSV, Excel (.csv, .xlsx, .xls)" — and MUST match the picker's `accept`. Visible on the desktop rail and the mobile drawer.
+- **Upload helper text (v1.10):** a line under Upload Data states purpose + types — **"Upload your dispensing report (.csv, .xlsx)"** — clarifying this is the pharmacy's dispensing/claims export that feeds the OwedBook (not images). Picker `accept=".csv,.xlsx,.xls"` (the helper lists the two primary formats; the picker also accepts legacy `.xls`). Visible on the desktop rail and the mobile drawer.
 
 **Filter state + active count (v1.9):**
 - Filter state (From/To, Filter, PBM) is held at the **screen level** (`OwedBookContext`), not in the rail. The rail/drawer **seeds its controls from the committed filters**, so reopening shows the active selection (the rail re-mounts on each drawer open).
@@ -257,6 +257,7 @@ If UI behavior isn't covered: check the `_design` artifact → check `DATA_CONTR
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.10    | 2026-06-23 | Upload helper reword (§5.4): "Upload your dispensing report (.csv, .xlsx)" (purpose + types; it's the dispensing/claims export, not images). Also added an end-to-end integration test proving #1 (mobile drawer closes on Apply) through the REAL OwedBookProvider → AuthedShell → FilterRail path — #1/#2 confirmed working in committed code (`bbdb5d7`). |
 | 1.9     | 2026-06-23 | Filter UX pass (§5.4). (1) Filter state held at the screen level (`OwedBookContext`); the rail/drawer seeds its controls from the committed filters, so reopening shows the active selection (was resetting). (2) "N filters active" reflects the APPLIED set (shared `countActiveFilters`) and now also shows as an at-a-glance coral badge + Clear on the MAIN screen. (3) Mobile: Apply/Clear dismiss the drawer (via `appliedTick`) so results are immediately visible. (4) Accepted-types helper under Upload Data ("CSV, Excel (.csv, .xlsx, .xls)"), matching the picker. |
 | 1.8     | 2026-06-22 | Phase 2.1 filter-rail pass (§5.4). (1) Removed the dead "Type a command or search…" cmdk input from the authed sidebar (both surfaces + drawer); content shifts up. Primitive kept (still used by the members `Sidebar`). (2) **Upload Data** is now a UI-functional mock: real `.csv/.xlsx/.xls` picker → `owedBookService.uploadData(file)` → "Uploading… → Upload complete"; **never reads/parses/sends/stores the file.** (3) **Get Fresh Data** UI-functional mock: `owedBookService.refreshData()` → "Refreshing… → Done". Both fake success via the service; real ingest/refresh = Phase 5 (service is the swap point). Boundary made explicit in §5.4. |
 | 1.7     | 2026-06-22 | `/owedbook` sidebar-collapse breakpoint raised `lg`→`xl` (§6). The wide filter rail + KPI row + table were clipping at 1024 (4th KPI + right table columns chopped); now the fixed `w-[25rem]` rail shows only at `xl+` (1280), and below `xl` the rail collapses to the existing slide-over with the main content full width. `/admin-portal` UNCHANGED (narrow nav rail stays `lg`). Surface-aware in the shared AuthedShell; no new drawer. |

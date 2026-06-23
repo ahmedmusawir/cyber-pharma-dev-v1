@@ -89,7 +89,7 @@ const FilterRail = ({ filters, pbmOptions, onApply, onClear }: FilterRailProps) 
           className="hidden"
           aria-label="Upload claims file"
         />
-        <p className="text-xs text-muted-foreground">Accepted: CSV, Excel (.csv, .xlsx, .xls)</p>
+        <p className="text-xs text-muted-foreground">Upload your dispensing report (.csv, .xlsx)</p>
         {upload && (
           <p className="text-xs text-muted-foreground truncate" role="status">
             {upload.name} — {upload.status === "uploading" ? "Uploading…" : "Upload complete"}
