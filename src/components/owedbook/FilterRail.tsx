@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import MultiSelect from "@/components/common/MultiSelect";
 import {
   Select,
@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/select";
 import { owedBookService } from "@/services/owedbook";
 import type { OwedBookFilters } from "@/types/OwedBook";
+import { countActiveFilters } from "./OwedBookContext";
 
 interface FilterRailProps {
+  filters: OwedBookFilters; // committed filters — seed the controls + active count
   pbmOptions: string[];
   onApply: (filters: OwedBookFilters) => void;
   onClear: () => void;
@@ -32,17 +34,22 @@ const FILTER_OPTIONS = [
 // Filter rail (UI_SPEC §5.4). UI-only: Apply re-queries the service. Upload Data
 // is a UI-FUNCTIONAL MOCK — opens a real picker and fakes success via the
 // service, but does NOT read/parse/send the file (real ingest = Phase 5).
-const FilterRail = ({ pbmOptions, onApply, onClear }: FilterRailProps) => {
-  const [draft, setDraft] = useState<OwedBookFilters>(EMPTY);
+const FilterRail = ({ filters, pbmOptions, onApply, onClear }: FilterRailProps) => {
+  // Seed the controls from the committed filters so reopening the rail/drawer
+  // shows the active selection (FilterRail re-mounts each time the drawer opens).
+  const [draft, setDraft] = useState<OwedBookFilters>(filters);
   const [upload, setUpload] = useState<{ name: string; status: "uploading" | "done" } | null>(null);
   const [refresh, setRefresh] = useState<"idle" | "refreshing" | "done">("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const activeCount =
-    (draft.from ? 1 : 0) +
-    (draft.to ? 1 : 0) +
-    (draft.pbms.length > 0 ? 1 : 0) +
-    (draft.filter ? 1 : 0);
+  // Re-sync the draft when committed filters change externally (e.g. the
+  // main-screen "Clear filters"), so the persistent desktop rail isn't stale.
+  useEffect(() => {
+    setDraft(filters);
+  }, [filters]);
+
+  // "N filters active" reflects the APPLIED (committed) set, not the draft.
+  const activeCount = countActiveFilters(filters);
 
   const handleClear = () => {
     setDraft(EMPTY);
@@ -82,6 +89,7 @@ const FilterRail = ({ pbmOptions, onApply, onClear }: FilterRailProps) => {
           className="hidden"
           aria-label="Upload claims file"
         />
+        <p className="text-xs text-muted-foreground">Accepted: CSV, Excel (.csv, .xlsx, .xls)</p>
         {upload && (
           <p className="text-xs text-muted-foreground truncate" role="status">
             {upload.name} — {upload.status === "uploading" ? "Uploading…" : "Upload complete"}

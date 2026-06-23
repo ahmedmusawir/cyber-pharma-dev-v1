@@ -14,7 +14,7 @@ import type {
   OwedTab,
 } from "@/types/OwedBook";
 import KpiTiles from "./KpiTiles";
-import { useOwedBook } from "./OwedBookContext";
+import { useOwedBook, countActiveFilters } from "./OwedBookContext";
 import {
   COMMERCIAL_COLUMNS,
   FEDERAL_COLUMNS,
@@ -55,6 +55,7 @@ const SkeletonRows = () => (
 // sidebar (AdminSidebar); this consumes the shared filter state via context.
 const OwedBookScreen = () => {
   const { filters, clearFilters } = useOwedBook();
+  const activeFilterCount = countActiveFilters(filters);
   const [activeTab, setActiveTab] = useState<OwedTab>("commercial_dollars");
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<{ key: string; direction: "asc" | "desc" }>();
@@ -155,6 +156,22 @@ const OwedBookScreen = () => {
           Ledger-level clarity on every dollar you&apos;re owed.
         </p>
       </header>
+
+      {/* At-a-glance active-filter badge (UI_SPEC §5.4) — reflects the APPLIED set. */}
+      {activeFilterCount > 0 && (
+        <div className="flex items-center gap-3" data-testid="active-filters">
+          <span className="inline-flex items-center bg-chart-5 text-white px-2.5 py-1 text-xs font-semibold">
+            {activeFilterCount} {activeFilterCount === 1 ? "filter" : "filters"} active
+          </span>
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="text-primary text-xs underline-offset-2 hover:underline"
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
 
       <KpiTiles kpis={kpis} />
 

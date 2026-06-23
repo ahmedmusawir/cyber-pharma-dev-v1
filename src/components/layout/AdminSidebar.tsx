@@ -32,7 +32,7 @@ const ADMIN_ITEMS: NavItem[] = [
 const AdminSidebar = () => {
   const pathname = usePathname() ?? "";
   const onAdmin = pathname.startsWith("/admin-portal");
-  const { pbmOptions, applyFilters, clearFilters } = useOwedBook();
+  const { filters, pbmOptions, applyFilters, clearFilters } = useOwedBook();
 
   return (
     <Command className="bg-secondary">
@@ -56,6 +56,7 @@ const AdminSidebar = () => {
       ) : (
         <div className="px-4 py-3">
           <FilterRail
+            filters={filters}
             pbmOptions={pbmOptions}
             onApply={applyFilters}
             onClear={clearFilters}

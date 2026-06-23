@@ -17,6 +17,18 @@ jest.mock("@/components/layout/AdminSidebar", () => ({
   default: () => <div data-testid="sidebar-content">SIDEBAR</div>,
 }));
 
+// `mock`-prefixed so jest's hoisted factory may close over it.
+let mockTick = 0;
+jest.mock("@/components/owedbook/OwedBookContext", () => ({
+  useOwedBook: () => ({
+    appliedTick: mockTick,
+    filters: { pbms: [] },
+    pbmOptions: [],
+    applyFilters: () => {},
+    clearFilters: () => {},
+  }),
+}));
+
 import AuthedShell from "@/components/layout/AuthedShell";
 
 const mockUsePathname = usePathname as jest.Mock;
@@ -100,5 +112,26 @@ describe("AuthedShell mobile sidebar drawer", () => {
       </AuthedShell>
     );
     expect(screen.getByTestId("desktop-sidebar")).toHaveClass("hidden", "lg:block");
+  });
+
+  // Intent: applying filters in the mobile drawer dismisses it so results show.
+  it("closes the drawer when filters are applied (appliedTick bumps)", () => {
+    mockTick = 0;
+    mockUsePathname.mockReturnValue("/owedbook");
+    const { rerender } = render(
+      <AuthedShell>
+        <p>main</p>
+      </AuthedShell>
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Open Filters" }));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    mockTick = 1; // an apply happened
+    rerender(
+      <AuthedShell>
+        <p>main</p>
+      </AuthedShell>
+    );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });

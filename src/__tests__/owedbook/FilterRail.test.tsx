@@ -29,7 +29,7 @@ import FilterRail from "@/components/owedbook/FilterRail";
 // the file itself (real ingest is Phase 5). The boundary is the service call.
 describe("FilterRail upload", () => {
   it("offers a .csv/.xlsx/.xls picker and shows mock success via the service", async () => {
-    render(<FilterRail pbmOptions={["OptumRx"]} onApply={() => {}} onClear={() => {}} />);
+    render(<FilterRail filters={{ pbms: [] }} pbmOptions={["OptumRx"]} onApply={() => {}} onClear={() => {}} />);
 
     const input = screen.getByLabelText("Upload claims file");
     expect(input).toHaveAttribute("accept", ".csv,.xlsx,.xls");
@@ -43,9 +43,29 @@ describe("FilterRail upload", () => {
   });
 
   it("Get Fresh Data reports mock refresh THROUGH the service (no real fetch)", async () => {
-    render(<FilterRail pbmOptions={["OptumRx"]} onApply={() => {}} onClear={() => {}} />);
+    render(<FilterRail filters={{ pbms: [] }} pbmOptions={["OptumRx"]} onApply={() => {}} onClear={() => {}} />);
     fireEvent.click(screen.getByRole("button", { name: "Get Fresh Data" }));
     expect(await screen.findByText("Done")).toBeInTheDocument();
     expect(mockRefresh).toHaveBeenCalled();
+  });
+
+  it("seeds the controls + active-count from the committed filters (persistence)", () => {
+    render(
+      <FilterRail
+        filters={{ pbms: ["Caremark"], from: "2026-06-01" }}
+        pbmOptions={["Caremark", "OptumRx"]}
+        onApply={() => {}}
+        onClear={() => {}}
+      />
+    );
+    // From date control reflects the applied value, not a reset.
+    expect(screen.getByDisplayValue("2026-06-01")).toBeInTheDocument();
+    // Active count reflects the applied set (date + PBM = 2).
+    expect(screen.getByText("2 filters active")).toBeInTheDocument();
+  });
+
+  it("shows the accepted file-type helper", () => {
+    render(<FilterRail filters={{ pbms: [] }} pbmOptions={[]} onApply={() => {}} onClear={() => {}} />);
+    expect(screen.getByText("Accepted: CSV, Excel (.csv, .xlsx, .xls)")).toBeInTheDocument();
   });
 });

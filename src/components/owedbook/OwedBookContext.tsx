@@ -20,7 +20,12 @@ interface OwedBookCtx {
   pbmOptions: string[];
   applyFilters: (f: OwedBookFilters) => void;
   clearFilters: () => void;
+  appliedTick: number; // bumps on every apply/clear — drawer-close signal
 }
+
+// Count of ACTIVE (applied) filters — shared by the rail + the main-screen badge.
+export const countActiveFilters = (f: OwedBookFilters): number =>
+  (f.from ? 1 : 0) + (f.to ? 1 : 0) + (f.pbms.length > 0 ? 1 : 0) + (f.filter ? 1 : 0);
 
 const EMPTY: OwedBookFilters = { pbms: [] };
 
@@ -29,6 +34,7 @@ const OwedBookContext = createContext<OwedBookCtx>({
   pbmOptions: [],
   applyFilters: () => {},
   clearFilters: () => {},
+  appliedTick: 0,
 });
 
 export const useOwedBook = () => useContext(OwedBookContext);
@@ -36,6 +42,7 @@ export const useOwedBook = () => useContext(OwedBookContext);
 export const OwedBookProvider = ({ children }: { children: ReactNode }) => {
   const [filters, setFilters] = useState<OwedBookFilters>(EMPTY);
   const [pbmOptions, setPbmOptions] = useState<string[]>([]);
+  const [appliedTick, setAppliedTick] = useState(0);
 
   // Distinct PBM names for the filter — load once.
   useEffect(() => {
@@ -49,11 +56,21 @@ export const OwedBookProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const applyFilters = useCallback((f: OwedBookFilters) => setFilters(f), []);
-  const clearFilters = useCallback(() => setFilters(EMPTY), []);
+  // Each apply/clear bumps appliedTick so the mobile drawer can dismiss itself
+  // (it covers the results otherwise) — same pattern as close-on-navigation.
+  const applyFilters = useCallback((f: OwedBookFilters) => {
+    setFilters(f);
+    setAppliedTick((t) => t + 1);
+  }, []);
+  const clearFilters = useCallback(() => {
+    setFilters(EMPTY);
+    setAppliedTick((t) => t + 1);
+  }, []);
 
   return (
-    <OwedBookContext.Provider value={{ filters, pbmOptions, applyFilters, clearFilters }}>
+    <OwedBookContext.Provider
+      value={{ filters, pbmOptions, applyFilters, clearFilters, appliedTick }}
+    >
       {children}
     </OwedBookContext.Provider>
   );

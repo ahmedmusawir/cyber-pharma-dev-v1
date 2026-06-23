@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/global/Navbar";
 import AdminSidebar from "@/components/layout/AdminSidebar";
+import { useOwedBook } from "@/components/owedbook/OwedBookContext";
 
 // Authed chrome (Rule Zero — mobile-correct from the start). Desktop (lg+):
 // fixed sidebar column, identical to the prior shell. Below lg (tablet + phone):
@@ -21,12 +22,15 @@ const AuthedShell = ({ children }: { children: ReactNode }) => {
   const sidebarVisible = onOwedbook ? "hidden xl:block" : "hidden lg:block";
   const collapsedBelow = onOwedbook ? "xl:hidden" : "lg:hidden";
 
-  // Close the drawer on any navigation. The sidebar's links (AdminSidebar)
-  // don't know they're inside the drawer, so without this the route changes
-  // behind an open drawer that never dismisses.
+  // appliedTick bumps whenever filters are applied/cleared (OwedBook surface;
+  // default 0 on /admin-portal where there's no provider).
+  const { appliedTick } = useOwedBook();
+
+  // Close the drawer on navigation OR on filter apply/clear — otherwise the open
+  // drawer covers the freshly-filtered results.
   useEffect(() => {
     setDrawerOpen(false);
-  }, [pathname]);
+  }, [pathname, appliedTick]);
 
   // Escape to close + lock body scroll while the drawer is open.
   useEffect(() => {
