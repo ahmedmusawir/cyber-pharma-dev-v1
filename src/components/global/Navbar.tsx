@@ -40,6 +40,10 @@ const Navbar = () => {
     ? [
         { label: "OwedBook", href: "/owedbook" },
         ...(isAdmin ? [{ label: "Admin Portal", href: "/admin-portal" }] : []),
+        // TODO: REMOVE — off-books operator tool (/moose-portal). ADMIN + env flag only.
+        ...(isAdmin && process.env.NEXT_PUBLIC_ENABLE_MOOSE_PORTAL === "true"
+          ? [{ label: "Moose", href: "/moose-portal" }]
+          : []),
         { label: "Profile", href: "/profile" },
       ]
     : [];
