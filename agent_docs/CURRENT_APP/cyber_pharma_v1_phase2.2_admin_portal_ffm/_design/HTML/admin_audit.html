@@ -1,0 +1,87 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin Portal Demo — Audit log</title>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700&display=swap" rel="stylesheet"><style>:root{
+--background:217 16% 90%;--foreground:219 16% 17%;--card:0 0% 100%;--card-foreground:219 16% 17%;
+--primary:12 93% 64%;--primary-foreground:0 0% 100%;--secondary:220 19% 94%;--secondary-foreground:219 16% 17%;
+--navbar:12 83% 47%;--navbar-foreground:0 0% 100%;--muted:222 15% 87%;--muted-foreground:218 12% 42%;
+--accent:12 93% 64%;--accent-foreground:0 0% 100%;--border:220 12% 75%;--input:220 12% 75%;--ring:12 93% 64%;
+--destructive:2 67% 51%;--success:131 54% 40%;--warning:41 93% 47%;--info:214 74% 53%;
+--chart-1:2 67% 51%;--chart-2:214 74% 53%;--chart-3:131 54% 40%;--chart-4:359 63% 42%;--chart-5:12 93% 64%;--radius:0px;}
+.dark{
+--background:222 18% 14%;--foreground:222 26% 93%;--card:220 16% 22%;--card-foreground:222 26% 93%;
+--primary:12 93% 64%;--primary-foreground:0 0% 100%;--secondary:221 16% 27%;--secondary-foreground:222 26% 93%;
+--navbar:12 88% 58%;--navbar-foreground:0 0% 100%;--muted:220 16% 19%;--muted-foreground:221 17% 71%;
+--accent:12 93% 64%;--accent-foreground:0 0% 100%;--border:218 13% 33%;--input:218 13% 33%;--ring:12 93% 64%;
+--destructive:351 95% 71%;--success:142 69% 58%;--warning:41 93% 47%;--info:214 74% 53%;
+--chart-1:351 95% 71%;--chart-2:214 74% 53%;--chart-3:142 69% 58%;--chart-4:359 63% 42%;--chart-5:12 93% 64%;--radius:0px;}*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{font-family:'Saira',system-ui,sans-serif;background:hsl(var(--background));color:hsl(var(--foreground));-webkit-font-smoothing:antialiased}
+.wrap{display:flex;flex-direction:column;min-height:100vh}
+.nav{background:hsl(var(--navbar));color:hsl(var(--navbar-foreground))}
+.nav-in{display:flex;align-items:center;gap:14px;padding:9px 20px}
+.logo{width:34px;height:34px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;flex:0 0 auto}.logo svg{width:20px;height:20px;color:#fff}
+.nav-links{flex:1;display:flex;justify-content:center;gap:26px}
+.nav-links a{color:rgba(255,255,255,.78);text-decoration:none;font-size:15px;font-weight:500;padding:6px 2px}
+.nav-links a.active{color:#fff;font-weight:600;border-bottom:2px solid #fff}
+.nav-right{display:flex;align-items:center;gap:14px}.nav-right .ico{width:20px;height:20px;opacity:.92}.nav-right .email{font-size:14px;opacity:.95}
+.nav-right .avatar{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.28);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+.nav-burger{display:none;background:transparent;border:0;color:#fff;cursor:pointer;padding:4px}.nav-burger svg{width:26px;height:26px}
+.trigbar{display:none;border-bottom:1px solid hsl(var(--border));padding:9px 18px}
+.trigbar button{display:inline-flex;align-items:center;gap:9px;background:transparent;border:0;color:hsl(var(--foreground));font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}.trigbar svg{width:19px;height:19px}
+.shell{display:flex;flex:1;min-height:0}
+.sidebar{flex:0 0 25rem;width:25rem;background:hsl(var(--secondary));border-right:1px solid hsl(var(--border))}
+.cmd-input{display:flex;align-items:center;gap:9px;padding:14px 16px;border-bottom:1px solid hsl(var(--border));color:hsl(var(--muted-foreground));font-size:14px}.cmd-input svg{width:16px;height:16px}
+.cmd-grp{padding:14px 14px}.cmd-head{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:hsl(var(--muted-foreground));padding:6px 10px 8px}
+.cmd-item{display:flex;align-items:center;gap:11px;padding:10px 12px;color:hsl(var(--foreground));text-decoration:none;font-size:15px;font-weight:500}.cmd-item svg{width:17px;height:17px}
+.cmd-item:hover{background:hsl(var(--muted))}.cmd-item.active{color:hsl(var(--primary));font-weight:700}
+.main{flex:1;min-width:0;padding:26px 30px}
+.eyebrow{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:hsl(var(--muted-foreground))}
+.demo-pill{letter-spacing:.04em;text-transform:none;font-size:11px;font-weight:600;color:hsl(var(--warning));background:hsl(var(--warning) / .14);border:1px solid hsl(var(--warning) / .4);padding:2px 8px}
+h1.page{font-size:30px;font-weight:700;letter-spacing:-.01em;margin-top:7px}
+.sub{font-size:15px;color:hsl(var(--muted-foreground));margin-top:4px}
+.breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:hsl(var(--muted-foreground));margin-bottom:14px}.breadcrumb .cur{color:hsl(var(--foreground));font-weight:500}
+.btn{font-size:14px;font-weight:500;padding:10px 16px;border:1px solid hsl(var(--border));background:hsl(var(--card));color:hsl(var(--foreground));cursor:pointer;font-family:inherit}
+.btn-primary{border:0;background:hsl(var(--primary));color:hsl(var(--primary-foreground));font-weight:600}
+.btn-sm{padding:7px 12px;font-size:13px}
+.pill{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;white-space:nowrap}
+.pill-success{background:hsl(var(--success) / .15);color:hsl(var(--success))}.pill-warning{background:hsl(var(--warning) / .16);color:hsl(var(--warning))}
+.pill-destructive{background:hsl(var(--destructive) / .15);color:hsl(var(--destructive))}.pill-info{background:hsl(var(--info) / .15);color:hsl(var(--info))}
+/* store header */
+.sh{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:6px}.sh h1{font-size:26px;font-weight:700;letter-spacing:-.01em}
+.sh-meta{font-size:14px;color:hsl(var(--muted-foreground));margin-top:8px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:26px;margin-bottom:14px}
+.sec-head h2{font-size:18px;font-weight:700}
+/* roster */
+.roster{border:1px solid hsl(var(--border));background:hsl(var(--card))}
+.mrow{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid hsl(var(--border));flex-wrap:wrap}.mrow:last-child{border-bottom:0}
+.av{width:40px;height:40px;border-radius:50%;background:hsl(var(--info) / .15);color:hsl(var(--info));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:0 0 auto}
+.minfo{flex:1;min-width:160px}.minfo .nm{font-weight:600;font-size:15px}.minfo .em{font-size:13px;color:hsl(var(--muted-foreground))}
+.mact{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+/* forms */
+.formcard{background:hsl(var(--card));border:1px solid hsl(var(--border));padding:24px;max-width:560px}
+.field{margin-bottom:18px}.field label{display:block;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:hsl(var(--muted-foreground));margin-bottom:7px}
+.field input,.field select{width:100%;border:1px solid hsl(var(--input));background:hsl(var(--background));padding:11px 13px;font-size:14px;color:hsl(var(--foreground));font-family:inherit}
+.field input::placeholder{color:hsl(var(--muted-foreground))}
+.invite-note{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:hsl(var(--muted-foreground));margin:4px 0 20px;padding:12px 14px;background:hsl(var(--info) / .08);border:1px solid hsl(var(--info) / .25)}
+.invite-note svg{width:17px;height:17px;color:hsl(var(--info));flex:0 0 auto;margin-top:1px}.invite-note b{color:hsl(var(--foreground));font-weight:600}
+/* billing rows */
+.brow{display:flex;align-items:center;gap:16px;padding:16px;border:1px solid hsl(var(--border));background:hsl(var(--card));margin-bottom:12px;flex-wrap:wrap}
+.binfo{flex:1;min-width:180px}.binfo .nm{font-weight:600;font-size:16px}.binfo .pl{font-size:13px;color:hsl(var(--muted-foreground));margin-top:3px}
+.bact{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.caption{font-size:12px;color:hsl(var(--muted-foreground));margin-top:14px}
+/* table (audit) */
+.tbl{border:1px solid hsl(var(--border));background:hsl(var(--card))}
+.thead,.trow{display:grid;grid-template-columns:170px 1.2fr 1.4fr 90px;gap:14px;padding:13px 16px;align-items:center}
+.thead{border-bottom:1px solid hsl(var(--border));font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:hsl(var(--muted-foreground))}
+.trow{border-bottom:1px solid hsl(var(--border));font-size:14px}.trow:last-child{border-bottom:0}
+.t-time{color:hsl(var(--muted-foreground));font-size:13px;font-variant-numeric:tabular-nums}.t-act{font-weight:600}.t-tgt{color:hsl(var(--muted-foreground))}.t-res{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:hsl(var(--muted-foreground))}
+@media (max-width:900px){
+ .nav-links,.nav-right{display:none}.nav-burger{display:inline-flex}.trigbar{display:block}
+ .shell{flex-direction:column}.sidebar{display:none}.main{padding:18px 16px}h1.page{font-size:26px}
+ .mact{width:100%}.bact{width:100%}
+ .thead{display:none}.trow{grid-template-columns:1fr;gap:4px}.t-act{order:-1}
+}</style></head>
+<body><div class="wrap"><header class="nav"><div class="nav-in"><a class="logo" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5S5 10 5 14.5a7 7 0 0 0 14 0C19 10 12 2.5 12 2.5z"/></svg></a>
+<nav class="nav-links"><a href="#">OwedBook</a><a href="#" class="active">Admin Portal</a><a href="#">Profile</a></nav>
+<div class="nav-right"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span class="email">admin1@email.com</span><span class="avatar">A</span></div>
+<button class="nav-burger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button></div></header><div class="trigbar"><button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>Menu</button></div><div class="shell"><aside class="sidebar"><div class="cmd-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Type a command or search…</div><div class="cmd-grp"><div class="cmd-head">Admin Portal</div><a class="cmd-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M4 9v11h16V9"/><path d="M9 20v-6h6v6"/></svg>My Stores</a><a class="cmd-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14"/><path d="M2 10h20"/></svg>Billing</a><a class="cmd-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8 2 2 0 1 1-2.8 2.8 1.6 1.6 0 0 0-2.7 1.1 2 2 0 1 1-4 0 1.6 1.6 0 0 0-2.4-1.1 2 2 0 1 1-2.8-2.8A1.6 1.6 0 0 0 4.6 14a2 2 0 1 1 0-4 1.6 1.6 0 0 0 1.4-2.4 2 2 0 1 1 2.8-2.8A1.6 1.6 0 0 0 11 4.6a2 2 0 1 1 4 0 1.6 1.6 0 0 0 2.7 1.1 2 2 0 1 1 2.8 2.8A1.6 1.6 0 0 0 19.4 11z"/></svg>Settings</a><a class="cmd-item active" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Audit log</a></div></aside><main class="main"><div class="eyebrow">Admin Portal <span class="demo-pill">Demo · mock data</span></div>
+<h1 class="page">Audit log</h1><p class="sub">A record of actions across your stores.</p>
+<div class="tbl" style="margin-top:18px"><div class="thead"><div>Time</div><div>Action</div><div>Target</div><div>Result</div></div><div class="trow"><div class="t-time">2026-06-22 14:32</div><div class="t-act">Suspended member</div><div class="t-tgt">Tina Cho · Hyde Park Pharmacy</div><div class="t-res">Done</div></div><div class="trow"><div class="t-time">2026-06-22 11:10</div><div class="t-act">Sent invite</div><div class="t-tgt">newhire@hydeparkrx.com · Hyde Park</div><div class="t-res">Sent</div></div><div class="trow"><div class="t-time">2026-06-21 16:05</div><div class="t-act">Sent password recovery</div><div class="t-tgt">Jane Doe · Hyde Park Pharmacy</div><div class="t-res">Sent</div></div><div class="trow"><div class="t-time">2026-06-21 09:40</div><div class="t-act">Added store</div><div class="t-tgt">Oak Street Rx</div><div class="t-res">Done</div></div><div class="trow"><div class="t-time">2026-06-20 13:22</div><div class="t-act">Un-suspended member</div><div class="t-tgt">James Wright · Riverside Pharmacy</div><div class="t-res">Done</div></div></div></main></div></div></body></html>

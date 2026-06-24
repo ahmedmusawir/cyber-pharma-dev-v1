@@ -50,4 +50,41 @@ describe("Navbar mobile menu", () => {
     expect(panel.getByRole("link", { name: "Profile" })).toBeInTheDocument();
     expect(panel.getByRole("link", { name: "OwedBook" })).toBeInTheDocument();
   });
+
+  // Intent: a mobile menu must dismiss on an outside tap — not trap the user until
+  // they find the X. These guard the three close paths so none regress.
+  describe("dismissal", () => {
+    const open = async () => {
+      mockRole = "admin";
+      render(<Navbar />);
+      await screen.findByText("tony@stark.com");
+      fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+    };
+
+    it("closes on a pointerdown outside the navbar", async () => {
+      await open();
+      fireEvent.pointerDown(document.body);
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    it("closes on Escape", async () => {
+      await open();
+      fireEvent.keyDown(document, { key: "Escape" });
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    it("still closes via the X toggle", async () => {
+      await open();
+      fireEvent.click(screen.getByRole("button", { name: "Close menu" }));
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    it("still closes when a nav item is tapped", async () => {
+      await open();
+      const panel = within(screen.getByRole("dialog"));
+      fireEvent.click(panel.getByRole("link", { name: "Profile" }));
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+  });
 });

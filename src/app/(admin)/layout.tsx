@@ -12,5 +12,14 @@ export default async function AdminLayout({ children }: LayoutProps) {
   // (their landing), not the login page (UI_SPEC v1.3 §E).
   await protectPage([AppRole.ADMIN], { unauthorizedRedirect: "/owedbook" });
 
-  return <AuthedShell>{children}</AuthedShell>;
+  // Content-column gutter for every admin-portal screen — the designer's `.main`
+  // padding (mockup: 26px 30px desktop, 18px 16px ≤900px ≈ below lg, where the
+  // sidebar stops being fixed). Applied here (admin-portal-only group) rather than
+  // in the shared AuthedShell so /owedbook + /moose-portal are physically out of
+  // scope. One place → all six screens (+ loading/error/not-found) inherit it.
+  return (
+    <AuthedShell>
+      <div className="px-4 py-[18px] lg:px-[30px] lg:py-[26px]">{children}</div>
+    </AuthedShell>
+  );
 }

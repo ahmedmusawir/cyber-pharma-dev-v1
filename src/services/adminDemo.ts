@@ -153,6 +153,9 @@ export const ownerStoresService: OwnerStoresService = {
   /**
    * MOCK: drops a fresh store card so the demo feels alive. NO Stripe, NO charge.
    * BACKEND_SWAP_NOTES (Phase 7): real add-store + Stripe checkout (payment-creates-account).
+   * The demo's harvest form proposes these new-store fields — name / NCPDP / NPI /
+   * address — to elicit the real requirement from Frank; this signature stays no-arg
+   * until that contract is locked, so those typed values are not yet persisted.
    */
   async addStore() {
     const newStore: OwnedStore = {

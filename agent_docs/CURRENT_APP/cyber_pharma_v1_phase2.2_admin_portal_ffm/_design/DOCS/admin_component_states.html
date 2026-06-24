@@ -1,0 +1,78 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin Portal — Component states</title>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700&display=swap" rel="stylesheet"><style>:root{--background:217 16% 90%;--foreground:219 16% 17%;--card:0 0% 100%;--card-foreground:219 16% 17%;--primary:12 93% 64%;--primary-foreground:0 0% 100%;--secondary:220 19% 94%;--secondary-foreground:219 16% 17%;--navbar:12 83% 47%;--navbar-foreground:0 0% 100%;--muted:222 15% 87%;--muted-foreground:218 12% 42%;--accent:12 93% 64%;--accent-foreground:0 0% 100%;--border:220 12% 75%;--input:220 12% 75%;--ring:12 93% 64%;--destructive:2 67% 51%;--success:131 54% 40%;--warning:41 93% 47%;--info:214 74% 53%;--radius:0px;}
+.dark{--background:222 18% 14%;--foreground:222 26% 93%;--card:220 16% 22%;--card-foreground:222 26% 93%;--primary:12 93% 64%;--primary-foreground:0 0% 100%;--secondary:221 16% 27%;--secondary-foreground:222 26% 93%;--navbar:12 88% 58%;--navbar-foreground:0 0% 100%;--muted:220 16% 19%;--muted-foreground:221 17% 71%;--accent:12 93% 64%;--accent-foreground:0 0% 100%;--border:218 13% 33%;--input:218 13% 33%;--ring:12 93% 64%;--destructive:351 95% 71%;--success:142 69% 58%;--warning:41 93% 47%;--info:214 74% 53%;--radius:0px;}*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Saira',system-ui,sans-serif;background:hsl(var(--background));color:hsl(var(--foreground));-webkit-font-smoothing:antialiased;padding:32px 36px}
+.wrap{max-width:1080px;margin:0 auto}
+h1.t{font-size:24px;font-weight:700;letter-spacing:-.01em}.subt{font-size:14px;color:hsl(var(--muted-foreground));margin-top:4px;margin-bottom:26px}
+.block{margin-bottom:30px}
+.bt{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--muted-foreground));padding-bottom:9px;margin-bottom:16px;border-bottom:1px solid hsl(var(--border))}
+.row{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.cell{display:flex;flex-direction:column;gap:8px}.lab{font-size:11px;color:hsl(var(--muted-foreground));text-transform:uppercase;letter-spacing:.04em}
+.btn{font-size:14px;font-weight:500;padding:9px 16px;border:1px solid hsl(var(--border));background:hsl(var(--card));color:hsl(var(--foreground));cursor:pointer}
+.btn-primary{border:0;background:hsl(var(--primary));color:#fff;font-weight:600}
+.btn-primary.hover{background:hsl(12 93% 58%)}.btn.hover{background:hsl(var(--muted))}
+.btn[disabled]{opacity:.45}.btn-reject{border-color:hsl(var(--destructive));color:hsl(var(--destructive))}.btn-sm{padding:7px 12px;font-size:13px}
+.inp{width:260px;border:1px solid hsl(var(--input));background:hsl(var(--background));padding:10px 12px;font-size:14px;color:hsl(var(--foreground));font-family:inherit}
+.inp::placeholder{color:hsl(var(--muted-foreground))}
+.inp.focus{border-color:hsl(var(--ring));box-shadow:0 0 0 3px hsl(var(--ring) / .25)}
+.inp.err{border-color:hsl(var(--destructive))}.errmsg{font-size:12px;color:hsl(var(--destructive))}
+.pill{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px}
+.pill-success{background:hsl(var(--success) / .15);color:hsl(var(--success))}.pill-warning{background:hsl(var(--warning) / .16);color:hsl(var(--warning))}
+.pill-destructive{background:hsl(var(--destructive) / .15);color:hsl(var(--destructive))}.pill-info{background:hsl(var(--info) / .15);color:hsl(var(--info))}
+.demo-pill{font-size:11px;font-weight:600;color:hsl(var(--warning));background:hsl(var(--warning) / .14);border:1px solid hsl(var(--warning) / .4);padding:2px 8px}
+.box{border:1px solid hsl(var(--border));background:hsl(var(--card));padding:16px;width:340px}
+.mrow{display:flex;align-items:center;gap:13px}
+.av{width:38px;height:38px;border-radius:50%;background:hsl(var(--info) / .15);color:hsl(var(--info));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.nm{font-weight:600;font-size:14px}.em{font-size:12px;color:hsl(var(--muted-foreground))}
+.empty{border:1px dashed hsl(var(--border));background:hsl(var(--card));padding:30px;width:340px;text-align:center;color:hsl(var(--muted-foreground))}
+.empty .ic{font-size:22px;margin-bottom:8px;opacity:.7}.empty .h{font-weight:600;color:hsl(var(--foreground));font-size:15px}.empty .d{font-size:13px;margin-top:4px}
+.sk{background:hsl(var(--muted));height:12px;border-radius:0}.skbox{border:1px solid hsl(var(--border));background:hsl(var(--card));padding:16px;width:340px;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;align-items:center;gap:10px;background:hsl(var(--card));border:1px solid hsl(var(--border));padding:11px 14px;width:340px;font-size:14px;font-weight:500}
+.toast.success{border-left:3px solid hsl(var(--success))}.toast.error{border-left:3px solid hsl(var(--destructive))}.toast.info{border-left:3px solid hsl(var(--info))}
+.toast .dot{width:8px;height:8px;border-radius:50%}.dot.success{background:hsl(var(--success))}.dot.error{background:hsl(var(--destructive))}.dot.info{background:hsl(var(--info))}</style></head><body><div class="wrap">
+<h1 class="t">Admin Portal Demo Shell — Component states</h1>
+<div class="subt">Default · hover · focus · loading · empty · error. Every element reads OwedBook tokens; shown here in Mist + Slate.</div>
+
+<div class="block"><div class="bt">Buttons</div><div class="row">
+<div class="cell"><button class="btn btn-primary">Send invite</button><span class="lab">primary · default</span></div>
+<div class="cell"><button class="btn btn-primary hover">Send invite</button><span class="lab">primary · hover</span></div>
+<div class="cell"><button class="btn btn-primary" disabled>Send invite</button><span class="lab">primary · disabled</span></div>
+<div class="cell"><button class="btn">Suspend</button><span class="lab">secondary · default</span></div>
+<div class="cell"><button class="btn hover">Suspend</button><span class="lab">secondary · hover</span></div>
+<div class="cell"><button class="btn btn-reject">Cancel</button><span class="lab">destructive outline</span></div>
+</div></div>
+
+<div class="block"><div class="bt">Inputs</div><div class="row">
+<div class="cell"><input class="inp" placeholder="name@pharmacy.com"><span class="lab">default</span></div>
+<div class="cell"><input class="inp focus" value="jane@hydeparkrx.com"><span class="lab">focus</span></div>
+<div class="cell"><div><input class="inp err" value="not-an-email"><div class="errmsg" style="margin-top:6px">Enter a valid email address</div></div><span class="lab">error</span></div>
+</div></div>
+
+<div class="block"><div class="bt">Status pills</div><div class="row" style="gap:14px">
+<span class="pill pill-success">Active</span><span class="pill pill-success">Sub active</span>
+<span class="pill pill-warning">Invite pending</span><span class="pill pill-warning">Past-due</span>
+<span class="pill pill-destructive">Suspended</span><span class="pill pill-info">Info</span>
+<span class="demo-pill">Demo · mock data</span>
+</div></div>
+
+<div class="block"><div class="bt">Member row — by status</div><div class="row" style="flex-direction:column;gap:14px">
+<div class="box"><div class="mrow"><div class="av">JD</div><div style="flex:1"><div class="nm">Jane Doe</div><div class="em">jane@… · pharmacist</div></div><span class="pill pill-success">Active</span></div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-sm">Send recovery</button><button class="btn btn-sm">Suspend</button></div></div>
+<div class="box"><div class="mrow"><div class="av">RP</div><div style="flex:1"><div class="nm">Ravi Patel</div><div class="em">ravi@… · technician</div></div><span class="pill pill-warning">Invite pending</span></div><div style="margin-top:12px"><button class="btn btn-sm">Resend invite</button></div></div>
+</div></div>
+
+<div class="block"><div class="bt">Empty states</div><div class="row">
+<div class="empty"><div class="ic">🏪</div><div class="h">No stores yet</div><div class="d">Stores you own will appear here.</div></div>
+<div class="empty"><div class="ic">🔍</div><div class="h">No members match “rav”</div><div class="d">Try a different search.</div><div style="margin-top:12px"><button class="btn btn-sm">Clear search</button></div></div>
+</div></div>
+
+<div class="block"><div class="bt">Loading (skeleton)</div><div class="row">
+<div class="skbox"><div class="sk" style="width:60%;height:16px"></div><div class="sk" style="width:40%"></div><div class="sk" style="width:100%;height:1px"></div><div class="sk" style="width:50%"></div></div>
+<div class="skbox"><div style="display:flex;gap:12px;align-items:center"><div class="sk" style="width:38px;height:38px;border-radius:50%"></div><div style="flex:1;display:flex;flex-direction:column;gap:7px"><div class="sk" style="width:50%"></div><div class="sk" style="width:70%"></div></div></div></div>
+</div></div>
+
+<div class="block"><div class="bt">Toasts</div><div class="row" style="flex-direction:column;gap:12px">
+<div class="toast success"><span class="dot success"></span>Invite sent to newhire@hydeparkrx.com</div>
+<div class="toast info"><span class="dot info"></span>Member suspended</div>
+<div class="toast error"><span class="dot error"></span>Couldn’t send invite — try again</div>
+</div></div>
+
+</div></body></html>

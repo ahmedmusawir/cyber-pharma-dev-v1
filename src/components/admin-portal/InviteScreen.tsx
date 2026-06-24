@@ -51,7 +51,7 @@ const InviteScreen = ({ storeId }: { storeId: string }) => {
   }
 
   return (
-    <div>
+    <div className="mx-auto max-w-[560px]">
       <Breadcrumb
         items={[
           { label: "My Stores", href: "/admin-portal" },

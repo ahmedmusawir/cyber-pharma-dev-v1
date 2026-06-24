@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -25,6 +25,7 @@ const Navbar = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
   const supabase = createClient();
   const router = useRouter();
 
@@ -61,6 +62,28 @@ const Navbar = () => {
     return () => subscription.unsubscribe();
   }, [supabase]);
 
+  // A mobile menu must dismiss on an outside tap, not only via the X. Listen only
+  // while open: close on a pointerdown outside the whole <header> (so the
+  // hamburger toggle and in-panel taps don't double-fire) and on Escape. The X
+  // toggle and per-link closeMenu keep working untouched.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
   const closeMenu = () => setMenuOpen(false);
 
   const handleLogout = async () => {
@@ -84,7 +107,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-navbar text-navbar-foreground">
+    <header ref={headerRef} className="bg-navbar text-navbar-foreground">
       <div className="py-2 px-4 sm:px-5 flex justify-between items-center gap-2">
         <Link href="/" aria-label="Cyber Pharma — Home" onClick={closeMenu} className="shrink-0">
           <Image src="/brand/logo-color.svg" alt="Cyber Pharma" width={36} height={36} />

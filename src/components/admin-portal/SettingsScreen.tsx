@@ -60,7 +60,7 @@ const SettingsScreen = () => {
   const reload = useCallback(() => setReloadKey((k) => k + 1), []);
 
   return (
-    <div>
+    <div className="mx-auto max-w-[560px]">
       <ScreenHeader
         title="Pharmacy settings"
         subtitle="Update your pharmacy information."
