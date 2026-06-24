@@ -126,7 +126,10 @@ export function makeAdminDemoSeed(opts?: { empty?: boolean }): AdminDemoState {
         email: "marcus@southsidedrug.com",
         initials: "ML",
         jobTitle: "Technician",
-        role: "admin",
+        // V1: no non-owner admin in the public app (one admin = owner via
+        // onboarding; 2nd admins only via MissionControl). role isn't rendered,
+        // so this is data-truth only. See memory admin-v1-single-admin-model.
+        role: "member",
         accountStatus: "active",
       },
       // store-3 — one active, one suspended
