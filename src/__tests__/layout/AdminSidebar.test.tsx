@@ -36,12 +36,24 @@ describe("AdminSidebar surface-awareness", () => {
     expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
   });
 
-  it("on /admin-portal renders nav items, not the filter rail", () => {
-    mockUsePathname.mockReturnValue("/admin-portal/users");
+  it("on /admin-portal renders the owner-scoped nav items, not the filter rail", () => {
+    mockUsePathname.mockReturnValue("/admin-portal");
     render(<AdminSidebar />);
-    expect(screen.getByText("Users")).toBeInTheDocument();
-    expect(screen.getByText("Add Member")).toBeInTheDocument();
-    expect(screen.getByText("Profile")).toBeInTheDocument();
+    expect(screen.getByText("My Stores")).toBeInTheDocument();
+    expect(screen.getByText("Billing")).toBeInTheDocument();
+    expect(screen.getByText("Settings")).toBeInTheDocument();
+    expect(screen.getByText("Audit log")).toBeInTheDocument();
     expect(screen.queryByText("Upload Data")).not.toBeInTheDocument();
+    // Route takeover (Phase 2.2): the old user-CRUD nav is gone.
+    expect(screen.queryByText("Users")).not.toBeInTheDocument();
+  });
+
+  // Intent: a section owns more than its own href — My Stores stays active
+  // through the store drill-down, and only one item is active at a time.
+  it("marks My Stores active on a /stores/* drill-down, not Billing", () => {
+    mockUsePathname.mockReturnValue("/admin-portal/stores/store-1");
+    render(<AdminSidebar />);
+    expect(screen.getByText("My Stores").closest("[cmdk-item]")).toHaveClass("font-bold");
+    expect(screen.getByText("Billing").closest("[cmdk-item]")).not.toHaveClass("font-bold");
   });
 });

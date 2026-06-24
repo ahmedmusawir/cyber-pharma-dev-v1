@@ -1,9 +1,22 @@
-import { redirect } from "next/navigation";
+import ScreenHeader from "@/components/admin-portal/ScreenHeader";
 
-// The Admin Portal surface lands on the Users list (UI_SPEC v1.3 §A.2).
-// /admin-portal itself has no content of its own — it forwards to /users.
-const AdminPortalIndex = () => {
-  redirect("/admin-portal/users");
+// Phase 2.2 route takeover: /admin-portal IS the My Stores landing (the old
+// redirect to /users is gone). C4a scaffold — header-only placeholder so the
+// route + shell stand up; C4b replaces the body with the real store grid
+// (services → store, skeleton → data → EmptyState).
+const MyStoresPage = () => {
+  return (
+    <div>
+      <ScreenHeader
+        title="My Stores"
+        subtitle="Manage your pharmacies, members, and billing."
+      />
+      <div className="mt-6 space-y-3" aria-hidden="true">
+        <div className="h-24 bg-muted animate-pulse" />
+        <div className="h-24 bg-muted animate-pulse" />
+      </div>
+    </div>
+  );
 };
 
-export default AdminPortalIndex;
+export default MyStoresPage;

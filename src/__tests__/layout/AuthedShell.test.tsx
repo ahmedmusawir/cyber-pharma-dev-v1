@@ -38,7 +38,7 @@ const mockUsePathname = usePathname as jest.Mock;
 // it closes on backdrop. Label is surface-aware (Filters on /owedbook).
 describe("AuthedShell mobile sidebar drawer", () => {
   it("opens a slide-over with the sidebar and closes on backdrop", () => {
-    mockUsePathname.mockReturnValue("/admin-portal/users");
+    mockUsePathname.mockReturnValue("/admin-portal");
     render(
       <AuthedShell>
         <p>main content</p>
@@ -76,7 +76,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
   // Intent: a sidebar link navigates AND dismisses the drawer (it shouldn't
   // linger over the new page). Modeled as a route change.
   it("closes the drawer when the route changes", () => {
-    mockUsePathname.mockReturnValue("/admin-portal/users");
+    mockUsePathname.mockReturnValue("/admin-portal");
     const { rerender } = render(
       <AuthedShell>
         <p>main</p>
@@ -85,7 +85,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
     fireEvent.click(screen.getByRole("button", { name: "Open Menu" }));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
 
-    mockUsePathname.mockReturnValue("/admin-portal/users/add-member");
+    mockUsePathname.mockReturnValue("/admin-portal/billing");
     rerender(
       <AuthedShell>
         <p>main</p>
@@ -105,7 +105,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
     );
     expect(screen.getByTestId("desktop-sidebar")).toHaveClass("hidden", "xl:block");
 
-    mockUsePathname.mockReturnValue("/admin-portal/users");
+    mockUsePathname.mockReturnValue("/admin-portal");
     rerender(
       <AuthedShell>
         <p>main</p>
