@@ -103,3 +103,15 @@ export interface ActionResult {
   ok: boolean;
   message: string;
 }
+
+// ── §3. Zustand store shape (the live in-memory dataset) ─────────────────────
+// Seeded from /mocks, mutated ONLY by the service layer (never components).
+// Refresh resets to the seed — by design (in-memory, no persistence).
+export interface AdminDemoState {
+  owner: CurrentOwner;
+  stores: OwnedStore[];
+  members: StoreMember[]; // across all the owner's stores; filtered by storeId in services
+  billing: BillingLine[];
+  audit: AuditEntry[];
+  settings: PharmacySettings[]; // one per store
+}
