@@ -16,7 +16,11 @@ jest.mock("@/store/useAuthStore", () => ({
 
 jest.mock("@/components/global/ThemeToggler", () => ({
   __esModule: true,
-  default: () => <div data-testid="theme-toggler" />,
+  default: ({ onSelect }: { onSelect?: () => void }) => (
+    <button data-testid="theme-toggler" onClick={onSelect}>
+      theme
+    </button>
+  ),
 }));
 
 jest.mock("@/utils/supabase/client", () => ({
@@ -71,6 +75,33 @@ describe("Navbar mobile menu", () => {
     it("closes on Escape", async () => {
       await open();
       fireEvent.keyDown(document, { key: "Escape" });
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    // Regression: the theme dropdown (Radix) portals its items to document.body,
+    // OUTSIDE the navbar. A tap on one of those items must NOT close the menu —
+    // it's a control of the menu, not an outside tap. (Before the guard, picking
+    // a theme collapsed the panel mid-tap and fell through to a page nav.)
+    it("stays open when tapping inside a Radix popper (e.g. theme dropdown)", async () => {
+      await open();
+      const popper = document.createElement("div");
+      popper.setAttribute("data-radix-popper-content-wrapper", "");
+      const item = document.createElement("div");
+      popper.appendChild(item);
+      document.body.appendChild(popper);
+
+      fireEvent.pointerDown(item);
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+      document.body.removeChild(popper);
+    });
+
+    // Picking a theme is a deliberate menu action → it should close the menu
+    // (the guard above only prevents the ACCIDENTAL pointerdown close-through).
+    it("closes when a theme is selected from the menu", async () => {
+      await open();
+      const panel = within(screen.getByRole("dialog"));
+      fireEvent.click(panel.getByTestId("theme-toggler"));
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
 

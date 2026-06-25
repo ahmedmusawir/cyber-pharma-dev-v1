@@ -12,8 +12,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoonIcon, SunIcon } from "lucide-react";
 
-const ThemeToggler = () => {
+// `onSelect` fires after a theme is picked — lets a host (e.g. the Navbar mobile
+// menu) close itself once the choice is made. Optional; desktop usages omit it.
+const ThemeToggler = ({ onSelect }: { onSelect?: () => void } = {}) => {
   const { setTheme } = useTheme();
+
+  const pick = (theme: string) => {
+    setTheme(theme);
+    onSelect?.();
+  };
 
   return (
     <DropdownMenu>
@@ -29,13 +36,13 @@ const ThemeToggler = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+        <DropdownMenuItem onClick={() => pick("light")}>
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        <DropdownMenuItem onClick={() => pick("dark")}>
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        <DropdownMenuItem onClick={() => pick("system")}>
           System
         </DropdownMenuItem>
       </DropdownMenuContent>

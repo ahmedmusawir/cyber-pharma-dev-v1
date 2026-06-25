@@ -69,9 +69,15 @@ const Navbar = () => {
   useEffect(() => {
     if (!menuOpen) return;
     const onPointerDown = (e: PointerEvent) => {
-      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
+      const target = e.target as Element | null;
+      if (!target) return;
+      // Inside the navbar itself → keep open (hamburger toggle + in-panel taps).
+      if (headerRef.current?.contains(target)) return;
+      // Inside an open Radix popper (e.g. the theme dropdown, which portals to
+      // document.body OUTSIDE the header) → keep open; that's a control of the
+      // menu, not an outside tap.
+      if (target.closest("[data-radix-popper-content-wrapper]")) return;
+      setMenuOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setMenuOpen(false);
@@ -197,7 +203,7 @@ const Navbar = () => {
 
             <div className="flex items-center justify-between px-5 py-3 border-b border-navbar-foreground/20">
               <span className="text-sm">{user ? user.email : "Theme"}</span>
-              <ThemeToggler />
+              <ThemeToggler onSelect={closeMenu} />
             </div>
 
             {!isLoading && user && (
