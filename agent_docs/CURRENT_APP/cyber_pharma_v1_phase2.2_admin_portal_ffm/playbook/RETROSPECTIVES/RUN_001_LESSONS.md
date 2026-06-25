@@ -19,7 +19,7 @@
 
 - **Layout polish slipped past the first build and needed two operator eyes-on fix rounds (C4-fix).** Three misses: (1) the content column had *no* gutter — screens sat flush against the sidebar; (2) the two form screens (Invite, Settings) were left-aligned at 560px with a large right-side void instead of centered; (3) a genuine **mobile-nav dismiss bug** — the shared Navbar menu only closed on the X, not on an outside tap. None of these were caught by Gate M, because **Gate M checks "does it collapse at 375" — not "does the desktop content carry the designer's gutter" or "is the form centered."** Those are different failure classes and fell through the gate.
 - **The dismiss bug shipped in C4a chrome and survived all the way to C5.** Because the shared `Navbar` was on DO-NOT-TOUCH, nobody tested the mobile menu's dismiss behavior until the operator tapped outside it. A menu's close-paths are *behavior* and deserved a test from the moment the menu was built.
-- **Commit-boundary process drift.** At the C4-fix boundary the operator hand-committed the entire working tree to `main` as a single "Phase 2 complete" commit — bundling the previously-untracked FFM design docs with the fix, under a generic message, on the default branch rather than the `phase2.2-admin-portal-1` feature branch. No work was lost (it's intact and pushed), but the granularity, message, and branch all diverged from the cluster-checkpoint discipline the rest of the run followed.
+- **Commit-boundary process drift — a RECURRENCE, not a net-new lesson.** At the C4-fix boundary the entire working tree was hand-committed to `main` as a single "Phase 2 complete" commit — bundling the previously-untracked FFM design docs with the fix, under a generic message, on the default branch rather than the `phase2.2-admin-portal-1` feature branch. No work was lost (intact + pushed), but granularity, message, and branch all diverged from cluster-checkpoint discipline. **This is the same failure family as the Phase 2.1 commit-discipline lesson (the VM-crash / uncommitted-bundling family) — it has now recurred.** A lesson that recurs means the *gate isn't holding*: documenting it as advice did not change behavior. → it must become a hard gate (see Structural below). Cross-link: Phase 2.1 retro → this run.
 - **The per-FFM verification playbook was a stale Phase-1 copy.** `playbook/06-VERIFICATION.md` references Vitest, Playwright, the Phase-1 register flow, and superadmin deletion — none of which apply to this Jest-based admin-portal FFM. Had to fall back to `verification/PHASE_GATES.md` (Gate 5) as the real authority and treat 06 as noise.
 
 ## What Should Change For Next FFM
@@ -28,6 +28,7 @@
 - **Split the responsive gate into two checks.** Gate M / Gate 4 should verify, separately: (a) *collapse* — grid→1-col, rows→stacked, table→cards at 375; and (b) *desktop content frame* — the designer's content gutter (`.main` padding) is present and form screens use the designer's max-width **centered** (`.formcard` width + `mx-auto`). (b) is what slipped here. Source both from the mockup CSS, not from eyeballing.
 - **Any menu/drawer/dialog ships with a dismiss test.** Outside-click + Esc + the explicit close control, asserted the moment the component is built — even (especially) when it lives in inherited/DO-NOT-TOUCH chrome.
 - **Regenerate playbook `06-VERIFICATION.md` per FFM** instead of copying the Phase-1 template. A stale verification playbook is worse than none — it sends the runner chasing checks that don't exist (superadmin, Vitest) while the real gate lives elsewhere.
+- **Commit discipline is now a HARD GATE, not advice — because it RECURRED.** Feature-branch cluster checkpoints, cluster-scoped messages, deliberate merge to `main`; **never** a single hand-rolled "phase complete" sweep that bundles docs onto the default branch. This same failure already cost the Phase 2.1 run (the VM-crash / uncommitted-bundling family) and has now recurred here — which is the proof that advice doesn't hold it. Enforce it: e.g. a checkpoint/pre-commit check that, on a `phase*` branch, refuses a bundled commit to `main` and requires cluster-scoped commits on the feature branch. (Cross-linked from "What Stumbled" above.)
 
 ### Project-specific (stays here)
 - **V1 has no search UI** (services keep `search` params for Phase 7). The Gate-5 "no-match search EmptyState" checklist line is therefore **N/A-for-UI** — it's exercised only by `adminDemo.seed.test.ts`. Fix that checklist line so a future run doesn't read it as a failed manual check.
@@ -94,9 +95,15 @@ Per-cluster wall-clock was **not tracked precisely** (multi-session run). Rough 
 - **Settings shape:** single per-store pharmacy-info form. Confirm the real settings fields and whether settings are per-store or per-owner.
 
 ### TO BE CAPTURED when demoed to Coach/Frank
-- [ ] Every feature/field Coach or Frank names while walking the demo (the demo's real payload).
-- [ ] Any screen they expect that isn't here (platform views are deliberately excluded — confirm that's right for their mental model).
-- [ ] Their reaction to the invite-only / owner-scoped model (does it teach the right mental model?).
+
+> This list **IS the demo's output spec.** Each item is a specific prompt tied to a concrete mock decision the demo makes — it must drive the Coach/Frank conversation, not collect vague "what do you think." Walk the demo, ask these, record the answers as Phase-7 inputs.
+
+- [ ] **Add-store fields** — *"When you onboard a new store today, beyond **store name / NCPDP / NPI / address**, what else do you record? Is any of these four unnecessary?"* → validates the harvest-form field set as the real new-store contract.
+- [ ] **One-admin model reaction** — *"We modeled **one admin = the owner**, second admins only via MissionControl, and member-add is **invite-only, never a password**. Does that match how your pharmacies actually delegate admin access — or do owners expect to add fellow admins directly?"* → confirms/breaks the core access model.
+- [ ] **Pricing** — *"Billing shows **$49 standard / $199 concierge** as placeholders. What are the real V1 plans and prices?"* → Coach business decision; currently NOT locked by this demo.
+- [ ] **jobTitle source** — *"We display job titles (**Pharmacist / Technician / Staff**), but Frank's schema has no such column. Do you want job title as a real field — and if so, where does it come from?"* → resolves the carried demo-only flag.
+- [ ] **Billing surface** — *"Billing here is **visual-only**: Manage payment / Cancel do nothing, and **Add store drops a card with no charge**. What billing actions do owners actually need, and should **add-store itself create the subscription** (payment-creates-account)?"* → defines the real billing/checkout flow.
+- [ ] **Excluded screens / mental model** — *"Platform-wide / cross-tenant / 'all owners' views are **deliberately absent** — every list is implicitly 'mine.' Is that the right mental model, or do they expect a platform view?"* → and capture any screen they reach for that isn't here.
 
 ---
 
