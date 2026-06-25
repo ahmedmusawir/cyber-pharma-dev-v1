@@ -437,6 +437,11 @@ Before declaring Frontend Build Phase complete
 - [ ] Filters work (if applicable)
 - [ ] Search works (if applicable)
 
+### Responsive (Gate M) — collapse AND desktop frame
+- [ ] Mobile collapse verified at 375: grids → 1-col, rows → stacked cards, tables → stacked, forms → full-width
+- [ ] Desktop content frame matches the designer's container CSS: content gutter present (not flush to the sidebar) AND form screens use the mockup's max-width, **centered** — sourced from the mockup CSS (e.g. `.main` padding, `.formcard` max-width), NOT eyeballed
+- [ ] Both confirmed, both themes, every screen (collapse ≠ frame — they are different failure classes; see Lesson 10)
+
 ### Documentation
 - [ ] Known backend dependencies documented
 - [ ] Known limitations documented
@@ -540,12 +545,19 @@ Fix in this playbook (and broader factory doctrine): When authoring patches or m
 
 This lesson is a real-time addition to the retrospective discovered while authoring v1.1. It applies to AI agents doing patch/merge work in any Factory phase.
 
+### Lesson 10 (New, Cyber Pharma v1 Phase 2.2 — Admin Portal Run 001) — Mobile Gate Checked Collapse, Not the Desktop Frame
+
+Pattern: "Responsive" was treated as done once the layout collapsed at 375 (grid→1-col, rows→stacked, table→cards). The *desktop content frame* went unchecked — the content column shipped with no gutter (flush to the sidebar) and form screens were left-aligned in a wide void instead of centered. This is a different failure class than collapse; it fell through the mobile gate and cost an unplanned two-round eyes-on fix.
+
+Fix in this playbook: Section 9 (UI Phase Completion Checklist) now carries a "Responsive (Gate M) — collapse AND desktop frame" block asserting BOTH (a) collapse and (b) the desktop content frame matches the designer's container CSS (content gutter present; form screens at the mockup's max-width, centered). Source both checks from the mockup CSS (e.g. `.main` padding, `.formcard` max-width), not from eyeballing.
+
 ---
 
 ## 14. Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-06-25 | Added Lesson 10 (the mobile gate must check the desktop content frame — gutter + centered form max-width — not just 375 collapse) + the Section 9 "Responsive (Gate M)" checklist block. Born from Cyber Pharma v1 Phase 2.2 Admin Portal retrospective. |
 | 1.1 | 2026-06-02 | Added Section 1.5 (Pre-Phase Doctrine Refresh), Section 1.6 (Kit Audit), Stage 2 Pre-Write Check Protocol + anti-patterns, Section 12 (Kit Improvement Proposals), Section 13 (Run 001 Lessons appendix including new Lesson 9). Born from Cyberize Run 001 retrospective. |
 | 1.0 | 2026-01-02 | Initial playbook |
 
