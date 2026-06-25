@@ -72,7 +72,7 @@ If you cannot answer all four, STOP — surface to the operator. The file is not
 
 - **`STARTER_KIT_HANDBOOK_v1.0.md`** — kit primitives that are already mobile-first (AppShellPage, Sheet, etc.)
 - **`COMPONENT_REGISTRY_v1.0.md`** — per-primitive mobile behavior reference
-- **`FRONTEND_BUILD_PHASE_PLAYBOOK_v1.1.md`** — phase preambles that re-inject mobile-first at execution moments
+- **`FRONTEND_BUILD_PHASE_PLAYBOOK_v1.2.md`** — phase preambles that re-inject mobile-first at execution moments
 
 ### Why Rule Zero Supersedes Other Doctrine
 

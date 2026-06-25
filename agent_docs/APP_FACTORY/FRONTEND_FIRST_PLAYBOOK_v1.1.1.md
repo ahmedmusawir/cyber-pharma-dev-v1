@@ -405,7 +405,7 @@ If you cannot answer all four, do not author the file. Surface to the operator.
 
 ## 14. Stage Execution Doctrine — See FRONTEND_BUILD_PHASE_PLAYBOOK
 
-> **Doctrine relocated.** Stage-level execution discipline (Pre-Phase Doctrine Refresh, Kit Improvement Proposals, Stage-level Pre-Write Checks) lives in its proper home: `FRONTEND_BUILD_PHASE_PLAYBOOK_v1.1.md`.
+> **Doctrine relocated.** Stage-level execution discipline (Pre-Phase Doctrine Refresh, Kit Improvement Proposals, Stage-level Pre-Write Checks) lives in its proper home: `FRONTEND_BUILD_PHASE_PLAYBOOK_v1.2.md`.
 
 This playbook (`FRONTEND_FIRST_PLAYBOOK`) answers **when and why** to use frontend-first.
 
@@ -429,7 +429,7 @@ This split is also v1.1's first explicit application of the **Doctrine Pairing P
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.1.1 | 2026-06-02 | Sections 14 and 15 trimmed to cross-references. Stage execution doctrine (Pre-Phase Doctrine Refresh, Kit Improvement Proposals) relocated to its proper home in FRONTEND_BUILD_PHASE_PLAYBOOK_v1.1.md. Doctrine de-duplication. Born from Lesson 9 (speculative authoring caught in v1.1 retrospective). |
+| 1.1.1 | 2026-06-02 | Sections 14 and 15 trimmed to cross-references. Stage execution doctrine (Pre-Phase Doctrine Refresh, Kit Improvement Proposals) relocated to its proper home in FRONTEND_BUILD_PHASE_PLAYBOOK_v1.2.md. Doctrine de-duplication. Born from Lesson 9 (speculative authoring caught in v1.1 retrospective). |
 | 1.1 | 2026-05-31 | Added Section 0 (Kit Audit), Section 12 (Page Composition), Section 13 (Pre-Write Check), Section 14 (Phase Doctrine Refresh), Section 15 (Kit Improvement Proposals). Born from Cyberize Run 001 lessons 2, 4, 5, 7. Fixed UTF-8 encoding artifacts. |
 | 1.0 | 2026-01-01 | Initial playbook |
 
