@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "test": "jest",
     "test:integration": "jest --testPathPatterns=__tests__/api",
     "test:e2e": "playwright test",
@@ -45,6 +45,7 @@
     "zustand": "^4.5.4"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
     "@playwright/test": "^1.59.1",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^16.3.2",
@@ -55,6 +56,8 @@
     "@types/react-dom": "^19.2.2",
     "autoprefixer": "^10",
     "dotenv": "^17.4.2",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.9",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "postcss": "^8.5.10",
