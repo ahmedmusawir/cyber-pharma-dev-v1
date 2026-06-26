@@ -1,167 +1,129 @@
-# Superadmin Portal — Manual Testing Guide
+# Manual Testing Guide — OwedBook & Admin Portal
 
-## Pre-flight Checklist
+> The eyes-on smoke walk for Cyber Pharma's two authed surfaces. Domain data is
+> **mock** (auth is real), so most of this is UI/behavior verification, not
+> database checks. For the automated suite see [TESTING.md](./TESTING.md).
 
-Before starting, confirm all of the following:
-
-- [ ] Dev server is running (`npm run dev`)
-- [ ] `docs/migration_add_profiles.sql` has been run in Supabase SQL Editor
-- [ ] You have a superadmin account (`role = 'superadmin'` in `public.user_roles`)
-
----
-
-## PHASE 1 — Database Verification
-
-Run these queries in the **Supabase SQL Editor** before touching the UI.
-
-**1a. Confirm profiles were backfilled:**
-
-```sql
-SELECT p.email, p.full_name, r.role
-FROM public.profiles p
-JOIN public.user_roles r ON r.user_id = p.id;
-```
-
-✅ Expected: One row per existing user. Emails populated. `full_name` may be null for old users (fill in via Edit form later).
-
-**1b. Confirm trigger is attached:**
-
-```sql
-SELECT trigger_name, event_manipulation, event_object_table
-FROM information_schema.triggers
-WHERE trigger_name = 'on_auth_user_created';
-```
-
-✅ Expected: One row — `on_auth_user_created` / `INSERT` / `users`
+> **Replaces** the old "Superadmin Portal" manual guide — that portal was removed
+> in Phase 2.
 
 ---
 
-## PHASE 2 — Dashboard (Read)
+## Pre-flight
 
-1. Go to `http://localhost:3000/auth` and log in as your superadmin
-2. Navigate to `http://localhost:3000/superadmin-portal`
-
-✅ Expected:
-- Sidebar shows **Dashboard** and **Add User** links
-- User cards grid appears with email, name (or —), and role badge
-- Your own user card is visible
-- **All other users are also visible** — this confirms the superadmin RLS policy is working
-
-❌ If dashboard is blank (only shows your own card or no cards at all): the RLS policy didn't apply. Re-run Step 2 of the migration SQL.
+- [ ] Dev server running (`npm run dev`, http://localhost:3000)
+- [ ] Supabase provisioned ([DATABASE_SETUP.md](./DATABASE_SETUP.md))
+- [ ] One **ADMIN** account and one **MEMBER** account exist in `user_roles`
+- [ ] Remember: the Admin Portal is mock — **a page refresh resets demo state to
+      seed** by design. That's expected, not a bug.
 
 ---
 
-## PHASE 3 — Add User
+## PHASE 1 — Role Gating
 
-1. Click **Add User** in the sidebar (or the button top-right of the dashboard)
-2. Fill in the form:
-   - **Name:** `Test Admin User`
-   - **Email:** a fresh email you haven't used before
-   - **Password:** `Test1234!`
-   - **Role:** `Admin`
-3. Click **Create User**
+1. Logged out, visit `/owedbook` and `/admin-portal` → both redirect to `/auth`.
+2. Log in as **MEMBER** → lands on `/owedbook`.
+3. As MEMBER, type `/admin-portal` in the URL → **bounced to `/owedbook`** (not
+   to login).
+4. Log in as **ADMIN** → lands on `/owedbook`; the sidebar/nav exposes the Admin
+   Portal.
 
-✅ Expected:
-- Button shows a spinner while submitting
-- Toast: *"User created successfully"*
-- Redirects back to dashboard
-- New user card appears with name, email, and **admin** badge
-
-4. Go to Supabase → Table Editor → `user_roles`
-
-✅ Expected: New row with `role = admin` — **not** `member`. This confirms the smart trigger read the role from metadata correctly.
-
-5. Go to Supabase → Table Editor → `profiles`
-
-✅ Expected: New row with `full_name = Test Admin User` and the correct email.
+✅ Member can't reach admin screens; the bounce goes to OwedBook, not `/auth`.
 
 ---
 
-## PHASE 4 — Edit User
+## PHASE 2 — OwedBook (`/owedbook`)
 
-1. On the dashboard, click **Edit** on the new user's card
-2. Verify the form loads correctly:
+Visible to ADMIN and MEMBER.
 
-✅ Expected:
-- Email field is visible but **greyed out and disabled** — cannot be typed in
-- Name and Role fields are editable and pre-populated with current values
-
-3. Change the name to `Test Admin Updated` and change role to `Member`
-4. Click **Save Changes**
-
-✅ Expected:
-- Spinner shows while saving
-- Toast: *"User updated successfully"*
-- Redirects to dashboard
-- Card now shows the updated name and `member` badge
+1. **KPI tiles** render with dollar/script figures.
+2. **Tabs** — Commercial / Updated / Federal / Summary each load their dataset
+   (Updated = new-paid subset; Federal = rows with federal data; Summary =
+   per-PBM aggregate).
+3. **Filters** — date range, PBM multi-select, and the status dropdown narrow the
+   table. The main screen shows an **active-filter count**.
+4. **Pagination** — 25 rows/page; Previous/Next move pages.
+5. **Upload** and **Get Fresh** — clicking shows a spinner then a success toast.
+   ⚠️ These are **UI-functional mocks** — no file is read/stored, no real re-pull
+   happens.
+6. **Empty / no-match** — a filter combination with no rows shows the empty state.
 
 ---
 
-## PHASE 5 — Delete User
+## PHASE 3 — Admin Portal (`/admin-portal`, ADMIN only)
 
-1. Click **Delete** on the test user's card
+### My Stores
+- Card per store; a glance summary reads e.g. **"4 stores · 2 need attention."**
+- Click a store → **Store Detail**.
 
-✅ Expected: Browser confirm dialog — *"Delete user 'Test Admin Updated'? This cannot be undone."*
+### Store Detail + Roster
+- Member roster lists staff with **status pills** (active / invite-pending /
+  suspended).
+- Row actions are **status-dependent** (e.g. Suspend on an active member).
+- **Suspend a member** → pill flips to suspended + toast + a new **Audit** entry.
 
-2. Click **OK**
+### Invite Member (`stores/[id]/invite`)
+- Form fields are **Email + Job title** (Pharmacist / Technician / Staff) + Send.
+- ✅ **No password field. No access/permission dropdown.** (This is the one hard
+  rule — confirm it visually.)
+- Send → a **pending-invite row** appears in the roster.
 
-✅ Expected:
-- Button shows spinner briefly
-- Toast: *"User deleted successfully"*
-- Card disappears from the dashboard immediately
-- Supabase → `profiles` and `user_roles` rows for that user are gone (CASCADE delete from `auth.users`)
+### Billing
+- Shows plans/amounts and store billing rows.
+- ⚠️ **Visual only** — no real charge, and billing actions write **no** audit
+  entry.
 
----
+### Settings
+- Edit a field, Save → toast. Refresh the page → value **resets to seed**
+  (expected; mock state).
 
-## PHASE 6 — Pagination
+### Audit
+- Newest entry on top; Result is **Done / Failed**.
 
-> Only applicable if you have more than 6 users.
-
-1. Check the bottom of the dashboard
-
-✅ Expected:
-- **Previous / Next** buttons appear
-- URL changes to `?page=2` when clicking Next
-- Exactly 6 cards are shown per page
-
----
-
-## PHASE 7 — Public Signup Trigger Test
-
-This verifies the smart trigger fires correctly for regular users signing up via the public form.
-
-1. Log out and go to `/auth` → Sign Up tab
-2. Register a brand new user (name + email + password)
-
-✅ Expected (verify in Supabase Table Editor):
-- `user_roles`: new row with `role = member`
-- `profiles`: new row with `full_name` populated from the signup form
-
-3. Log back in as superadmin → new user appears on dashboard with `member` badge
+### Add Store
+- The Add-Store button opens a **harvest form** (name / NCPDP / NPI / address +
+  a "Demo only — Phase 7" caption). Submitting drops a generic store card — the
+  fields are local-state only (a facade for the frozen `addStore()`).
 
 ---
 
-## Quick Pass/Fail Checklist
+## PHASE 4 — Responsive & Theme (Gate M)
 
-| Test | Pass |
-|------|------|
-| Dashboard shows **all** users (not just self) | ☐ |
-| Add User creates with the selected role (not hardcoded `member`) | ☐ |
-| `profiles.full_name` is populated on Add User | ☐ |
-| Edit User — email field is read-only | ☐ |
-| Edit User — name and role update correctly | ☐ |
-| Delete User — removes from DB via cascade | ☐ |
-| Public signup → both `profiles` and `user_roles` rows created by trigger | ☐ |
-| Pagination appears and works at 7+ users | ☐ |
+Run **every** screen above at three widths × both themes.
+
+- [ ] **375px (mobile):** sidebar collapses to a **hamburger → slide-over**;
+      tables become stacked cards; forms are centered and readable.
+- [ ] **Tablet** (~768px): layout reflows cleanly, no horizontal scroll.
+- [ ] **Desktop:** sidebar is persistent; tables are full tables.
+- [ ] **Theme toggle** works in both the desktop nav and the **mobile menu**.
+- [ ] Mobile menu **dismisses** on an outside tap and on Escape; picking a theme
+      closes the menu cleanly (and doesn't fall through to a navigation).
+
+✅ Mobile-first is a build-time gate — every control must be reachable at 375px.
 
 ---
 
-## Common Failure Patterns
+## Quick Pass/Fail
 
-| Symptom | Likely Cause | Fix |
-|---------|-------------|-----|
-| Dashboard blank / only shows self | RLS SELECT policy missing or wrong | Re-run Step 2 of migration SQL |
-| Add User creates `member` regardless of role selected | Old trigger still active | Re-run Step 4 & 5 of migration SQL |
-| `profiles.full_name` is null after Add User | Trigger reading wrong metadata key | Confirm migration SQL ran the `CREATE OR REPLACE FUNCTION` block |
-| Edit saves but dashboard doesn't update | `revalidatePath` not firing | Check server action returns no error; hard refresh to confirm |
-| Delete shows error toast | User may not exist in `auth.users` | Check Supabase Auth → Users tab |
+| Check                                                        | Pass |
+| ------------------------------------------------------------ | ---- |
+| Member bounced from `/admin-portal` → `/owedbook`            | ☐    |
+| OwedBook tabs + filters + pagination work                    | ☐    |
+| Upload / Get-Fresh show success toast (mock)                 | ☐    |
+| Suspend → pill + toast + audit entry                         | ☐    |
+| Invite form has **no password, no permission dropdown**      | ☐    |
+| Billing shows no charge and writes no audit                  | ☐    |
+| Settings save, then refresh resets to seed                   | ☐    |
+| All 6 admin screens correct at 375 / tablet / desktop        | ☐    |
+| Theme toggle + mobile-menu dismiss behave                    | ☐    |
+
+---
+
+## Common Gotchas
+
+| Symptom                                  | Cause                                              |
+| ---------------------------------------- | -------------------------------------------------- |
+| Admin demo changes vanish on refresh     | **Expected** — `useAdminDemoStore` isn't persisted |
+| Upload "worked" but nothing ingested     | **Expected** — UI-functional mock (real = Phase 5) |
+| Member sees no Admin Portal              | **Expected** — admin-only surface                  |
+| `/admin-portal` redirects to `/owedbook` | You're signed in as a MEMBER, not ADMIN            |

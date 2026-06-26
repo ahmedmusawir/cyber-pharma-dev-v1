@@ -46,8 +46,8 @@ const UserMenu = () => {
   if (isLoading) return null;
 
   if (user) {
-    const portalHref = role === AppRole.ADMIN ? "/admin-portal" : "/members-portal";
-    const portalLabel = role === AppRole.ADMIN ? "Admin portal" : "Members portal";
+    const portalHref = role === AppRole.ADMIN ? "/admin-portal" : "/owedbook";
+    const portalLabel = role === AppRole.ADMIN ? "Admin portal" : "OwedBook";
 
     return (
       <div className="flex items-center px-3">

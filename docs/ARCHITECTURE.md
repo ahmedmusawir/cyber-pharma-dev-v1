@@ -148,18 +148,30 @@ This starter fixes that by using:
 
 ## App Router Structure
 
-Protected route groups are separated by responsibility:
+Protected route groups are separated by responsibility. Each protected layout
+performs a server-side role check before rendering children.
 
-- `(members)`
-- `(admin)`
-- `(superadmin)`
+Cyber Pharma's current groups:
 
-Each protected layout performs a server-side role check before rendering children.
+- `(public)` / `(auth)` — unauthenticated landing + login/signup
+- `(admin)` — the Admin Portal (`protectPage([AppRole.ADMIN])`)
+
+Plus the ungrouped authed surfaces `/owedbook` (gates ADMIN + MEMBER) and
+`/profile`. The full map and gates live in
+[ROUTES_AND_SURFACES.md](./ROUTES_AND_SURFACES.md).
+
+> **No `(superadmin)` group.** The starter kit shipped one; Cyber Pharma removed
+> it in Phase 2. The `superadmin` role still exists in the DB enum and `AppRole`,
+> but there is no superadmin portal or UI in this app.
 
 This keeps the route contract simple:
 
 - **Layout-level protection** for page access
 - **Database-level protection** for data access
+
+> The security model above is the starter-kit foundation. For how Cyber Pharma's
+> **application data** flows on top of it (service layer + mocks + the Phase-7
+> swap point), see [APP_ARCHITECTURE.md](./APP_ARCHITECTURE.md).
 
 ---
 

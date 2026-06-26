@@ -2,21 +2,26 @@
 
 ## Overview
 
-This starter kit ships with a focused **Jest-based RBAC and security test suite**.
+Cyber Pharma ships a **Jest** suite that covers two things: the inherited
+RBAC/auth security boundaries (foundation) and the Phase-2 application surfaces —
+OwedBook and the Admin Portal Demo Shell (services, components, and the mock
+seed). A **Playwright** e2e scaffold exists for browser-level flows.
 
-The goal is not shallow coverage for the sake of numbers. The goal is to prove the critical auth and authorization boundaries behave correctly under both valid and hostile conditions.
+> **Current inventory: 25 test suites, 117 passing tests** (run `npm test`).
+
+The goal is not coverage for its own sake. Foundation tests prove unauthorized
+access fails safely; app tests encode the **intent** behind each surface —
+including the hard product rules (no-password invites, no-charge billing).
 
 ---
 
-## Test Framework
+## Frameworks
 
-This repository uses:
+- **Jest** + **ts-jest** — unit/component/integration.
+- **@testing-library/react** — component tests.
+- **Playwright** — end-to-end (scaffold; scripts below).
 
-- **Jest**
-- **ts-jest**
-- Node test environment
-
-### Relevant files
+### Config files
 
 - `jest.config.js`
 - `src/__tests__/jest.setup.ts`
@@ -25,202 +30,109 @@ This repository uses:
 
 ## Jest Configuration
 
-The Jest config supports:
-
-- TypeScript execution through `ts-jest`
-- `@/*` path alias resolution
-- shared setup hooks for Next.js mocks
-- isolated test discovery inside `src`
-
-### Highlights
-
 ```js
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-  },
+  testEnvironment: 'node',          // default; UI tests opt into jsdom (below)
+  clearMocks: true,
+  moduleNameMapper: { '^@/(.*)$': '<rootDir>/src/$1' },
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/jest.setup.ts'],
-}
+  roots: ['<rootDir>/src'],
+  testMatch: ['**/__tests__/**/*.+(ts|tsx|js)', '**/?(*.)+(spec|test).+(ts|tsx|js)'],
+  transform: { '^.+\\.(ts|tsx)$': 'ts-jest' },
+  testPathIgnorePatterns: ['/node_modules/', '/.next/', '.../jest.setup.ts'],
+};
 ```
 
----
+### The node + jsdom split
 
-## Shared Mocking Architecture
+The default environment is `node` (correct for service/server/security tests).
+Component tests that render React opt into jsdom **per file** with a docblock at
+the top:
 
-The test suite mocks infrastructure that should not execute real framework behavior during unit tests.
+```ts
+/**
+ * @jest-environment jsdom
+ */
+```
 
-### Next.js mocks
+About 19 of the suites use this. `jest-environment-jsdom` is installed.
 
-`src/__tests__/jest.setup.ts` mocks:
+### Shared mocks (`jest.setup.ts`)
 
-- `next/navigation`
-  - `redirect`
-  - `useRouter`
-  - `usePathname`
-- `next/cache`
-  - `revalidatePath`
-
-### Supabase mocks
-
-Individual tests mock the server/admin clients directly so they can intercept:
-
-- `auth.getUser`
-- `auth.signInWithPassword`
-- `auth.signOut`
-- `auth.admin.createUser`
-- query chains like `from().select().eq().single()`
-- update chains like `from().update().eq()`
-
-This lets the tests assert security behavior without touching a real database.
+Mocks `next/navigation` (`redirect`, `useRouter`, `usePathname`) and
+`next/cache` (`revalidatePath`). Supabase server/admin clients are mocked
+per-test so auth/security behavior is asserted without a real database.
 
 ---
 
-## Main Test Suites
+## What's Covered
 
-## 1. `get-user-role.test.ts`
+### Foundation — auth & RBAC (`src/__tests__/`)
 
-File:
+- **`get-user-role.test.ts`** — `getUserRole()` maps each DB role to the right
+  `AppRole`, and missing rows / empty ids / query failures fail safe (return
+  `null`), not loud.
+- **`actions.test.ts`** — `protectPage()` lets the allowed role through and
+  redirects unauthenticated callers, wrong-role callers, and role-less callers.
+- **`proxy.test.ts`** — `proxy()` delegates to `updateSession()` and the matcher
+  excludes static/image paths.
 
-- `src/__tests__/get-user-role.test.ts`
+> The old `superadmin-add-user.test.ts` suite was **removed** along with the
+> superadmin provisioning route during Phase 2 — Cyber Pharma ships no superadmin
+> portal. (See [AUTHORIZATION.md](./AUTHORIZATION.md).)
 
-### What it proves
+### OwedBook (`src/__tests__/owedbook/`, `services/owedbook.test.ts`)
 
-- `getUserRole()` returns `AppRole.SUPERADMIN` when the DB row says `superadmin`
-- `getUserRole()` returns `AppRole.ADMIN` when the DB row says `admin`
-- `getUserRole()` returns `AppRole.MEMBER` when the DB row says `member`
-- query failures are handled gracefully
-- missing rows return `null`
-- empty user ids short-circuit safely
+Service filtering/pagination/aggregation, KPI tiles, the StatusChip, the
+FilterRail, the screen, and a drawer-apply integration test (filter state flows
+from the mobile drawer into the screen).
 
-### Why it matters
+### Admin Portal (`src/__tests__/admin-portal/`, `services/adminDemo.test.ts`, `mocks/adminDemo.seed.test.ts`)
 
-This is the canonical role lookup function. If this becomes weak or inconsistent, every protected layout becomes unreliable.
+The five demo services (with hard invariants), the seed self-check, and the
+screens. Highlights that encode **product rules**, not just behavior:
 
----
+- **`InviteMemberForm`** — a HARD assertion that there is **no password input and
+  no permission selector**. This is the UI last line of the one hard rule. The
+  service test backs it with a **compile-time** `@ts-expect-error` making a
+  `password` key a build failure.
+- **`MemberRow`** — actions are status-dependent and Suspend flips real state
+  through the service (never the store directly).
+- **`MyStoresScreen`** / **`SettingsForm`** / **`AddStoreButton`** — card-per-store
+  glance, empty-state toggle, save-through-service, and the add-store harvest
+  form.
 
-## 2. `actions.test.ts`
+### Shared UI & layout (`common/`, `layout/`, `global/`, `member/`)
 
-File:
-
-- `src/__tests__/actions.test.ts`
-
-### What it proves
-
-- an admin is allowed through `protectPage([AppRole.ADMIN])`
-- a member is rejected from admin access
-- an unauthenticated caller is redirected
-- a caller with no resolved role is redirected
-
-### Why it matters
-
-`protectPage()` is the server-side route gatekeeper for protected layouts. These tests verify the route wall behaves correctly before any portal content renders.
-
----
-
-## 3. `superadmin-add-user.test.ts`
-
-File:
-
-- `src/__tests__/superadmin-add-user.test.ts`
-
-### What it proves
-
-- a verified superadmin can create a new admin user successfully
-- the admin client creates the auth user
-- the role update writes to `user_roles`
-- a `member` caller gets `403`
-- an `admin` caller gets `403`
-- unauthorized callers never reach the service-role admin client
-- unauthenticated callers get `401`
-- malformed payloads get `400`
-
-### Why it matters
-
-This is the most sensitive API in the starter. It exercises the **One-Two Punch** security model:
-
-1. verify the caller is truly a superadmin
-2. only then invoke the service-role client
-
-If this route is weak, your RBAC system is weak.
+`DataTable` (desktop table → mobile cards), `EmptyState`, `MultiSelect`,
+`AuthedShell`, `AdminSidebar`, the `Navbar` switcher + mobile menu (close paths +
+the Radix-popper guard + theme-pick close), and `ProfileForm`.
 
 ---
 
-## 4. `proxy.test.ts`
-
-File:
-
-- `src/__tests__/proxy.test.ts`
-
-### What it proves
-
-- `proxy()` delegates to `updateSession()`
-- the matcher excludes static assets and image paths
-
-### Why it matters
-
-The request session refresh loop is foundational to SSR auth correctness. If middleware/proxy stops running correctly, route protection becomes inconsistent.
-
----
-
-## How to Run Tests
-
-### Standard run
+## How to Run
 
 ```bash
-npm test
+npm test                    # full Jest suite (117 / 25)
+npm test -- --runInBand     # single-threaded (CI debugging / determinism)
+npm run test:e2e            # Playwright e2e
+npm run test:e2e:ui         # Playwright UI mode
 ```
 
-### Single-threaded run
-
-Useful for CI debugging or deterministic local troubleshooting:
-
-```bash
-npm test -- --runInBand
-```
-
----
-
-## Current Test Inventory
-
-At the time of writing, the suite contains:
-
-- 4 test suites
-- 17 passing tests
-
-These target the highest-value security surfaces in the starter.
-
----
-
-## What This Suite Intentionally Prioritizes
-
-This suite prioritizes:
-
-- auth correctness
-- route protection behavior
-- privilege escalation prevention
-- middleware/session consistency
-- failure-path security
-
-It does **not** waste time on low-value boilerplate.
-
----
-
-## Recommended Future Expansion
-
-As the starter evolves, add tests for:
-
-- login/signup/logout route handlers directly
-- cache invalidation calls (`revalidatePath`, `router.refresh` workflows)
-- role mutation flows
-- RLS-backed integration tests against a disposable Supabase environment
-- portal-specific server component rendering behavior
+> **Note:** `npm run test:integration` targets `src/__tests__/api/`, which does
+> **not exist yet** — so it currently matches no tests. It's reserved for future
+> API-route integration tests.
 
 ---
 
 ## Testing Philosophy
 
-> A real auth suite does not just prove that authorized users succeed. It proves that unauthorized users fail immediately and safely.
+> A real suite doesn't just prove authorized users succeed and correct data
+> renders. It proves unauthorized users fail immediately and safely, and that the
+> product's hard rules (no-password invites, no-charge billing) can't silently
+> regress.
 
-That is the standard this starter should maintain.
+That's the standard. When the Phase-7 backend swap lands, these tests should stay
+green with only the service internals changing — if a component or type test
+breaks, the swap leaked past the service boundary.

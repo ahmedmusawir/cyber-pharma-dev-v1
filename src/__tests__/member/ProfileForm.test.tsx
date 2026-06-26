@@ -5,7 +5,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import ProfileForm from '@/app/(members)/members-portal/profile/ProfileForm';
+import ProfileForm from '@/app/profile/ProfileForm';
+import { AppRole } from '@/utils/app-role';
 
 // Mock Supabase client
 const mockUpdateUser = jest.fn();
@@ -36,7 +37,7 @@ describe('Member ProfileForm', () => {
   });
 
   it('renders member name, email, and role', () => {
-    render(<ProfileForm user={mockUser} />);
+    render(<ProfileForm user={mockUser} role={AppRole.MEMBER} />);
 
     expect(screen.getByText('John Member')).toBeInTheDocument();
     expect(screen.getAllByDisplayValue('member@example.com').length).toBeGreaterThan(0);
@@ -44,14 +45,14 @@ describe('Member ProfileForm', () => {
   });
 
   it('renders initials avatar from full name', () => {
-    render(<ProfileForm user={mockUser} />);
+    render(<ProfileForm user={mockUser} role={AppRole.MEMBER} />);
 
     // "John Member" → "JM"
     expect(screen.getByText('JM')).toBeInTheDocument();
   });
 
   it('renders password update form fields', () => {
-    render(<ProfileForm user={mockUser} />);
+    render(<ProfileForm user={mockUser} role={AppRole.MEMBER} />);
 
     expect(screen.getByPlaceholderText(/minimum 8 characters/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/re-enter new password/i)).toBeInTheDocument();
@@ -59,7 +60,7 @@ describe('Member ProfileForm', () => {
   });
 
   it('shows inline error when passwords do not match', async () => {
-    render(<ProfileForm user={mockUser} />);
+    render(<ProfileForm user={mockUser} role={AppRole.MEMBER} />);
 
     fireEvent.change(screen.getByPlaceholderText(/minimum 8 characters/i), {
       target: { value: 'password123' },
@@ -78,7 +79,7 @@ describe('Member ProfileForm', () => {
   });
 
   it('shows inline error when password is shorter than 8 characters', async () => {
-    render(<ProfileForm user={mockUser} />);
+    render(<ProfileForm user={mockUser} role={AppRole.MEMBER} />);
 
     fireEvent.change(screen.getByPlaceholderText(/minimum 8 characters/i), {
       target: { value: 'short' },
@@ -99,7 +100,7 @@ describe('Member ProfileForm', () => {
   it('calls supabase.auth.updateUser on valid password submission', async () => {
     mockUpdateUser.mockResolvedValue({ error: null });
 
-    render(<ProfileForm user={mockUser} />);
+    render(<ProfileForm user={mockUser} role={AppRole.MEMBER} />);
 
     fireEvent.change(screen.getByPlaceholderText(/minimum 8 characters/i), {
       target: { value: 'newpassword123' },
@@ -118,7 +119,7 @@ describe('Member ProfileForm', () => {
   it('shows success toast and clears fields after successful password update', async () => {
     mockUpdateUser.mockResolvedValue({ error: null });
 
-    render(<ProfileForm user={mockUser} />);
+    render(<ProfileForm user={mockUser} role={AppRole.MEMBER} />);
 
     const newPasswordInput = screen.getByPlaceholderText(/minimum 8 characters/i);
     const confirmPasswordInput = screen.getByPlaceholderText(/re-enter new password/i);
@@ -141,7 +142,7 @@ describe('Member ProfileForm', () => {
   it('shows error toast when supabase returns an error', async () => {
     mockUpdateUser.mockResolvedValue({ error: { message: 'New password should be different from the old password' } });
 
-    render(<ProfileForm user={mockUser} />);
+    render(<ProfileForm user={mockUser} role={AppRole.MEMBER} />);
 
     fireEvent.change(screen.getByPlaceholderText(/minimum 8 characters/i), {
       target: { value: 'samepassword' },
@@ -164,7 +165,7 @@ describe('Member ProfileForm', () => {
       () => new Promise((resolve) => setTimeout(() => resolve({ error: null }), 100))
     );
 
-    render(<ProfileForm user={mockUser} />);
+    render(<ProfileForm user={mockUser} role={AppRole.MEMBER} />);
 
     fireEvent.change(screen.getByPlaceholderText(/minimum 8 characters/i), {
       target: { value: 'newpassword123' },
@@ -188,9 +189,16 @@ describe('Member ProfileForm', () => {
       user_metadata: {},
     };
 
-    render(<ProfileForm user={userWithoutName} />);
+    render(<ProfileForm user={userWithoutName} role={AppRole.MEMBER} />);
 
     // Should show "member" (email prefix before @)
     expect(screen.getByText('member')).toBeInTheDocument();
+  });
+
+  it('renders the role-aware badge — Admin for an admin, not Member', () => {
+    render(<ProfileForm user={mockUser} role={AppRole.ADMIN} />);
+
+    expect(screen.getByText('Admin')).toBeInTheDocument();
+    expect(screen.queryByText('Member')).not.toBeInTheDocument();
   });
 });

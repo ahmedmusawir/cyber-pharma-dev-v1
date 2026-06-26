@@ -145,7 +145,10 @@ WHERE user_id = '<your-auth-user-uuid>';
 
 Find your UUID in Supabase → **Authentication → Users**.
 
-After this one-time step, all future admins are created through the Superadmin Portal UI.
+> **Note:** the starter kit promoted further admins through a Superadmin Portal UI.
+> Cyber Pharma removed that portal in Phase 2 — role changes are now done directly
+> in SQL (as above) or via the env-gated `/moose-portal` operator tool. The
+> `superadmin` role and this promotion step are retained for completeness.
 
 ---
 
@@ -209,6 +212,6 @@ CREATE POLICY "admins_read_all_projects"
 - Do not store authorization flags in `user_metadata`.
 - Extend RLS to every domain table that matters.
 - `public.user_roles` is the canonical authority for role identity.
-- `public.profiles` is the canonical source for display name and email in the Superadmin Portal.
+- `public.profiles` is the canonical source for a user's display name and email.
 
 > **Factory Standard rule:** The database must be able to defend the product even if the UI is compromised.

@@ -44,9 +44,9 @@ A dedicated role table gives you:
 
 ## The `AppRole` Enum
 
-In the Next.js application layer, roles are represented by:
+In the Next.js application layer, roles are represented by an enum defined in:
 
-- `src/utils/get-user-role.ts`
+- `src/utils/app-role.ts`
 
 ```ts
 export enum AppRole {
@@ -55,6 +55,10 @@ export enum AppRole {
   MEMBER = 'member'
 }
 ```
+
+> The `SUPERADMIN` value remains in the enum (and the DB `app_role` type), but
+> Cyber Pharma ships no superadmin surface — only ADMIN and MEMBER are used by
+> live route gates.
 
 ### Why use an enum
 
@@ -137,11 +141,10 @@ export async function protectPage(allowedRoles: AppRole[]) {
 
 ### Where it is used
 
-Protected App Router layouts call `protectPage()` before rendering:
+Protected App Router layouts call `protectPage()` before rendering, e.g.:
 
-- members layout
-- admin layout
-- superadmin layout
+- the OwedBook layout — `protectPage([AppRole.ADMIN, AppRole.MEMBER])`
+- the admin layout — `protectPage([AppRole.ADMIN], { unauthorizedRedirect: '/owedbook' })`
 
 ---
 
@@ -166,39 +169,32 @@ That means every page under that route group inherits the same gate.
 
 ---
 
-## The One-Two Punch: Admin Creation Flow
+## Privileged Operations (the "One-Two Punch" pattern)
 
-Privileged admin creation is handled by:
+> **Status in Cyber Pharma:** the starter kit's `POST /api/auth/superadmin-add-user`
+> route — which created users with the service-role key — was **removed in Phase 2**
+> along with the superadmin portal. Cyber Pharma's `/api/auth/*` routes are now
+> just `login`, `logout`, `signup`, and `confirm`. The principle below is retained
+> as doctrine for **any** future service-role operation.
 
-- `POST /api/auth/superadmin-add-user`
+The pattern for any privileged, service-role-key operation is a **two-stage
+authorization flow**:
 
-This is intentionally a **two-stage authorization flow**.
+1. **Verify first.** Get the authenticated user, read their role from
+   `user_roles`, and reject unauthorized callers with `403` **before** the
+   service-role client is ever touched.
+2. **Then act.** Only after verification, use the service-role client for the
+   privileged write.
 
-## Punch One: Verify the caller is a superadmin
-
-Before any privileged action occurs, the route:
-
-1. gets the current authenticated user
-2. reads the caller's role from `user_roles`
-3. rejects non-superadmins immediately
-
-If the caller is a `member` or `admin`, the route returns `403` and never reaches the admin client.
-
-## Punch Two: Use the service role key for privileged creation
-
-Only after the caller is verified does the route:
-
-1. create a new auth user using the service role client
-2. update `public.user_roles` for that new user
-
-This keeps privileged operations:
-
-- server-side only
-- explicit
-- auditable
-- isolated from client code
+This keeps privileged operations server-side only, explicit, auditable, and
+isolated from client code.
 
 > **Security rule:** The service role key must never be exposed to the browser. Ever.
+
+In the current app, the live example of stage 1 is `protectPage()` gating the
+admin layout; there is no stage-2 service-role write path shipped (real-user CRUD
+lives only in the env-gated `/moose-portal` operator tool — see
+[ROUTES_AND_SURFACES.md](./ROUTES_AND_SURFACES.md)).
 
 ---
 
@@ -245,6 +241,6 @@ This authorization design is strong because it is layered.
 - **UI layer:** route groups and portal rendering
 - **Server layer:** `protectPage()` and role lookup
 - **Database layer:** `user_roles` + RLS
-- **Privileged ops layer:** verified superadmin + service role key
+- **Privileged ops pattern:** verify-then-act with the service-role key (doctrine; no live route in this app — see above)
 
 > **Factory Standard rule:** Roles are records, not flags. Security is enforced by the database, not by hope.
