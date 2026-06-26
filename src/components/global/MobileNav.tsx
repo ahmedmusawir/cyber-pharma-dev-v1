@@ -117,7 +117,7 @@ const MobileNav = () => {
                   Log in
                 </Link>
                 <Link
-                  href="/register"
+                  href="/auth?tab=register"
                   onClick={close}
                   className="uppercase text-xs font-bold tracking-wide px-7 py-5 bg-primary text-primary-foreground text-center hover:bg-primary/90 transition-colors"
                 >

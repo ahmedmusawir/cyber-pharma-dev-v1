@@ -1,16 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
 const AuthTabs = () => {
-  const [selectedTab, setSelectedTab] = useState("login");
+  const searchParams = useSearchParams();
+  // ?tab=register opens the signup tab (e.g. "Start free trial" CTAs); default login.
+  const initialTab = searchParams.get("tab") === "register" ? "register" : "login";
+  const [selectedTab, setSelectedTab] = useState(initialTab);
 
   return (
     <Tabs
-      defaultValue="login"
+      value={selectedTab}
       className="w-[400px] mt-16"
       onValueChange={setSelectedTab}
     >

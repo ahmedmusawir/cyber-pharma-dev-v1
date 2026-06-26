@@ -86,7 +86,7 @@ const UserMenu = () => {
         Log in
       </Link>
       <Link
-        href="/register"
+        href="/auth?tab=register"
         className="uppercase px-7 h-full flex items-center bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-colors"
       >
         Start free trial

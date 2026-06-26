@@ -79,8 +79,6 @@ still needs a way to manage real test users.
 
 - **`/moose-portal`** — intentional temporary tool; remove when test-user
   management moves elsewhere.
-- **`UserMenu` / `MobileNav`** (marketing-page nav) still link to a non-existent
-  `/register` route — a separate stale starter-kit link, not yet fixed.
 
 These are noted for the architect's call. The docs describe the tree as it is
 today; removing dead routes is a separate, code-touching task.
