@@ -25,7 +25,7 @@ export const createClient = async () => {
               httpOnly: false, // Supabase needs client access
             }
             cookieStore.set({ name, value, ...cookieOptions })
-          } catch (error) {
+          } catch {
             // The `set` method was called from a Server Component.
           }
         },
@@ -37,7 +37,7 @@ export const createClient = async () => {
               sameSite: 'lax' as const,
             }
             cookieStore.delete({ name, ...cookieOptions })
-          } catch (error) {
+          } catch {
             // The `delete` method was called from a Server Component.
           }
         },

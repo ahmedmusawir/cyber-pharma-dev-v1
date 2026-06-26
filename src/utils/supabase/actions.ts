@@ -11,7 +11,7 @@ export async function protectPage(
 ) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
   const user = data?.user ?? null;
 
   // Unauthenticated → always to login, regardless of opts.

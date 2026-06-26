@@ -10,7 +10,7 @@ export const fetchCache = "force-no-store";
 // Testing the route
 export async function GET() {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("posts").select("*");
+  const { error } = await supabase.from("posts").select("*");
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
