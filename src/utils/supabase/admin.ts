@@ -1,4 +1,5 @@
 // src/utils/supabase/admin.ts
+// BLESSED INFRA — kept unconsumed by ruling 2026-07-14; expected consumer: privileged server ops (Phase 3+). /moose-portal carries its own service-role client — reconcile the duplicates at Phase 3. See agent_docs/KEEP_MANIFEST.md.
 // CRITICAL: This file uses the service_role key and MUST ONLY be imported in server-side code.
 // NEVER import this in client components or expose the service_role key to the browser.
 
