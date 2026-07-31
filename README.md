@@ -21,10 +21,18 @@ and makes it filterable down to the individual script. It was built through my
 App Factory pipeline: a spec-first workflow where the data contract and screen
 specs are written and locked before the first component is authored.
 
-**Status:** Phase 2 complete. Both surfaces (OwedBook + Admin Portal Demo Shell)
-are built to visual fidelity and are mock-functional end to end. Auth is real
-(Supabase); domain data is mock through a service layer that is the **single
-swap point** for the eventual backend (Phase 7). See
+**Status:** Ongoing project — Phase 2 complete. Per App Factory doctrine this is
+built frontend-first: what ships here is the finished **FFM (Frontend-First
+Module)**, put in front of the client to finalize features and functionality
+before a line of backend is written. Both surfaces (OwedBook + Admin Portal Demo
+Shell) are built to visual fidelity and are mock-functional end to end. Auth is
+real (Supabase); domain data is mock through a service layer that is the
+**single swap point** for the real backend (Phase 7).
+
+The completed product is a **HIPAA-compliant application on a Supabase backend**.
+HIPAA hardening — BAA, security headers, MFA, session policy, and a
+regenerate-at-source data migration — is the Phase 8 deliverable. The FFM you see
+here carries no PHI: every claim, script number, and NPI in it is synthetic. See
 [docs/PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md).
 
 ---
