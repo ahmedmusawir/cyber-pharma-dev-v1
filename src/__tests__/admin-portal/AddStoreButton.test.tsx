@@ -32,7 +32,7 @@ const addStoreMock = ownerStoresService.addStore as jest.Mock;
 
 // Intent (K9): the demo's add-store affordance is a requirement-harvesting facade.
 // It must advertise the proposed new-store field set (name / NCPDP / NPI / address)
-// so Frank can confirm what a real store needs, AND it must read as non-charging
+// so the domain expert can confirm what a real store needs, AND it must read as non-charging
 // (the Phase-7 caption). It must still drop a card into the store on submit so the
 // demo feels alive. These assertions fail the build if the harvest intent regresses.
 describe("AddStoreButton — mock harvest form", () => {

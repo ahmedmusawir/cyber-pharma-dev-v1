@@ -25,9 +25,9 @@ const ADMIN_DEMO_NO_STORES = false;
 export function makeAdminDemoSeed(opts?: { empty?: boolean }): AdminDemoState {
   const owner = {
     ownerId: "owner-1",
-    name: "Barack Obama",
-    email: "barack@hydeparkrx.com",
-    initials: "BO",
+    name: "Daniel Brooks",
+    email: "dbrooks@hydeparkrx.com",
+    initials: "DB",
   };
 
   // Zero-store path: brand-new owner, nothing provisioned yet.
@@ -245,15 +245,15 @@ export function makeAdminDemoSeed(opts?: { empty?: boolean }): AdminDemoState {
       {
         storeId: "store-1",
         pharmacyName: "Hyde Park Pharmacy",
-        contactPerson: "Barack Obama",
+        contactPerson: "Daniel Brooks",
         phone: "(312) 555-0142",
-        address: "5046 S Greenwood Ave, Chicago, IL 60615",
+        address: "4820 S Cottage Grove Ave, Chicago, IL 60615",
         pharmacySoftware: "PioneerRx",
       },
       {
         storeId: "store-2",
         pharmacyName: "Southside Drug Mart",
-        contactPerson: "Barack Obama",
+        contactPerson: "Daniel Brooks",
         phone: "(312) 555-0288",
         address: "1342 E 79th St, Chicago, IL 60619",
         pharmacySoftware: "QS/1",
@@ -261,7 +261,7 @@ export function makeAdminDemoSeed(opts?: { empty?: boolean }): AdminDemoState {
       {
         storeId: "store-3",
         pharmacyName: "Lakeview Apothecary",
-        contactPerson: "Barack Obama",
+        contactPerson: "Daniel Brooks",
         phone: "(773) 555-0173",
         address: "3211 N Broadway, Chicago, IL 60657",
         pharmacySoftware: "Liberty",
@@ -269,7 +269,7 @@ export function makeAdminDemoSeed(opts?: { empty?: boolean }): AdminDemoState {
       {
         storeId: "store-4",
         pharmacyName: "Cornerstone Pharmacy",
-        contactPerson: "Barack Obama",
+        contactPerson: "Daniel Brooks",
         phone: "(312) 555-0391",
         address: "700 W Madison St, Chicago, IL 60661",
         pharmacySoftware: "Rx30",

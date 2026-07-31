@@ -1,6 +1,6 @@
 /**
  * OwedBook — mock fixtures (Cyber Pharma v1 · Phase 2 · Cluster 3).
- * 150 curated rows derived from Frank's year-old demo DB (identifiers scrubbed).
+ * 150 curated rows derived from an anonymized production dataset (identifiers scrubbed).
  * Real: drug economics, qty, original_paid, aac/federal_expected/federal_diff, pbm.
  * Demo: expected/owed spread, medicaid_rate/method, status re-cast across all 5
  * chips, new_paid/updated_difference engineered on ~30 rows, dates re-stamped

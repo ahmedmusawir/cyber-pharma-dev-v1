@@ -7,7 +7,7 @@
 // Member account state (drives ACTIVE / INVITE PENDING / SUSPENDED pills)
 export type MemberAccountStatus = "active" | "invite_pending" | "suspended";
 
-// Member permission role (Frank truth: admin | user). jobTitle is shown separately (§2.3).
+// Member permission role (domain-expert truth: admin | user). jobTitle is shown separately (§2.3).
 export type MemberRole = "admin" | "member";
 
 // Store operational status
@@ -57,7 +57,7 @@ export interface StoreMember {
   name: string; // for invite_pending rows may be empty → render email
   email: string;
   initials: string;
-  // ⚠️ DEMO-ONLY display (pharmacist/technician). Unbacked in Frank's schema —
+  // ⚠️ DEMO-ONLY display (pharmacist/technician). Unbacked in the domain expert's schema —
   // Phase-7 source-decision flag (DATA_CONTRACT §6). Do NOT pretend it's backed.
   jobTitle?: string;
   role: MemberRole; // permission role

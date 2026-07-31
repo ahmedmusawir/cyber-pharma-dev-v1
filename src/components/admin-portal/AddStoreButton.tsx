@@ -18,7 +18,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ownerStoresService } from "@/services/adminDemo";
 
 // Mock "add a store" harvest form. The four fields (name / NCPDP / NPI / address)
-// are local-state ONLY — they exist to show Frank the intended new-store field set
+// are local-state ONLY — they exist to show the domain expert the intended new-store field set
 // and harvest the real requirement. They deliberately do NOT flow to addStore()
 // (its signature is the frozen Phase-7 swap point); submit drops the generic mock
 // card. NO Stripe, NO charge. Caller reloads its list via onAdded.

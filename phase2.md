@@ -39,9 +39,9 @@ Mock-functional, owner-scoped admin portal that **replaces** `/admin-portal`'s o
 
 ### 2a. Locked rulings (do not re-litigate)
 - **The one hard rule:** member creation is **invite-based, NEVER password-based.** No password/credential field anywhere. Enforced in **three layers**: service signature, a compile-time `@ts-expect-error` (a `password` key fails the build), and a hard DOM test in `InviteMemberForm.test.tsx`.
-- **Single-admin model (V1):** one admin = the owner (onboarding); 2nd admins only via MissionControl. Invite form = **Email + Job title + Send invite** only — no password, no permission/role dropdown. `role` hardcoded `'member'` at the call site. (Confirmed w/ Coach + Frank.)
-- **`jobTitle` is demo-only** (Pharmacist/Technician/Staff) — Frank's schema has no such column; flagged as a Phase-7 source decision, never treated as real.
-- **Billing is visual-only** — `managePayment` / `cancelSubscription` never charge; "Add store" drops a mock card; no audit entry for billing (no AuditAction vocab covers it). Seed amounts ($49 standard / $199 concierge) are placeholders — real V1 pricing is a Coach business decision.
+- **Single-admin model (V1):** one admin = the owner (onboarding); 2nd admins only via MissionControl. Invite form = **Email + Job title + Send invite** only — no password, no permission/role dropdown. `role` hardcoded `'member'` at the call site. (Confirmed w/ the client + the domain expert.)
+- **`jobTitle` is demo-only** (Pharmacist/Technician/Staff) — the domain expert's schema has no such column; flagged as a Phase-7 source decision, never treated as real.
+- **Billing is visual-only** — `managePayment` / `cancelSubscription` never charge; "Add store" drops a mock card; no audit entry for billing (no AuditAction vocab covers it). Seed amounts ($49 standard / $199 concierge) are placeholders — real V1 pricing is a client business decision.
 - **Navbar = coral in BOTH light + dark.** `globals.css` navbar token untouched.
 - **Owner-scoped only** — no platform/cross-tenant/"all owners" views; no PHI/claims; no super-admin powers. These must **not render at all** (not merely be disabled).
 
@@ -74,7 +74,7 @@ Prior: `66ded93` = `/moose-portal` (env-gated real-CRUD escape hatch — DO NOT 
 ## 3. Post-build fixes & verification
 
 ### C4-fix — operator eyes-on, 2 rounds
-- **Round 1:** content-column **gutter** added once in `src/app/(admin)/layout.tsx` (designer `.main` values; all 6 screens inherit) · **Add Store → shadcn-Dialog mock harvest form** (name/NCPDP/NPI/address + "Demo only — Phase 7" caption; facade — fields are local-state only, the frozen no-arg `addStore()` drops the generic card; proposed fields recorded for Frank).
+- **Round 1:** content-column **gutter** added once in `src/app/(admin)/layout.tsx` (designer `.main` values; all 6 screens inherit) · **Add Store → shadcn-Dialog mock harvest form** (name/NCPDP/NPI/address + "Demo only — Phase 7" caption; facade — fields are local-state only, the frozen no-arg `addStore()` drops the generic card; proposed fields recorded for the domain expert).
 - **Round 2:** Invite + Settings **centered** at `mx-auto max-w-[560px]` (designer width; data screens stay full-width) · shared **Navbar mobile menu dismiss** on outside-tap + Escape (fixes `/owedbook` too). Later regression fixed: the theme dropdown portals outside the header → added a **Radix-popper guard** + `ThemeToggler onSelect` so a theme pick closes the menu cleanly.
 
 ### C5 — Verification (Gate 5 ✅)
@@ -107,6 +107,6 @@ moose shows a spinner per page request because its pages `await` real server dat
 - **`linting-1`** → current working branch; ESLint + navigation-spinner changesets **uncommitted** here (operator owns git). Stray, not Claudy's: a working-tree deletion of `agent_docs/APP_FACTORY/STARTER_KIT_HANDBOOK_v1.0.md`.
 
 ## 6. Phase-7 carry-forward flags
-`jobTitle` real source · real Supabase invite + RLS (still no password) · real Stripe billing (amounts/plans become real) · real add-store + subscription checkout (payment-creates-account) · proposed new-store field set (name/NCPDP/NPI/address — validate with Frank) · Settings is `stores[0]`-only in V1 (Phase 7: store picker). Full harvest prompts in `RUN_001_LESSONS.md`.
+`jobTitle` real source · real Supabase invite + RLS (still no password) · real Stripe billing (amounts/plans become real) · real add-store + subscription checkout (payment-creates-account) · proposed new-store field set (name/NCPDP/NPI/address — validate with the domain expert) · Settings is `stores[0]`-only in V1 (Phase 7: store picker). Full harvest prompts in `RUN_001_LESSONS.md`.
 
 🥄 *Mock the wiring, never mock the safety. The service layer is the only door to Phase 7.*

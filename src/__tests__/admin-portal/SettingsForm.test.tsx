@@ -12,9 +12,9 @@ import type { PharmacySettings } from "@/types/adminDemo";
 const settings: PharmacySettings = {
   storeId: "store-1",
   pharmacyName: "Hyde Park Pharmacy",
-  contactPerson: "Barack Obama",
+  contactPerson: "Daniel Brooks",
   phone: "(312) 555-0142",
-  address: "5046 S Greenwood Ave, Chicago, IL 60615",
+  address: "4820 S Cottage Grove Ave, Chicago, IL 60615",
   pharmacySoftware: "PioneerRx",
 };
 
