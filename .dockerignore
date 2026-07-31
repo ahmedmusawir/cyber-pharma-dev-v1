@@ -1,0 +1,17 @@
+# cyber-pharma — Docker build context excludes
+# CRITICAL: .env* keeps local secrets out of the image. Next.js standalone output
+# copies .env files into .next/standalone — without this line, .env.local ships
+# in the final image and bypasses the 3-Layer secret model.
+.env*
+node_modules
+.next
+.git
+.gitignore
+Dockerfile
+.dockerignore
+cloudbuild.yaml
+deploy.sh
+init-app.sh
+agent_docs
+_SKILLS
+README.md

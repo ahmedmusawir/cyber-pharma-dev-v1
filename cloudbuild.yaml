@@ -1,0 +1,58 @@
+# cyber-pharma — Cloud Build pipeline (Template 2B: no build-time secrets)
+# Secret mapping: SUPABASE_SECRET_KEY (generic, code-facing) ← cyber-pharma-supabase-secret-key (Secret Manager)
+# Runtime env vars are REQUIRED (not just build ARGs): src/instrumentation.ts does dynamic
+# process.env[key] validation at server start — dynamic access is never inlined by Next.
+
+substitutions:
+  _REGION: "us-east1"
+  _SERVICE_NAME: "cyber-pharma-prod"
+  _NEXT_PUBLIC_APP_URL: "https://cyber-pharma.cyberizedev.com"
+  _NEXT_PUBLIC_SITE_URL: "https://cyber-pharma.cyberizedev.com"
+  _NEXT_PUBLIC_SUPABASE_URL: "REPLACE_ME"
+  _NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "REPLACE_ME"
+  _NEXT_PUBLIC_ENABLE_MOOSE_PORTAL: "false"
+
+steps:
+  # 1. Build Docker Image (no secrets at build time)
+  - name: "gcr.io/cloud-builders/docker"
+    id: "Build Image"
+    args:
+      - "build"
+      - "--build-arg"
+      - "NEXT_PUBLIC_APP_URL=${_NEXT_PUBLIC_APP_URL}"
+      - "--build-arg"
+      - "NEXT_PUBLIC_SITE_URL=${_NEXT_PUBLIC_SITE_URL}"
+      - "--build-arg"
+      - "NEXT_PUBLIC_SUPABASE_URL=${_NEXT_PUBLIC_SUPABASE_URL}"
+      - "--build-arg"
+      - "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${_NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY}"
+      - "--build-arg"
+      - "NEXT_PUBLIC_ENABLE_MOOSE_PORTAL=${_NEXT_PUBLIC_ENABLE_MOOSE_PORTAL}"
+      - "-t"
+      - "us-east1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/${_SERVICE_NAME}:latest"
+      - "."
+
+  # 2. Push to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    id: "Push Image"
+    args: ["push", "us-east1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/${_SERVICE_NAME}:latest"]
+
+  # 3. Deploy to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    id: "Deploy to Cloud Run"
+    args:
+      [
+        "run", "deploy", "${_SERVICE_NAME}",
+        "--image", "us-east1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/${_SERVICE_NAME}:latest",
+        "--region", "${_REGION}",
+        "--platform", "managed",
+        "--allow-unauthenticated",
+        "--service-account", "sa-cyber-pharma-runtime@$PROJECT_ID.iam.gserviceaccount.com",
+        "--set-secrets",
+        "SUPABASE_SECRET_KEY=cyber-pharma-supabase-secret-key:latest",
+        "--set-env-vars",
+        "NEXT_PUBLIC_APP_URL=${_NEXT_PUBLIC_APP_URL},NEXT_PUBLIC_SITE_URL=${_NEXT_PUBLIC_SITE_URL},NEXT_PUBLIC_SUPABASE_URL=${_NEXT_PUBLIC_SUPABASE_URL},NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${_NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY},NEXT_PUBLIC_ENABLE_MOOSE_PORTAL=${_NEXT_PUBLIC_ENABLE_MOOSE_PORTAL}",
+        "--memory", "1Gi",
+        "--max-instances", "1",
+      ]
