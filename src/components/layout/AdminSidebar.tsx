@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/command";
 import { Store, CreditCard, Settings, ScrollText } from "lucide-react";
 import Link from "next/link";
-import LinkPendingProbe from "@/components/layout/LinkPendingProbe";
 import FilterRail from "@/components/owedbook/FilterRail";
 import { useOwedBook } from "@/components/owedbook/OwedBookContext";
 
@@ -74,7 +73,6 @@ const AdminSidebar = () => {
                   {item.icon}
                   <Link href={item.href} aria-current={active ? "page" : undefined}>
                     {item.label}
-                    <LinkPendingProbe />
                   </Link>
                 </CommandItem>
               );

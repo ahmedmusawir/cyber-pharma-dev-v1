@@ -15,8 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ThemeToggler from "./ThemeToggler";
-import LinkPendingProbe from "@/components/layout/LinkPendingProbe";
-import { useNavSpinner } from "@/store/useNavSpinner";
 import Logout from "../auth/Logout";
 import { User as SupabaseUser } from "@supabase/auth-js";
 import { createClient } from "@/utils/supabase/client";
@@ -28,7 +26,6 @@ const Navbar = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
-  const setNavPending = useNavSpinner((s) => s.setPending);
   const supabase = createClient();
   const router = useRouter();
 
@@ -121,10 +118,7 @@ const Navbar = () => {
         <Link
           href="/"
           aria-label="Cyber Pharma — Home"
-          onClick={() => {
-            setNavPending(true);
-            closeMenu();
-          }}
+          onClick={closeMenu}
           className="shrink-0"
         >
           <Image src="/brand/logo-color.svg" alt="Cyber Pharma" width={36} height={36} />
@@ -141,7 +135,6 @@ const Navbar = () => {
                 className={navLinkClass(l.href)}
               >
                 {l.label}
-                <LinkPendingProbe />
               </Link>
             ))}
           </nav>
@@ -203,19 +196,13 @@ const Navbar = () => {
               <Link
                 key={l.href}
                 href={l.href}
-                onClick={() => {
-                  // Set pending BEFORE closeMenu unmounts the panel (and its probe),
-                  // so owedbook/profile (no loading.tsx) still get the overlay spinner.
-                  if (l.href !== pathname) setNavPending(true);
-                  closeMenu();
-                }}
+                onClick={closeMenu}
                 aria-current={pathname.startsWith(l.href) ? "page" : undefined}
                 className={`px-5 py-3 text-sm font-medium border-b border-navbar-foreground/20 ${
                   pathname.startsWith(l.href) ? "font-semibold" : "text-navbar-foreground/80"
                 }`}
               >
                 {l.label}
-                <LinkPendingProbe />
               </Link>
             ))}
 

@@ -3,7 +3,6 @@ import { Saira } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "./providers/ThemeProvider";
-import NavigationSpinner from "@/components/layout/NavigationSpinner";
 
 const saira = Saira({
   subsets: ["latin"],
@@ -31,7 +30,6 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <NavigationSpinner />
           <Toaster />
         </ThemeProvider>
       </body>
