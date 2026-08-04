@@ -5,13 +5,23 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import type { User as SupabaseUser } from "@supabase/auth-js";
 import Navbar from "@/components/global/Navbar";
 import MooseSidebar from "./MooseSidebar";
+import type { AppRole } from "@/utils/app-role";
 
 // Mirrors /admin-portal's AuthedShell treatment exactly: navbar + fixed sidebar
 // at lg+, hamburger + left slide-over below lg, close-on-navigation. No OwedBook
 // filter coupling (no filters here).
-const MooseShell = ({ children }: { children: ReactNode }) => {
+// user/role from the layout's protectPage — forwarded to the Navbar (server-truth
+// nav identity, mirrors AuthedShell).
+interface MooseShellProps {
+  user: SupabaseUser;
+  role: AppRole;
+  children: ReactNode;
+}
+
+const MooseShell = ({ user, role, children }: MooseShellProps) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname() ?? "";
 
@@ -36,7 +46,7 @@ const MooseShell = ({ children }: { children: ReactNode }) => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar user={user} role={role} />
 
       {/* Mobile sidebar trigger (< lg) */}
       <div className="lg:hidden border-b border-border px-4 py-2">

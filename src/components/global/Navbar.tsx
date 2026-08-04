@@ -21,46 +21,50 @@ import { createClient } from "@/utils/supabase/client";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AppRole } from "@/utils/app-role";
 
-const Navbar = () => {
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+// Identity is SERVER-RESOLVED: every layout that mounts this Navbar already ran
+// protectPage, which guarantees an authenticated user with an allowed role and
+// passes both down as props. No client-side auth fetch → no empty-nav window on
+// mount/remount, and no dev/build divergence.
+interface NavbarProps {
+  user: SupabaseUser;
+  role: AppRole;
+}
+
+const Navbar = ({ user, role }: NavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const supabase = createClient();
   const router = useRouter();
 
-  // Role-aware top-level nav (UI_SPEC §E/§F): role server-sourced (never
-  // user_metadata). ADMIN → OwedBook · Admin Portal · Profile. MEMBER →
-  // OwedBook · Profile (no Admin Portal, never an empty navbar). Active is
-  // route-derived via usePathname.
-  const role = useAuthStore((s) => s.role);
+  // Role-aware top-level nav (UI_SPEC §E/§F): ADMIN → OwedBook · Admin Portal ·
+  // Profile. MEMBER → OwedBook · Profile. Never empty. Active is route-derived
+  // via usePathname.
   const pathname = usePathname() ?? "";
   const isAdmin = role === AppRole.ADMIN;
 
-  const navLinks = user
-    ? [
-        { label: "OwedBook", href: "/owedbook" },
-        ...(isAdmin ? [{ label: "Admin Portal", href: "/admin-portal" }] : []),
-        // TODO: REMOVE — off-books operator tool (/moose-portal). ADMIN + env flag only.
-        ...(isAdmin && process.env.NEXT_PUBLIC_ENABLE_MOOSE_PORTAL === "true"
-          ? [{ label: "Moose", href: "/moose-portal" }]
-          : []),
-        { label: "Profile", href: "/profile" },
-      ]
-    : [];
+  const navLinks = [
+    { label: "OwedBook", href: "/owedbook" },
+    ...(isAdmin ? [{ label: "Admin Portal", href: "/admin-portal" }] : []),
+    // TODO: REMOVE — off-books operator tool (/moose-portal). ADMIN + env flag only.
+    ...(isAdmin && process.env.NEXT_PUBLIC_ENABLE_MOOSE_PORTAL === "true"
+      ? [{ label: "Moose", href: "/moose-portal" }]
+      : []),
+    { label: "Profile", href: "/profile" },
+  ];
 
+  // Slim auth listener: identity comes from the server, so the ONLY event that
+  // matters here is a sign-out from elsewhere (another tab) — bounce to /auth.
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-      setIsLoading(false);
-    };
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(() => fetchUser());
-    fetchUser();
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        router.refresh();
+        router.push("/auth");
+      }
+    });
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  }, [supabase, router]);
 
   // A mobile menu must dismiss on an outside tap, not only via the X. Listen only
   // while open: close on a pointerdown outside the whole <header> (so the
@@ -125,51 +129,38 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop nav (≥ lg, role-aware) */}
-        {navLinks.length > 0 && (
-          <nav aria-label="Primary" className="hidden lg:flex items-center gap-1">
-            {navLinks.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                aria-current={pathname.startsWith(l.href) ? "page" : undefined}
-                className={navLinkClass(l.href)}
-              >
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-        )}
+        <nav aria-label="Primary" className="hidden lg:flex items-center gap-1">
+          {navLinks.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              aria-current={pathname.startsWith(l.href) ? "page" : undefined}
+              className={navLinkClass(l.href)}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
 
         {/* Desktop right cluster (≥ lg) */}
         <div className="hidden lg:flex items-center">
           <ThemeToggler />
-          {!isLoading && (
-            <>
-              {user && <span className="mx-3 text-navbar-foreground">{user.email}</span>}
-              {user && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="cursor-pointer">
-                    <Avatar>
-                      <AvatarFallback>{user.email?.[0]?.toUpperCase() ?? "U"}</AvatarFallback>
-                    </Avatar>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-popover">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/profile">Profile</Link>
-                    </DropdownMenuItem>
-                    <Logout />
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
-              {!user && (
-                <Link href="/auth" className="ml-3 text-sm font-medium hover:opacity-80">
-                  Login
-                </Link>
-              )}
-            </>
-          )}
+          <span className="mx-3 text-navbar-foreground">{user.email}</span>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="cursor-pointer">
+              <Avatar>
+                <AvatarFallback>{user.email?.[0]?.toUpperCase() ?? "U"}</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-popover">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/profile">Profile</Link>
+              </DropdownMenuItem>
+              <Logout />
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Mobile hamburger (< lg) */}
@@ -207,25 +198,17 @@ const Navbar = () => {
             ))}
 
             <div className="flex items-center justify-between px-5 py-3 border-b border-navbar-foreground/20">
-              <span className="text-sm">{user ? user.email : "Theme"}</span>
+              <span className="text-sm">{user.email}</span>
               <ThemeToggler onSelect={closeMenu} />
             </div>
 
-            {!isLoading && user && (
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="px-5 py-3 text-sm text-left bg-secondary text-secondary-foreground"
-              >
-                Log out
-              </button>
-            )}
-
-            {!isLoading && !user && (
-              <Link href="/auth" onClick={closeMenu} className="px-5 py-3 text-sm">
-                Login
-              </Link>
-            )}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="px-5 py-3 text-sm text-left bg-secondary text-secondary-foreground"
+            >
+              Log out
+            </button>
           </nav>
         </div>
       )}

@@ -14,7 +14,11 @@ export default async function MoosePortalLayout({ children }: { children: ReactN
   // Containment: absent/false → the entire route 404s (safe by default).
   if (process.env.NEXT_PUBLIC_ENABLE_MOOSE_PORTAL !== "true") notFound();
 
-  await protectPage([AppRole.ADMIN]);
+  const { user, role } = await protectPage([AppRole.ADMIN]);
 
-  return <MooseShell>{children}</MooseShell>;
+  return (
+    <MooseShell user={user} role={role}>
+      {children}
+    </MooseShell>
+  );
 }

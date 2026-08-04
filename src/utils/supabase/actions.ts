@@ -26,5 +26,7 @@ export async function protectPage(
     return redirect(opts?.unauthorizedRedirect ?? "/auth");
   }
 
-  return user;
+  // Both are server-truth at this point — layouts pass them into the Navbar so
+  // nav identity never depends on a client-side auth fetch.
+  return { user, role: userRole };
 }

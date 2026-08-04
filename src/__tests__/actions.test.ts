@@ -45,7 +45,11 @@ describe('protectPage', () => {
     mockAuthUser(user);
     getUserRoleMock.mockResolvedValue(AppRole.ADMIN as any);
 
-    await expect(protectPage([AppRole.ADMIN as any])).resolves.toEqual(user);
+    // protectPage now returns server-truth identity for layouts to pass into the Navbar.
+    await expect(protectPage([AppRole.ADMIN as any])).resolves.toEqual({
+      user,
+      role: AppRole.ADMIN,
+    });
     expect(redirectMock).not.toHaveBeenCalled();
   });
 
@@ -98,7 +102,10 @@ describe('protectPage', () => {
     mockAuthUser(user);
     getUserRoleMock.mockResolvedValue(AppRole.SUPERADMIN as any);
 
-    await expect(protectPage([AppRole.SUPERADMIN as any])).resolves.toEqual(user);
+    await expect(protectPage([AppRole.SUPERADMIN as any])).resolves.toEqual({
+      user,
+      role: AppRole.SUPERADMIN,
+    });
     expect(redirectMock).not.toHaveBeenCalled();
   });
 });

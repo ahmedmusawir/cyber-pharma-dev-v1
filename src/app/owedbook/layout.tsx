@@ -14,11 +14,13 @@ interface LayoutProps {
 // OwedBookProvider wraps the shell so the rail (even inside the mobile drawer)
 // shares filter state with the screen.
 export default async function OwedBookLayout({ children }: LayoutProps) {
-  await protectPage([AppRole.ADMIN, AppRole.MEMBER]);
+  const { user, role } = await protectPage([AppRole.ADMIN, AppRole.MEMBER]);
 
   return (
     <OwedBookProvider>
-      <AuthedShell>{children}</AuthedShell>
+      <AuthedShell user={user} role={role}>
+        {children}
+      </AuthedShell>
     </OwedBookProvider>
   );
 }

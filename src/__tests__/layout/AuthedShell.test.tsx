@@ -30,8 +30,13 @@ jest.mock("@/components/owedbook/OwedBookContext", () => ({
 }));
 
 import AuthedShell from "@/components/layout/AuthedShell";
+import { AppRole } from "@/utils/app-role";
+import type { User as SupabaseUser } from "@supabase/auth-js";
 
 const mockUsePathname = usePathname as jest.Mock;
+
+// Identity props are pass-through to the (stubbed) Navbar — any authed pair works.
+const tony = { email: "tony@stark.com" } as SupabaseUser;
 
 // Intent (Rule Zero): the sidebar must be REACHABLE on mobile, not hidden with
 // no affordance. A trigger opens a slide-over holding the same sidebar content;
@@ -40,7 +45,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
   it("opens a slide-over with the sidebar and closes on backdrop", () => {
     mockUsePathname.mockReturnValue("/admin-portal");
     render(
-      <AuthedShell>
+      <AuthedShell user={tony} role={AppRole.ADMIN}>
         <p>main content</p>
       </AuthedShell>
     );
@@ -66,7 +71,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
   it("labels the trigger 'Filters' on the /owedbook surface", () => {
     mockUsePathname.mockReturnValue("/owedbook");
     render(
-      <AuthedShell>
+      <AuthedShell user={tony} role={AppRole.ADMIN}>
         <p>main</p>
       </AuthedShell>
     );
@@ -78,7 +83,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
   it("closes the drawer when the route changes", () => {
     mockUsePathname.mockReturnValue("/admin-portal");
     const { rerender } = render(
-      <AuthedShell>
+      <AuthedShell user={tony} role={AppRole.ADMIN}>
         <p>main</p>
       </AuthedShell>
     );
@@ -87,7 +92,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
 
     mockUsePathname.mockReturnValue("/admin-portal/billing");
     rerender(
-      <AuthedShell>
+      <AuthedShell user={tony} role={AppRole.ADMIN}>
         <p>main</p>
       </AuthedShell>
     );
@@ -99,7 +104,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
   it("collapses /owedbook below xl but /admin-portal below lg", () => {
     mockUsePathname.mockReturnValue("/owedbook");
     const { rerender } = render(
-      <AuthedShell>
+      <AuthedShell user={tony} role={AppRole.ADMIN}>
         <p>main</p>
       </AuthedShell>
     );
@@ -107,7 +112,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
 
     mockUsePathname.mockReturnValue("/admin-portal");
     rerender(
-      <AuthedShell>
+      <AuthedShell user={tony} role={AppRole.ADMIN}>
         <p>main</p>
       </AuthedShell>
     );
@@ -119,7 +124,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
     mockTick = 0;
     mockUsePathname.mockReturnValue("/owedbook");
     const { rerender } = render(
-      <AuthedShell>
+      <AuthedShell user={tony} role={AppRole.ADMIN}>
         <p>main</p>
       </AuthedShell>
     );
@@ -128,7 +133,7 @@ describe("AuthedShell mobile sidebar drawer", () => {
 
     mockTick = 1; // an apply happened
     rerender(
-      <AuthedShell>
+      <AuthedShell user={tony} role={AppRole.ADMIN}>
         <p>main</p>
       </AuthedShell>
     );

@@ -12,11 +12,11 @@ interface LayoutProps {
 // Navbar-only shell (no surface sidebar — Profile belongs to neither surface);
 // the Navbar avatar dropdown is the universal access point.
 export default async function ProfileLayout({ children }: LayoutProps) {
-  await protectPage([AppRole.ADMIN, AppRole.MEMBER]);
+  const { user, role } = await protectPage([AppRole.ADMIN, AppRole.MEMBER]);
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar user={user} role={role} />
       <main className="flex-1">{children}</main>
     </div>
   );

@@ -29,8 +29,13 @@ jest.mock("@/services/owedbook", () => ({
 
 import { OwedBookProvider } from "@/components/owedbook/OwedBookContext";
 import AuthedShell from "@/components/layout/AuthedShell";
+import { AppRole } from "@/utils/app-role";
+import type { User as SupabaseUser } from "@supabase/auth-js";
 
 const mockUsePathname = usePathname as jest.Mock;
+
+// Identity props are pass-through to the (stubbed) Navbar — any authed pair works.
+const tony = { email: "tony@stark.com" } as SupabaseUser;
 
 // END-TO-END (#1): the REAL OwedBookProvider → AuthedShell → AdminSidebar →
 // FilterRail → Apply path. Clicking Apply inside the drawer must dismiss it.
@@ -39,7 +44,7 @@ describe("OwedBook mobile drawer — close on Apply (integration)", () => {
     mockUsePathname.mockReturnValue("/owedbook");
     render(
       <OwedBookProvider>
-        <AuthedShell>
+        <AuthedShell user={tony} role={AppRole.ADMIN}>
           <p>main content</p>
         </AuthedShell>
       </OwedBookProvider>

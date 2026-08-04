@@ -3,15 +3,25 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import type { User as SupabaseUser } from "@supabase/auth-js";
 import Navbar from "@/components/global/Navbar";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 import { useOwedBook } from "@/components/owedbook/OwedBookContext";
+import type { AppRole } from "@/utils/app-role";
 
 // Authed chrome (Rule Zero — mobile-correct from the start). Desktop (lg+):
 // fixed sidebar column, identical to the prior shell. Below lg (tablet + phone):
 // the column is hidden and a trigger opens a left slide-over holding the same
 // AdminSidebar (nav items on /admin-portal, filter rail on /owedbook).
-const AuthedShell = ({ children }: { children: ReactNode }) => {
+// user/role come from the server layout's protectPage — forwarded to the Navbar
+// so nav identity is server-truth (no client fetch window).
+interface AuthedShellProps {
+  user: SupabaseUser;
+  role: AppRole;
+  children: ReactNode;
+}
+
+const AuthedShell = ({ user, role, children }: AuthedShellProps) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname() ?? "";
   // /owedbook's filter rail is wide (KPI row + wide table) → it stays
@@ -48,7 +58,7 @@ const AuthedShell = ({ children }: { children: ReactNode }) => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar user={user} role={role} />
 
       {/* Mobile sidebar trigger (< lg) */}
       <div className={`${collapsedBelow} border-b border-border px-4 py-2`}>
