@@ -446,7 +446,8 @@ For algorithmic work:
 2. Check for existing session file: `session_YYYY-MM-DD.md`
 3. If it exists → Read it. Resume context from where we left off.
 4. If it doesn't exist → Create it immediately using the template below.
-5. Do NOT proceed to any user task until both files are confirmed.
+5. Check `agent_docs/KIP_REGISTRY.md` at session start, when touching auth files, or when opening a new module — surface any KIP whose trigger conditions are met.
+6. Do NOT proceed to any user task until both files are confirmed.
 
 > **This is Step 0. Before you read the user's first message, handle RECOVERY.md and
 > the session file.**
