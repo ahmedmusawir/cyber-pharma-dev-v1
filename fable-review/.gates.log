@@ -1,0 +1,232 @@
+=== TSC ===
+tsc exit: 0
+=== LINT ===
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\__tests__\actions.test.ts
+   32:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   32:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   40:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   46:56  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   49:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   59:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   61:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   68:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   76:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   78:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   85:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   87:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   94:56  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   96:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  103:61  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  105:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\__tests__\get-user-role.test.ts
+  16:74  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\__tests__\member\ProfileForm.test.tsx
+  32:6  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\__tests__\proxy.test.ts
+  16:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  18:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\app\moose-portal\_shell\MooseShell.tsx
+  30:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\app\moose-portal\_shell\MooseShell.tsx:30:5
+  28 |   // Close the drawer on navigation (sidebar links don't know they're in it).
+  29 |   useEffect(() => {
+> 30 |     setDrawerOpen(false);
+     |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |   }, [pathname]);
+  32 |
+  33 |   // Escape to close + lock body scroll while open  react-hooks/set-state-in-effect
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\admin-portal\BillingScreen.tsx
+  26:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\admin-portal\BillingScreen.tsx:26:5
+  24 |   useEffect(() => {
+  25 |     let cancelled = false;
+> 26 |     setLoading(true);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  27 |     setError(null);
+  28 |     billingService
+  29 |       .listBilling()  react-hooks/set-state-in-effect
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\admin-portal\InviteScreen.tsx
+  19:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\admin-portal\InviteScreen.tsx:19:5
+  17 |   useEffect(() => {
+  18 |     let cancelled = false;
+> 19 |     setError(null);
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  20 |     Promise.all([
+  21 |       ownerStoresService.getStore(storeId),
+  22 |       storeMemberService.listPendingInvites(storeId),  react-hooks/set-state-in-effect
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\admin-portal\MyStoresScreen.tsx
+  31:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\admin-portal\MyStoresScreen.tsx:31:5
+  29 |   useEffect(() => {
+  30 |     let cancelled = false;
+> 31 |     setLoading(true);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |     setError(null);
+  33 |     ownerStoresService
+  34 |       .listMyStores()  react-hooks/set-state-in-effect
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\admin-portal\SettingsScreen.tsx
+  31:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\admin-portal\SettingsScreen.tsx:31:5
+  29 |   useEffect(() => {
+  30 |     let cancelled = false;
+> 31 |     setLoading(true);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |     setError(null);
+  33 |     (async () => {
+  34 |       try {  react-hooks/set-state-in-effect
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\admin-portal\StoreDetailScreen.tsx
+  30:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\admin-portal\StoreDetailScreen.tsx:30:5
+  28 |   useEffect(() => {
+  29 |     let cancelled = false;
+> 30 |     setLoading(true);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |     setError(null);
+  32 |     Promise.all([
+  33 |       ownerStoresService.getStore(storeId),  react-hooks/set-state-in-effect
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\layout\AuthedShell.tsx
+  42:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\layout\AuthedShell.tsx:42:5
+  40 |   // drawer covers the freshly-filtered results.
+  41 |   useEffect(() => {
+> 42 |     setDrawerOpen(false);
+     |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  43 |   }, [pathname, appliedTick]);
+  44 |
+  45 |   // Escape to close + lock body scroll while the drawer is open  react-hooks/set-state-in-effect
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\owedbook\FilterRail.tsx
+  48:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\owedbook\FilterRail.tsx:48:5
+  46 |   // main-screen "Clear filters"), so the persistent desktop rail isn't stale.
+  47 |   useEffect(() => {
+> 48 |     setDraft(filters);
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  49 |   }, [filters]);
+  50 |
+  51 |   // "N filters active" reflects the APPLIED (committed) set, not the draft  react-hooks/set-state-in-effect
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\owedbook\OwedBookScreen.tsx
+  73:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\owedbook\OwedBookScreen.tsx:73:5
+  71 |   // A new filter set resets to the first page.
+  72 |   useEffect(() => {
+> 73 |     setPage(1);
+     |     ^^^^^^^ Avoid calling setState() directly within an effect
+  74 |   }, [filters]);
+  75 |
+  76 |   // KPI tiles react to the filter set  react-hooks/set-state-in-effect
+  91:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\owedbook\OwedBookScreen.tsx:91:5
+  89 |   useEffect(() => {
+  90 |     let cancelled = false;
+> 91 |     setLoading(true);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  92 |     setError(null);
+  93 |     (async () => {
+  94 |       try {                   react-hooks/set-state-in-effect
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\ui\command.tsx
+  35:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\components\ui\use-toast.ts
+  21:7  warning  'actionTypes' is assigned a value but only used as a type. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\user\GITHUB-REPOS\cyber-pharma-dev-v1\src\utils\supabase\server.ts
+  6:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 34 problems (0 errors, 34 warnings)
+
+eslint exit: 0
+=== JEST ===
+
+Test Suites: 26 passed, 26 total
+Tests:       120 passed, 120 total
+Snapshots:   0 total
+Time:        23.221 s
+Ran all test suites.
+jest exit: 0
+?? fable-review/
